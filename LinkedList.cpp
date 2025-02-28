@@ -6,6 +6,12 @@ Node * LinkedList::FindLastNode()
 {
     Node* current_node = LIST;
 
+    if(LIST == nullptr)
+    {
+        LIST = new Node;
+        return LIST;
+    }    
+
     while(current_node->next != nullptr)
     {
         current_node = current_node->next;
@@ -27,6 +33,13 @@ Node* LinkedList::AddNodeEnd()
 
 Node* LinkedList::AddNodeBeginning()
 {
+    if(LIST == nullptr)
+    {
+        LIST = new Node;
+        number_of_nodes ++;
+        return LIST;
+    } 
+
     Node* newer = new Node;
     newer->data = nullptr;
     //newer.next = nullptr;
@@ -40,17 +53,10 @@ Node* LinkedList::AddNodeBeginning()
 
 Node* LinkedList::AddNodePosition(int p)
 {
-    int cnt=0;
-    Node* current_node = LIST;
+    Node* current_node = LinkedList::GetNodeAtPosition(p);
 
-    //TODO: Possibilmente riutilizzare GetNodeAtPosition(int p)
-    while(cnt<p)
-    {
-        if(current_node->next == nullptr)
-            return nullptr;
-        current_node = current_node->next;
-        cnt++;
-    }
+    if(current_node == nullptr)
+        return nullptr;
 
     Node* newer = new Node;
     newer->next = current_node->next;

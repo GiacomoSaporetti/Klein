@@ -17,7 +17,7 @@ int Klein::Entity::time_direction = 1;
 Klein::TimeHandler* Klein::Entity::TIMER = &TIME;
 
 
-int puntato = -19;
+int puntato[4] = {-19, 3, 76, -12};
 
 int main()
 {
@@ -30,7 +30,19 @@ int main()
 
     LIST.GetNodeAtPosition(0)->data = (void*)&puntato;
 
-    cout << *(unsigned int*)LIST.GetData(0) << endl;
+    for(int i=1; i<4; i++)
+        LIST.AddNodeEnd()->data = (void*)(puntato + i);
+
+    for(int i=0; i<4; i++)
+        cout << *(int*)LIST.GetData(i)<< " ";
+
+    LIST.DeleteNodePosition(2);
+
+    
+    for(int i=0; i<4; i++)
+        cout << *(int*)LIST.GetData(i)<< " ";
+
+    cout << endl;
     return 0;
 
 }

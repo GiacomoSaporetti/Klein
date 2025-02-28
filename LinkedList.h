@@ -12,9 +12,9 @@ namespace Klein
         public:
             LinkedList()
             {
-                LIST = new Node;
-                LIST->data = nullptr;
-                LIST->next = nullptr;
+                LIST = nullptr;
+                //LIST->data = nullptr;
+                //LIST->next = nullptr;
                 number_of_nodes = 0;
             }
             ~LinkedList() = default;   
