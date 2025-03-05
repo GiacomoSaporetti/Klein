@@ -1,29 +1,49 @@
-#include "LinkedList.h"
-
+#include "LinkedList.h "
 using namespace Klein;
 
 Node * LinkedList::FindLastNode()
 {
+     
     Node* current_node = LIST;
-
     if(LIST == nullptr)
-    {
-        LIST = new Node;
-        return LIST;
-    }    
-
+        return nullptr;   
     while(current_node->next != nullptr)
-    {
         current_node = current_node->next;
-    }
     return current_node;
 }
 
 Node* LinkedList::AddNodeEnd()
-{
+{ 
     Node* last = LinkedList::FindLastNode();
+    if(last == nullptr)
+    {
+        LIST = new Node;
+        LIST->data = nullptr;
+        LIST->next = nullptr;
+        number_of_nodes ++;
+        return LIST;
+    }
     Node* newer = new Node;
     newer->data = nullptr;
+    newer->next = nullptr;
+
+    last->next = newer;
+    number_of_nodes ++;
+    return newer;
+}
+Node* LinkedList::AddNodeEnd(void* ptr)
+{
+    Node* last = LinkedList::FindLastNode();
+    if(last == nullptr)
+    {
+        LIST = new Node;
+        LIST->data = ptr;
+        LIST->next = nullptr;
+        number_of_nodes ++;
+        return LIST;
+    }
+    Node* newer = new Node;
+    newer->data = ptr;
     newer->next = nullptr;
 
     last->next = newer;
@@ -33,9 +53,12 @@ Node* LinkedList::AddNodeEnd()
 
 Node* LinkedList::AddNodeBeginning()
 {
+     
     if(LIST == nullptr)
     {
         LIST = new Node;
+        LIST->data = nullptr;
+        LIST->next = nullptr;
         number_of_nodes ++;
         return LIST;
     } 
@@ -53,6 +76,7 @@ Node* LinkedList::AddNodeBeginning()
 
 Node* LinkedList::AddNodePosition(int p)
 {
+     
     Node* current_node = LinkedList::GetNodeAtPosition(p);
 
     if(current_node == nullptr)
@@ -67,8 +91,11 @@ Node* LinkedList::AddNodePosition(int p)
 
 Node* LinkedList::GetNodeAtPosition(int p)
 {
+     
     int cnt=0;
     Node* res=LIST;
+    if(res==nullptr)
+        return nullptr;
     while(cnt<p)
     {
         if(res->next == nullptr)
@@ -76,12 +103,13 @@ Node* LinkedList::GetNodeAtPosition(int p)
         res = res->next;
         cnt++;
     }
-
+     
     return res;
 }
 
 bool LinkedList::DeleteNodeEnd()
 {
+     
     Node* last = LinkedList::GetNodeAtPosition(number_of_nodes);
 
     if(last == nullptr)
@@ -136,9 +164,40 @@ bool LinkedList::DeleteNodeWithPointer(void * ptr)
 }
 
 void* LinkedList::GetData(int p)
-{
+{ 
     Node*n = LinkedList::GetNodeAtPosition(p);
+     
     if(n == nullptr)
         return nullptr;
+     
     return n->data;
 }
+
+int LinkedList::GetDataInt(int p)
+{
+    void* ptr = LinkedList::GetData(p);
+    if(ptr == nullptr)
+        return INT_MIN;
+    return *(int*)ptr;
+}
+
+float LinkedList::GetDataFloat(int p)
+{
+     
+    void* ptr = LinkedList::GetData(p);
+    if(ptr == nullptr)
+        return -INFINITY;
+    return *(float*)ptr;
+}
+
+bool LinkedList::SetData(int p, void* ptr)
+{
+    Node* n = LinkedList::GetNodeAtPosition(p);
+    if(n == nullptr)
+        return false;
+    n->data = ptr;
+    return true;
+}
+
+int LinkedList::GetNumberOfNodes()
+{return number_of_nodes;}

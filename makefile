@@ -1,12 +1,12 @@
-LIST = main.o TimeHandler.o Entity.o CollisionHandler.o LinkedList.o
+SRC = ${wildcard *.cpp}
+LIST = ${patsubst %.cpp,%.o,${SRC}}
 EXECUTABLE = klein.exe
 
 default: $(LIST)
 	@g++ $(LIST) -o $(EXECUTABLE)
-	.\$(EXECUTABLE)
+	@.\$(EXECUTABLE)
 
 %.o: %.cpp %.h
-	@echo $@
 	@g++ -c $<
 
 clean: 

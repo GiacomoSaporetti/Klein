@@ -4,7 +4,8 @@
 namespace Klein
 {
     #define MAX_NUMBER_OF_ENTITIES 100
-     struct time_profile
+    
+    struct time_profile
     {
         struct timespec value;
         float delta = 0.0f;
@@ -12,7 +13,7 @@ namespace Klein
         float time = 0.0f;
     };
 
-     struct vector
+    struct vector
     {
         float x;
         float y;
@@ -39,7 +40,12 @@ namespace Klein
 
     struct Node 
     {
-        Node* next;
-        void* data;
+        Node* next = nullptr;
+        void* data = nullptr;
+    };
+
+    struct Triangle
+    {
+        vector a, b, c;
     };
 }

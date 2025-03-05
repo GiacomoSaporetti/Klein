@@ -1,6 +1,7 @@
 #pragma once
 #include <stdlib.h>
 #include "Klein.h"
+#include <iostream>
 
 namespace Klein
 {
@@ -13,12 +14,15 @@ namespace Klein
             LinkedList()
             {
                 LIST = nullptr;
-                //LIST->data = nullptr;
-                //LIST->next = nullptr;
+                /*LIST = new Node;
+                LIST->data = nullptr;
+                LIST->next = nullptr;*/
+                //std::cout << LIST << " " << LIST->data << " "<< LIST->next << " "<< std::endl;
                 number_of_nodes = 0;
             }
             ~LinkedList() = default;   
             Node* AddNodeEnd();
+            Node* AddNodeEnd(void* ptr);
             Node* AddNodeBeginning();
             Node* AddNodePosition(int p);
             Node* FindLastNode();
@@ -28,5 +32,10 @@ namespace Klein
             bool DeleteNodePosition(int p);
             bool DeleteNodeWithPointer(void* ptr);
             void* GetData(int p);
+            int GetDataInt(int p);
+            float GetDataFloat(int p);
+            bool SetData(int p, void* ptr);
+            int GetNumberOfNodes();
     };
+     
 }

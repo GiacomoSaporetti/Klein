@@ -41,3 +41,14 @@ void Entity::DeathState()
     if(time > death + 5.0f)
         delete this;
 }
+
+void Entity::SetPosition(vector pos){position = pos;}            
+            
+void Entity::SetSpeed(vector vel){speed = vel;}
+
+void Entity::SetMass(float m){mass = m;}
+
+void Entity::SetRadius(float r){radius = r;}
+
+float Entity::GetMass(){return mass;}
+float Entity::GetRadius(){return radius;}

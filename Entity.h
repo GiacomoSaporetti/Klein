@@ -15,10 +15,12 @@ namespace Klein
             float birth;
             float death;
             float mass;
+            float radius;
             int hp=50;
             Entity()
             {
-                mass = 0.0f;
+                radius = 2.0f;
+                mass = 1.0f;
                 speed.x = 0.0f;
                 speed.y = 1.0f;
                 position.x = 0.0f;
@@ -36,5 +38,11 @@ namespace Klein
             void DeathState();
             vector GetPosition();
             vector GetSpeed();
+            float GetMass();
+            float GetRadius();
+            void SetPosition(vector pos);
+            void SetSpeed(vector vel);
+            void SetMass(float m);
+            void SetRadius(float m);
     };
 }
