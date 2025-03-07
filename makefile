@@ -4,9 +4,10 @@ EXECUTABLE = klein.exe
 
 default: $(LIST)
 	@g++ $(LIST) -o $(EXECUTABLE)
-	@.\$(EXECUTABLE)
+	./$(EXECUTABLE)
 
 %.o: %.cpp %.h
+	@echo $@ 
 	@g++ -c $<
 
 clean: 

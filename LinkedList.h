@@ -17,7 +17,6 @@ namespace Klein
                 /*LIST = new Node;
                 LIST->data = nullptr;
                 LIST->next = nullptr;*/
-                //std::cout << LIST << " " << LIST->data << " "<< LIST->next << " "<< std::endl;
                 number_of_nodes = 0;
             }
             ~LinkedList() = default;   
@@ -36,6 +35,8 @@ namespace Klein
             float GetDataFloat(int p);
             bool SetData(int p, void* ptr);
             int GetNumberOfNodes();
+            void Clear();
+            void AppendList(LinkedList* append);
     };
      
 }

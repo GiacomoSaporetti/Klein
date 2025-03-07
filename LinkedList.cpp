@@ -1,4 +1,4 @@
-#include "LinkedList.h "
+#include "LinkedList.h"
 using namespace Klein;
 
 Node * LinkedList::FindLastNode()
@@ -71,6 +71,7 @@ Node* LinkedList::AddNodeBeginning()
     LIST = newer;
     LIST->next = previos_first;
     number_of_nodes ++;
+
     return newer;
 }
 
@@ -91,9 +92,12 @@ Node* LinkedList::AddNodePosition(int p)
 
 Node* LinkedList::GetNodeAtPosition(int p)
 {
-     
+    DEBUG_MSG("GetNodeAtPosition:", p);
     int cnt=0;
     Node* res=LIST;
+    
+    DEBUG_MSG("GetNodeAtPosition:LIST at", res);
+
     if(res==nullptr)
         return nullptr;
     while(cnt<p)
@@ -103,7 +107,7 @@ Node* LinkedList::GetNodeAtPosition(int p)
         res = res->next;
         cnt++;
     }
-     
+    DEBUG_MSG("GetNodeAtPosition:return value", res);
     return res;
 }
 
@@ -201,3 +205,43 @@ bool LinkedList::SetData(int p, void* ptr)
 
 int LinkedList::GetNumberOfNodes()
 {return number_of_nodes;}
+
+void LinkedList::Clear()
+{
+    for(int i=number_of_nodes-1; i>=0; i--)
+        delete GetNodeAtPosition(i); 
+    LIST = nullptr;
+    number_of_nodes = 0;
+}
+
+void LinkedList::AppendList(LinkedList* append)
+{
+    DEBUG_MSG("AppendList:", append);
+    if(append == nullptr) 
+        return;
+    Node* current_last_node = GetNodeAtPosition(number_of_nodes-1);
+
+    Node*first = GetNodeAtPosition(0);
+    DEBUG_MSG("AppendList:First node", first);
+    DEBUG_MSG("AppendList:Last node", current_last_node);
+
+    Node* first_node_to_append = append->GetNodeAtPosition(0);
+
+    DEBUG_MSG("AppendList:Node to append", first_node_to_append);
+
+    if(first_node_to_append == nullptr)
+        return;
+    DEBUG_MSG("AppendList:# of nodes", number_of_nodes);
+    
+    int nodes_to_append = append->number_of_nodes;
+
+    DEBUG_MSG("AppendList:# of new nodes", nodes_to_append);
+
+    if(current_last_node == nullptr)
+        LIST = first_node_to_append;
+    else
+        current_last_node->next = first_node_to_append;
+    number_of_nodes += nodes_to_append;
+
+    DEBUG_MSG("AppendList:# of nodes now" ,number_of_nodes); 
+}
