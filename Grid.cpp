@@ -1,9 +1,9 @@
 #include "Grid.h"
 using namespace Klein;
 
-void Grid::AddEntityToCell(Entity* e)
+void Grid::AddHitboxToCell(Hitbox* h)
 {
-    Point position = e->GetPosition();
+    Point position = h->GetPosition();
     int hor = int(position.x)/cell_width;
     int ver = int(position.y)/cell_width;
     int id = ConvertMatrixToId(hor, ver);
@@ -11,7 +11,7 @@ void Grid::AddEntityToCell(Entity* e)
     /*std::cout << "Added entity: " << e << " to cell " << id;
     std::cout << " (" << hor << ", " << ver << ")";
     std::cout << " -- " << position.x << ", "<< position.y <<std::endl;*/
-    cells_list[id].AddEntity(e);
+    cells_list[id].AddHitbox(h);
 }
 
 inline int Grid::ConvertMatrixToId(int x , int y)
@@ -23,20 +23,17 @@ inline int Grid::ConvertMatrixToId(int x , int y)
     return  x + y*horizontal_cells;
 }
 
-void Cell::AddEntity(Entity* e)
-{entities_list->AddNodeEnd(e);
-e->cell_id = id;}
+void Cell::AddHitbox(Hitbox* h)
+{hitboxes_list->AddNodeEnd(h); h->cell_id=id;}
 
 void Cell::SetId(int i)
 {id = i;}
 
 void Cell::Clear()
-{
-    entities_list->Clear();
-}
+{hitboxes_list->Clear();}
 
 LinkedList* Cell::GetList()
-{return entities_list;}
+{return hitboxes_list;}
 
 LinkedList* Grid::GetListOfCell(int x, int y)
 {

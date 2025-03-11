@@ -13,6 +13,9 @@ Point Entity::GetPosition()
 vector Entity::GetSpeed()
 {return speed;}
 
+LinkedList* Entity::GetHitboxes()
+{return hitboxes;}
+
 void Entity::Run()
 {
     if(hp<=0)
@@ -42,18 +45,18 @@ void Entity::DeathState()
         delete this;
 }
 
-void Entity::SetPosition(Point pos){position = pos; hitbox.center = pos;}            
+void Entity::SetPosition(Point pos){position = pos;}            
             
 void Entity::SetSpeed(vector vel){speed = vel;}
 
 void Entity::SetMass(float m){mass = m;}
 
-void Entity::SetRadius(float r){hitbox.SetRadius(r);}
+/*void Entity::SetRadius(float r){hitbox.SetRadius(r);}
 void Entity::SetWidth(int w){hitbox.SetWidth(w);}
-void Entity::SetHeight(int h){hitbox.SetHeight(h);}
+void Entity::SetHeight(int h){hitbox.SetHeight(h);}*/
 
 float Entity::GetMass(){return mass;}
-float Entity::GetRadius(){return hitbox.radius;}
+//float Entity::GetRadius(){return hitbox.radius;}
 
 void Entity::ClearCollided()
 {
@@ -70,21 +73,40 @@ void Entity::AddCollided(Entity*e)
 bool Entity::HasAlreadyCollided(Entity*e)
 {
     DEBUG_MSG("HasAlreadyCollided: ", e);
-    int cnt=0;
-    Entity*temp;
-    while((temp = (Entity*)recently_collided->GetData(cnt++))!= nullptr)
+    Entity* temp;
+    Node* n = recently_collided->GetNodeAtPosition(0);
+    while(n != nullptr)
     {
+        temp = (Entity*)n->data;
         if(temp == e)
             return true;
+        n = n->next;
     }
     return false;
 }
 
-int Entity::Top()
+void Entity::AddHitbox(HITBOX_TYPE TYPE, Point* CENTER, float RADIUS, int WIDTH, int HEIGHT)
+{
+    number_of_hitboxes++;
+    Hitbox* hb = new Hitbox(this, TYPE, CENTER, RADIUS, WIDTH, HEIGHT);
+    hitboxes->AddNodeEnd(hb);
+}
+
+void Entity::SetFaction(int f)
+{
+    faction = f;
+    for(int i=0; i<number_of_hitboxes; i++)
+    {
+        Hitbox* hb = (Hitbox*) hitboxes->GetData(i);
+        hb->faction = f;
+    }    
+}
+
+/*int Entity::Top()
 {return hitbox.Top();}
 int Entity::Bottom()
 {return hitbox.Bottom();}
 int Entity::Left()
 {return hitbox.Left();}
 int Entity::Right()
-{return hitbox.Right();}
+{return hitbox.Right();}*/

@@ -2,6 +2,7 @@
 
 #include "Klein.h"
 #include "Entity.h"
+#include "Hitbox.h"
 #include "LinkedList.h"
 
 namespace Klein
@@ -10,17 +11,17 @@ namespace Klein
     {
         private:
             int id;
-            LinkedList* entities_list;
+            LinkedList* hitboxes_list;
         public:
             //static int cell_width;
             //static int number_of_cells;
             Cell(int i)
             {
                 id = i;
-                entities_list = new LinkedList;
+                hitboxes_list = new LinkedList;
             }
             ~Cell() = default;  
-            void AddEntity(Entity* e);
+            void AddHitbox(Hitbox* h);
             void Clear();
             void SetId(int i);
             LinkedList* GetList();
@@ -56,7 +57,7 @@ namespace Klein
                 //int Cell::cell_width = cell_width
             }
             ~Grid() = default;   
-            void AddEntityToCell(Entity* e);
+            void AddHitboxToCell(Hitbox* h);
             inline int ConvertMatrixToId(int n , int m);
             LinkedList* GetListOfCell(int x, int y);
             LinkedList* GetListOfCell(int id);

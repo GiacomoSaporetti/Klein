@@ -7,7 +7,21 @@ std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
 std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
 
 //#define PRINT_COLLISION
-//#define FACTIONS
+//#define MEASURE_TIME
+#define FACTIONS
+
+#ifdef MEASURE_TIME
+#define BEGIN_TIME begin = std::chrono::steady_clock::now();
+#define END_TIME end = std::chrono::steady_clock::now();
+#define PRINT_TIME(name)  std::cout << "Time: " << name << " "<< std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << std::endl;
+#define GET_TIME std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()
+#else
+#define BEGIN_TIME 
+#define END_TIME 
+#define PRINT_TIME(name)  
+#define GET_TIME 
+#endif
+
 #ifdef PRINT_COLLISION
 #define PRINT_COLLISION_LIST PrintCollisionList();
 #else
@@ -15,74 +29,80 @@ std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
 #endif
 using namespace Klein;
 
-bool CheckDistance(Entity* e1, Entity* e2);
+bool CheckDistanceWithinRadius(Hitbox* h1, Hitbox* h2);
+void CountCollisionThread(LinkedList* list, int* res);
+bool CheckCollision(Hitbox* h1, Hitbox* h2);
+int CountCollision(LinkedList* list);
+void PopulateCells(Grid* grid, LinkedList*list, int start, int stop);
+void CountGridMultithread(Grid* grid, int start_x, int stop_x, int start_y, int stop_y, int* res);
 
-int CollisionHandler::Run()
+void CollisionHandler::PopulateHitboxesList()
 {
-    int res = CountCollision(ENTITIES_LIST);
-    PrintCollisionList();
+    DEBUG_MSG("PopulateHitboxesList:", "START")
+    HITBOXES_LIST->Clear();
+    Entity* e;
+    Node* n = ENTITIES_LIST->GetNodeAtPosition(0);
+
+    while(n != nullptr)
+    {
+        e = (Entity*) n->data;
+        HITBOXES_LIST->AppendList(e->GetHitboxes());
+        n = n->next;
+    }
+
+    /*while((e = (Entity*)ENTITIES_LIST->GetData(cnt++)) != nullptr)
+    {
+        HITBOXES_LIST->AppendList(e->GetHitboxes());
+    }*/
+}
+
+
+int CollisionHandler::RunNaive()
+{
+    DEBUG_MSG("RunNaive:", "START")
+    PopulateHitboxesList();
+    int res = CountCollision(HITBOXES_LIST);
+    PRINT_COLLISION_LIST;
     ClearEntitiesCollisionList();
     return res;
 }
 
-int CollisionHandler::RunOptimized()
+
+int CollisionHandler::RunQuadrantOptimization()
 {
-    //Split in 2 [0, 50] and [50, 100]
+    DEBUG_MSG("RunQuadrantOptimization:", "START")
+    PopulateHitboxesList();
     int number_of_collisions = 0;
-    Entity* e;
-    int active_cnt = 0;
-    LinkedList* List1 = new LinkedList;
-    LinkedList* List2 = new LinkedList;
-    LinkedList* List3 = new LinkedList;
+    int number_of_hitboxes = HITBOXES_LIST->GetNumberOfNodes();
+    Hitbox* h;
 
-    while((e = (Entity*)ENTITIES_LIST->GetData(active_cnt)) != nullptr)
-    {
-        active_cnt++;
-        float radius = e->GetRadius();
-        Point center = e->GetPosition();
-
-        if(center.x + radius > 50)
-            List1->AddNodeEnd(e);
-        if(center.x - radius < 50)    
-            List2->AddNodeEnd(e);
-    }
-
-    number_of_collisions += CountCollision(List1);
-    number_of_collisions += CountCollision(List2);
-
-    PRINT_COLLISION_LIST
-    ClearEntitiesCollisionList();
-    return number_of_collisions;
-}
-
-int CollisionHandler::RunOptimized2()
-{
-    int number_of_collisions = 0;
-    Entity* e;
-    int active_cnt = 0;
     LinkedList* NE = new LinkedList;
     LinkedList* NO = new LinkedList;
     LinkedList* SE = new LinkedList;
     LinkedList* SO = new LinkedList;
 
     Point weigth_position = {0,0};
-    while((e = (Entity*)ENTITIES_LIST->GetData(active_cnt)) != nullptr)
+
+    Node* n = HITBOXES_LIST->GetNodeAtPosition(0);
+
+    while(n != nullptr)
     {
-        Point pos = e->GetPosition();
+        h = (Hitbox*) n->data;
+        Point pos = h->GetPosition();
         weigth_position.x += pos.x;
         weigth_position.y += pos.y;
-        active_cnt++;
+        n = n->next;
     }
-    weigth_position.x = weigth_position.x/active_cnt;
-    weigth_position.y = weigth_position.y/active_cnt;
-    //weigth_position.x = 50;
-    //weigth_position.y = 50;
+    weigth_position.x = weigth_position.x/number_of_hitboxes;
+    weigth_position.y = weigth_position.y/number_of_hitboxes;
+  
+    n = HITBOXES_LIST->GetNodeAtPosition(0);
     
-    active_cnt = 0;
-    while((e = (Entity*)ENTITIES_LIST->GetData(active_cnt++)) != nullptr)
+    while(n != nullptr)
     {
-        float radius = e->GetRadius();
-        Point center = e->GetPosition();
+        h = (Hitbox*) n->data;
+        float radius = h->GetRadius();
+        Point center = h->GetPosition();
         bool N=false;
         bool E=false;
         bool S=false;
@@ -97,240 +117,164 @@ int CollisionHandler::RunOptimized2()
         if(center.y - radius < weigth_position.y)    
             S = true;
 
-        if(N && O)  NO->AddNodeEnd(e);
-        if(N && E)  NE->AddNodeEnd(e);
-        if(S && O)  SO->AddNodeEnd(e);
-        if(S && E)  SE->AddNodeEnd(e);
+        if(N && O)  NO->AddNodeEnd(h);
+        if(N && E)  NE->AddNodeEnd(h);
+        if(S && O)  SO->AddNodeEnd(h);
+        if(S && E)  SE->AddNodeEnd(h);
+        n = n->next;
+    }
+    
+
+    int nne=0, nno=0, nse=0, nso=0;
+
+    if(MAX_NUMBER_THREADS >= 4)
+    {
+        THREADS[0] = std::thread(CountCollisionThread, NE, &nne);
+        THREADS[1] = std::thread(CountCollisionThread, NO, &nno);
+        THREADS[2] = std::thread(CountCollisionThread, SE, &nse);
+        THREADS[3] = std::thread(CountCollisionThread, SO, &nso);
+
+        THREADS[0].join();
+        THREADS[1].join();
+        THREADS[2].join();
+        THREADS[3].join();
+    }
+    if(MAX_NUMBER_THREADS == 2)
+    {
+        THREADS[0] = std::thread(CountCollisionThread, NE, &nne);
+        THREADS[1] = std::thread(CountCollisionThread, NO, &nno);
+        THREADS[0].join();
+        THREADS[1].join();
+        THREADS[0] = std::thread(CountCollisionThread, SE, &nse);
+        THREADS[1] = std::thread(CountCollisionThread, SO, &nso);
+        THREADS[0].join();
+        THREADS[1].join();
+    }
+    if(MAX_NUMBER_THREADS == 1)
+    {
+        nne = CountCollision(NE);
+        nno = CountCollision(NO);
+        nse = CountCollision(SE);
+        nso = CountCollision(SO);
     }
 
-    
-    number_of_collisions += CountCollision(NE);
-    number_of_collisions += CountCollision(NO);
-    number_of_collisions += CountCollision(SE);
-    number_of_collisions += CountCollision(SO);
-    
+    number_of_collisions = nne + nno + nse + nso;
 
     PRINT_COLLISION_LIST
     ClearEntitiesCollisionList();
     return number_of_collisions;
 }
 
-int CollisionHandler::RunOptimized3()
+void PopulateCells(Grid* grid, LinkedList*list, int start, int stop)
 {
-    int number_of_collisions = 0;
-    Entity* ent;
-    int active_cnt = 0;
-    LinkedList* A = new LinkedList;
-    LinkedList* B = new LinkedList;
-    LinkedList* C = new LinkedList;
-    LinkedList* D = new LinkedList;
-    LinkedList* E = new LinkedList;
-    LinkedList* F = new LinkedList;
+    Hitbox* h;
+    Node* current_node = list->GetNodeAtPosition(start);
 
-    Point c1 = {0,0};
-    Point c2 = {0,0};
-    Point weight_position = {0,0};
-
-    while((ent = (Entity*)ENTITIES_LIST->GetData(active_cnt)) != nullptr)
+    for(int i=start; i<stop; i++)
     {
-        Point pos = ent->GetPosition();
-        weight_position.x += pos.x;
-        weight_position.y += pos.y;
-        active_cnt++;
+        h = (Hitbox*)current_node->data;
+        if(h != nullptr)
+            grid->AddHitboxToCell(h);
+        current_node = current_node->next;
+        if(current_node == nullptr)
+            break;
     }
-    weight_position.x = weight_position.x/active_cnt;
-    weight_position.y = weight_position.y/active_cnt; 
-
-    c1.y = weight_position.y;
-    c2.y = weight_position.y;
-    c1.x = weight_position.x/2;
-    c2.x = (100+weight_position.x)/2;
-   
-    /*c1.y = 50;
-    c2.y = 50;
-    c1.x = 33;
-    c2.x = 66;*/
-    //weigth_position.x = 50;
-    //weigth_position.y = 50;
-    
-    active_cnt = 0;
-    while((ent = (Entity*)ENTITIES_LIST->GetData(active_cnt)) != nullptr)
-    {
-        active_cnt++;
-        float radius = ent->GetRadius();
-        Point center = ent->GetPosition();
-
-        bool v1=false, v2=false, h=false;
-        bool a=true, b=true, c=true, d=true, e=true, f=true;
-
-        
-        if(center.x + radius < c2.x){c=false; f=false;}
-        if(center.x + radius < c1.x){b=false; e=false;}
-        if(center.x - radius > c1.x){a=false; d=false;}
-        if(center.x - radius > c2.x){b=false; e=false;}
-
-        if(center.y + radius < c1.y){a=false; b=false; c=false;}
-        if(center.y - radius > c1.y){d=false; e=false; f=false;}
-        
-        h=(a && d)||(b && e)||(c && f);
-        v1 = (a && b)||(d && e);
-        v2 = (c && b)||(f && e);
-
-        if(a)  A->AddNodeEnd(ent);
-        if(b)  B->AddNodeEnd(ent);
-        if(c)  C->AddNodeEnd(ent);
-        if(d)  D->AddNodeEnd(ent);
-        if(e)  E->AddNodeEnd(ent);
-        if(f)  F->AddNodeEnd(ent);
-    }
-
-    number_of_collisions += CountCollision(A);
-    number_of_collisions += CountCollision(B);
-    number_of_collisions += CountCollision(C);
-    number_of_collisions += CountCollision(D);
-    number_of_collisions += CountCollision(E);
-    number_of_collisions += CountCollision(F);
-    
-    PRINT_COLLISION_LIST
-    ClearEntitiesCollisionList();
-    return number_of_collisions;
 }
 
-int CollisionHandler::RunOptimized4()
+
+void CountGridMultithread(Grid* grid, int start_x, int stop_x, int start_y, int stop_y, int* res)
 {
     int number_of_collisions = 0;
-    Entity* ent;
-    int active_cnt = 0;
-    LinkedList* A = new LinkedList;
-    LinkedList* B = new LinkedList;
-    LinkedList* C = new LinkedList;
-    LinkedList* D = new LinkedList;
-    LinkedList* E = new LinkedList;
-    LinkedList* F = new LinkedList;
-    LinkedList* G = new LinkedList;
-    LinkedList* H = new LinkedList;
-    LinkedList* I = new LinkedList;
-    /*LinkedList* V1 = new LinkedList;
-    LinkedList* V2 = new LinkedList;
-    LinkedList* H1 = new LinkedList;
-    LinkedList* H2 = new LinkedList;
-    LinkedList* C1 = new LinkedList;
-    LinkedList* C2 = new LinkedList;
-    LinkedList* C3 = new LinkedList;
-    LinkedList* C4 = new LinkedList;*/
-    Point c1 = {0,0};
-    Point c2 = {0,0};
-    Point c3 = {0,0};
-    Point c4 = {0,0};
-    Point weight_position = {0,0};
-
-    while((ent = (Entity*)ENTITIES_LIST->GetData(active_cnt)) != nullptr)
+    for(int x=start_x; x<=stop_x; x+=2)
     {
-        Point pos = ent->GetPosition();
-        weight_position.x += pos.x;
-        weight_position.y += pos.y;
-        active_cnt++;
-    }
-    weight_position.x = weight_position.x/active_cnt;
-    weight_position.y = weight_position.y/active_cnt; 
-
-    int h1 = weight_position.y/2;
-    int h2 = (100+weight_position.y)/2;
-    int v1 = weight_position.x/2;
-    int v2 = (100+weight_position.x)/2;
-
-    c1.y = h2;
-    c1.x = v1;
-
-    c2.y = h2;
-    c2.x = v2;
-    
-    c3.y = h1;
-    c3.x = v1;
-
-    c4.y = h1;
-    c4.x = v2;
-   
-    active_cnt = 0;
-    while((ent = (Entity*)ENTITIES_LIST->GetData(active_cnt)) != nullptr)
-    {
-        active_cnt++;
-        int radius = ent->GetRadius();
-        Point center = ent->GetPosition();
-
-        //bool v1=false, v2=false, h1=false, h2=false;
-        bool a=true, b=true, c=true, d=true, e=true, f=true, g=true, h=true, i=true;
-        
-        if(center.x + radius < v2){c=false; f=false; i=false;}
-        if(center.x + radius < v1){b=false; e=false; h=false;}
-        if(center.x - radius > v1){a=false; d=false; g=false;}
-        if(center.x - radius > v2){b=false; e=false; h=false;}
-
-        if(center.y + radius < h2){a=false; b=false; c=false;}
-        if(center.y + radius < h1){d=false; e=false; f=false;}
-        if(center.y - radius > h1){g=false; h=false; i=false;}
-        if(center.y - radius > h2){d=false; e=false; f=false;}
-        
-        /*bool h1_flag = (d && g)||(e && h)||(i && f);
-        bool h2_flag = (d && a)||(e && b)||(c && f);
-        bool v1_flag = (a && b)||(d && e)||(g && h);
-        bool v2_flag = (c && b)||(f && e)||(i && h);*/
-
-        if(a)  A->AddNodeEnd(ent);
-        if(b)  B->AddNodeEnd(ent);
-        if(c)  C->AddNodeEnd(ent);
-        if(d)  D->AddNodeEnd(ent);
-        if(e)  E->AddNodeEnd(ent);
-        if(f)  F->AddNodeEnd(ent);
-        if(g)  G->AddNodeEnd(ent);
-        if(h)  H->AddNodeEnd(ent);
-        if(i)  I->AddNodeEnd(ent);
-        /*if(v1_flag) V1->AddNodeEnd(ent);
-        if(v2_flag) V2->AddNodeEnd(ent);
-        if(h1_flag) H1->AddNodeEnd(ent);
-        if(h2_flag) H2->AddNodeEnd(ent);
-        if(h1_flag && v1_flag) C3->AddNodeEnd(ent);
-        if(h1_flag && v2_flag) C4->AddNodeEnd(ent);
-        if(h2_flag && v1_flag) C1->AddNodeEnd(ent);
-        if(h2_flag && v2_flag) C2->AddNodeEnd(ent);*/
-
+        for(int y=start_y; y<=stop_y; y+=2)
+        {
+            LinkedList* CheckList = new LinkedList;
+            CheckList->AppendList(grid->GetListOfCell(x-1, y-1));
+            CheckList->AppendList(grid->GetListOfCell(x-1, y));
+            CheckList->AppendList(grid->GetListOfCell(x-1, y+1));
+            CheckList->AppendList(grid->GetListOfCell(x, y-1));
+            CheckList->AppendList(grid->GetListOfCell(x, y));
+            CheckList->AppendList(grid->GetListOfCell(x, y+1));
+            CheckList->AppendList(grid->GetListOfCell(x+1, y-1));
+            CheckList->AppendList(grid->GetListOfCell(x+1, y));
+            CheckList->AppendList(grid->GetListOfCell(x+1, y+1));
+            
+            number_of_collisions += CountCollision(CheckList);
+           
+            delete CheckList;
+        }
     }
 
-    number_of_collisions += CountCollision(A);
-    number_of_collisions += CountCollision(B);
-    number_of_collisions += CountCollision(C);
-    number_of_collisions += CountCollision(D);
-    number_of_collisions += CountCollision(E);
-    number_of_collisions += CountCollision(F);
-    number_of_collisions += CountCollision(G);
-    number_of_collisions += CountCollision(H);
-    number_of_collisions += CountCollision(I);
-    /*number_of_collisions -= CountCollision(V1);
-    number_of_collisions -= CountCollision(V2);
-    number_of_collisions -= CountCollision(H1);
-    number_of_collisions -= CountCollision(H2);
-    number_of_collisions -= CountCollision(C1);
-    number_of_collisions -= CountCollision(C2);
-    number_of_collisions -= CountCollision(C3);
-    number_of_collisions -= CountCollision(C4);*/
-    
-    PRINT_COLLISION_LIST
-    ClearEntitiesCollisionList();
-    return number_of_collisions;
+    *res = number_of_collisions;
 }
 
-int CollisionHandler::RunOptimized5()
+
+int CollisionHandler::RunGridOptimization()
 {
+    DEBUG_MSG("RunGridOptimization:", "START")
+    PopulateHitboxesList();
+
     int number_of_collisions = 0;
-    Entity* ent;
+
+    Hitbox* h;
     int active_cnt = 0;
- 
-    while((ent = (Entity*)ENTITIES_LIST->GetData(active_cnt++)) != nullptr)
+    Node*n = HITBOXES_LIST->GetNodeAtPosition(0);
+
+    while(n != nullptr)
     {
-        GRID->AddEntityToCell(ent);
+        h = (Hitbox*) n->data;
+        if(h != nullptr)
+            GRID->AddHitboxToCell(h);
+        n = n->next;
     }
 
-    for(int x=1; x<=GRID->horizontal_cells; x+=2)
+    /*while((h = (Hitbox*)HITBOXES_LIST->GetData(active_cnt++)) != nullptr)
+    {
+        GRID->AddHitboxToCell(h);
+    }*/
+    
+    
+    /*int total = HITBOXES_LIST->GetNumberOfNodes();
+    int block = total/MAX_NUMBER_THREADS;
+    for(int th=0; th<MAX_NUMBER_THREADS; th++)
+    {
+        int start = th*block;
+        int stop = start + block;
+        if(stop > total - 1)
+            stop = total - 1;
+        THREADS[th] = std::thread(PopulateCells, GRID, HITBOXES_LIST, start, stop);
+    }
+    for(int th=0; th<MAX_NUMBER_THREADS; th++)
+    {
+        THREADS[th].join();
+    }*/
+
+    int h3 = GRID->horizontal_cells/3;
+    int v3 = GRID->vertical_cells/3;
+    int total_partitions = GRID->horizontal_cells*GRID->vertical_cells;
+    int partition_per_thread = total_partitions/MAX_NUMBER_THREADS;
+
+
+    int* res = (int*)std::malloc(MAX_NUMBER_THREADS*sizeof(int));
+
+    int block = GRID->horizontal_cells/MAX_NUMBER_THREADS + 1;
+
+    for(int th=0; th<MAX_NUMBER_THREADS; th++)
+    {
+        int start = th*block + 1;
+        int stop = start + block;
+        THREADS[th] = std::thread(CountGridMultithread, GRID, start, stop, 1, GRID->vertical_cells, res+th);
+    }
+
+    for(int th=0; th<MAX_NUMBER_THREADS; th++)
+    {
+        THREADS[th].join();
+        number_of_collisions += res[th];
+    }
+    
+
+    /*for(int x=1; x<=GRID->horizontal_cells; x+=2)
     {
         for(int y=1; y<=GRID->vertical_cells; y+=2)
         {
@@ -345,217 +289,184 @@ int CollisionHandler::RunOptimized5()
             CheckList->AppendList(GRID->GetListOfCell(x+1, y));
             CheckList->AppendList(GRID->GetListOfCell(x+1, y+1));
             
-            //begin = std::chrono::steady_clock::now();
             number_of_collisions += CountCollision(CheckList);
-            //end = std::chrono::steady_clock::now();
-
-            //std::cout << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << std::endl;
+           
             delete CheckList;
         }
-    }
+    }*/
+
 
     for(int i=0; i<GRID->number_of_cells; i++)
         GRID->ClearCell(i);
     
     PRINT_COLLISION_LIST
     ClearEntitiesCollisionList();
+
     return number_of_collisions;  
 }
 
-int CollisionHandler::RunOptimized6(int depth)
-{
-    int number_of_collisions = SubProcessForOptimization6(depth-1, ENTITIES_LIST);
-    PRINT_COLLISION_LIST
-    ClearEntitiesCollisionList();
-    return number_of_collisions;
-}
 
-int CollisionHandler::SubProcessForOptimization6(int depth, LinkedList*list)
+bool CheckCollision(Hitbox* h1, Hitbox* h2)
 {
-    if(depth<=0)
-        return CountCollision(list);
-    int number_of_collisions = 0;
-    Entity* e;
-    int active_cnt = 0;
-    LinkedList* NE = new LinkedList;
-    LinkedList* NO = new LinkedList;
-    LinkedList* SE = new LinkedList;
-    LinkedList* SO = new LinkedList;
     
-    Point weigth_position = {0,0};
-    while((e = (Entity*)list->GetData(active_cnt)) != nullptr)
-    {
-        Point pos = e->GetPosition();
-        weigth_position.x += pos.x;
-        weigth_position.y += pos.y;
-        active_cnt++;
-    }
-    weigth_position.x = weigth_position.x/active_cnt;
-    weigth_position.y = weigth_position.y/active_cnt;
+    DEBUG_MSG("CheckCollision:", "START")
     
-    active_cnt = 0;
-    while((e = (Entity*)ENTITIES_LIST->GetData(active_cnt++)) != nullptr)
-    {
-        float radius = e->GetRadius();
-        Point center = e->GetPosition();
-        bool N=false;
-        bool E=false;
-        bool S=false;
-        bool O=false;
-        
-        if(center.x + radius >= weigth_position.x) E = true;    
-        if(center.x - radius < weigth_position.x)  O = true;
-        if(center.y + radius >= weigth_position.y) N = true;    
-        if(center.y - radius < weigth_position.y)  S = true;
-
-        if(N && O)  NO->AddNodeEnd(e);
-        if(N && E)  NE->AddNodeEnd(e);
-        if(S && O)  SO->AddNodeEnd(e);
-        if(S && E)  SE->AddNodeEnd(e);
-    }
-
-    number_of_collisions += SubProcessForOptimization6(depth-1, NE);
-    number_of_collisions += SubProcessForOptimization6(depth-1, NO);
-    number_of_collisions += SubProcessForOptimization6(depth-1, SE); 
-    number_of_collisions += SubProcessForOptimization6(depth-1, SO); 
-
-    return number_of_collisions;
-}
-
-void CollisionHandler::AddToCheckList(LinkedList* sublist, LinkedList* CheckList)
-{
-}
-
-bool CollisionHandler::CheckCollision(Entity* e1, Entity* e2)
-{
-     if(e1->HasAlreadyCollided(e2))
+    Entity*e1 = (Entity*) h1->GetParentEntity();
+    Entity*e2 = (Entity*) h2->GetParentEntity();
+    
+    if(e1 == e2)
         return false;
-
-    int type1 = e1->hitbox.type;
-    int type2 = e2->hitbox.type;
+ 
+    if(e1->HasAlreadyCollided(e2))
+        return false;
+    
+    int type1 = h1->type;
+    int type2 = h2->type;
     
     /*Both are circles*/
     if(type1 == CIRCLE && type2 == CIRCLE)
-        return CheckDistance(e1, e2);
+        return CheckDistanceWithinRadius(h1, h2);
 
     /*Check the boundaries, if no match they do NOT collide
     either if they are 2 rectangles or 1 circle and 1 rectangle*/
-    if(e1->Top()<e2->Bottom())
+    if(h1->GetTop() < h2->GetBottom())
         return false;
-    if(e2->Top()<e1->Bottom())
+    if(h2->GetTop() < h1->GetBottom())
         return false;
-    if(e1->Right()<e2->Left())
+    if(h1->GetRight() < h2->GetLeft())
         return false;
-    if(e2->Right()<e1->Left())
-        return false;
-        
+    if(h2->GetRight() < h1->GetLeft())
+        return false;   
+    
     /*If they are different shapes che the distance between center*/
     if(type1 != type2)
-        return CheckDistance(e1, e2);
+        return CheckDistanceWithinRadius(h1, h2);
     
     return true;
-    
 }
 
-bool CheckDistance(Entity* e1, Entity* e2)
+bool CheckDistanceWithinRadius(Hitbox* h1, Hitbox* h2)
 {
-    //std::cout << "CheckDistance: " << e1 << " " << e2 << std::endl;
+    DEBUG_MSG("CheckDistanceWithinRadius:", "START")
+    //std::cout << "CheckDistanceWithinRadius: " << e1 << " " << e2 << std::endl;
 
-    Point p1 = e1->GetPosition();
-    Point p2 = e2->GetPosition();
+    Point p1 = h1->GetPosition();
+    Point p2 = h2->GetPosition();
     vector distance={float(p1.x - p2.x), float(p1.y - p2.y)};
 
-    //std::cout << "CheckDistance: distance " << distance.x << " " << distance.y << " " << distance.Magnitude()<< std::endl;
+    //std::cout << "CheckDistanceWithinRadius: distance " << distance.x << " " << distance.y << " " << distance.Magnitude()<< std::endl;
 
-    if(distance.Magnitude() < (e1->GetRadius() + e2->GetRadius()))
+    if(distance.Magnitude() < (h1->GetRadius() + h2->GetRadius()))
             {
-                //std::cout << "CheckDistance: total radius" << e1->GetRadius() + e2->GetRadius() << std::endl;
+                //std::cout << "CheckDistanceWithinRadius: total radius" << e1->GetRadius() + e2->GetRadius() << std::endl;
                 return true;
             }
 
     return false;
 }
 
-int CollisionHandler::CountCollision(LinkedList* list)
+void CountCollisionThread(LinkedList* list, int* res)
 {
+    DEBUG_MSG("CountCollision(single):", "START")
     int number_of_collisions = 0;
     Entity* active_entity;
     Entity* check_entity;
+    Hitbox* active_hitbox;
+    Hitbox* check_hitbox;
     int active_cnt = 0;
     int check_cnt = 0;
     
-    //t1 = std::chrono::steady_clock::now();
-    while((active_entity = (Entity*)list->GetData(active_cnt++)) != nullptr)
+    Node* active_node = list->GetNodeAtPosition(0);
+    Node* check_node;
+
+    while(active_node !=  nullptr)
     {
-        #ifdef FACTIONS
-            int active_faction = active_entity->faction;
-        #endif
-        check_cnt = active_cnt;
-        while((check_entity = (Entity*)list->GetData(check_cnt++)) != nullptr)
+        //std::cout << "---------------" << std::endl;
+        //std::cout << "active node at: " << active_node << " data: " << active_node->data << " next: " << active_node->next << std::endl;
+        active_hitbox = (Hitbox*) active_node->data;
+        //std::cout << "active hitbox at: " << active_hitbox << std::endl;
+        active_entity = (Entity*) active_hitbox->GetParentEntity();
+        //std::cout << "active entity at: " << active_entity << std::endl;
+        int active_faction = active_hitbox->faction;
+        //std::cout << "active faction: " << active_faction << std::endl;
+        check_node = active_node;
+        //std::cout << "_" << std::endl;
+        while((check_node = check_node->next)!= nullptr)
         {
-            #ifdef FACTIONS
-                if(active_faction == check_entity->faction)
-                    continue;
-            #endif
-            
-            if(CheckCollision(active_entity, check_entity))
+            //std::cout << "check node at: " << check_node << " data: " << check_node->data << " next: " << check_node->next << std::endl;
+            check_hitbox = (Hitbox*) check_node->data;
+            //std::cout << "check hitbox at: " << check_hitbox << std::endl;
+            int check_faction = check_hitbox->faction;
+            //std::cout << "check faction: " << check_faction << std::endl;
+            if(active_faction == check_faction)
+                    continue;       
+            //std::cout << "Different factions" << std::endl;
+            if(CheckCollision(active_hitbox, check_hitbox))
                 {
                     #ifdef PRINT_COLLISION
-                        EntitiesCouple* couple = new EntitiesCouple;
-                        couple->first = active_entity;
-                        couple->second = check_entity;
+                        CollisionCouple* couple = new CollisionCouple;
+                        couple->first = active_hitbox;
+                        couple->second = check_hitbox;
                         COLLISION_LIST->AddNodeEnd(couple);
                     #endif
-                    
+                    check_entity = (Entity*) check_hitbox->GetParentEntity();
                     active_entity->AddCollided(check_entity);
                     check_entity->AddCollided(active_entity);
                     number_of_collisions++;
                 }
         }
+        active_node = active_node->next;
     }
     
-    //t2 = std::chrono::steady_clock::now(); 
-    //    std::cout << "check"<<std::chrono::duration_cast<std::chrono::microseconds>(t2-t1).count() << std::endl;
-   
-    return number_of_collisions;
+    *res =  number_of_collisions;
 }
 
 
-int CollisionHandler::CountCollision(LinkedList* active, LinkedList* passive)
+int CountCollision(LinkedList* list)
 {
+    DEBUG_MSG("CountCollision(single):", "START")
     int number_of_collisions = 0;
     Entity* active_entity;
     Entity* check_entity;
+    Hitbox* active_hitbox;
+    Hitbox* check_hitbox;
     int active_cnt = 0;
     int check_cnt = 0;
+    
+    Node* active_node = list->GetNodeAtPosition(0);
+    Node* check_node;
 
-    while((active_entity = (Entity*)active->GetData(active_cnt++)) != nullptr)
+    while(active_node !=  nullptr)
     {
-        int active_faction = active_entity->faction;
-        check_cnt = 0;
-        while((check_entity = (Entity*)passive->GetData(check_cnt++)) != nullptr)
+        active_hitbox = (Hitbox*) active_node->data;
+        active_entity = (Entity*) active_hitbox->GetParentEntity();
+        int active_faction = active_hitbox->faction;
+        check_node = active_node;
+        
+        while((check_node = check_node->next)!= nullptr)
         {
-            #ifdef FACTIONS
-                if(active_faction == check_entity->faction)
-                    continue;
-            #endif
-            #ifdef PRINT_COLLISION
-                std::cout << active_entity << " " << check_entity<< " ";
-                std::cout << active_entity->position.x << " " << active_entity->position.y<< " ";
-                std::cout << active_entity->GetRadius()<< " ";
-                std::cout << check_entity->position.x << " " << check_entity->position.y<< " ";
-                std::cout << check_entity->GetRadius()<< " ";
-                std::cout << "| " <<  active_entity->cell_id << " " << check_entity->cell_id<< " ";
-                std::cout <<std::endl;
-            #endif
-            if(CheckCollision(active_entity, check_entity))
+            
+            check_hitbox = (Hitbox*) check_node->data;
+            int check_faction = check_hitbox->faction;
+            if(active_faction == check_faction)
+                    continue;    
+           
+            if(CheckCollision(active_hitbox, check_hitbox))
                 {
                     #ifdef PRINT_COLLISION
-                        std::cout << "OK" << std::endl;
+                        CollisionCouple* couple = new CollisionCouple;
+                        couple->first = active_hitbox;
+                        couple->second = check_hitbox;
+                        COLLISION_LIST->AddNodeEnd(couple);
                     #endif
+                    check_entity = (Entity*) check_hitbox->GetParentEntity();
+                    active_entity->AddCollided(check_entity);
+                    check_entity->AddCollided(active_entity);
                     number_of_collisions++;
-                }
+                }  
         }
+
+        active_node = active_node->next;
     }
 
     return number_of_collisions;
@@ -563,30 +474,38 @@ int CollisionHandler::CountCollision(LinkedList* active, LinkedList* passive)
 
 void CollisionHandler::ClearEntitiesCollisionList()
 {
-    Entity*ent;
+    DEBUG_MSG("ClearEntitiesCollisionList:", "START")
+    Node* n = ENTITIES_LIST->GetNodeAtPosition(0);
+    Entity* ent;
     int cnt=0;
-    while((ent = (Entity*)ENTITIES_LIST->GetData(cnt++)) != nullptr)
+    while(n != nullptr)
     {
+        ent = (Entity*) n->data;
         ent->ClearCollided();
+        n = n->next;
     }
 }
 
 void CollisionHandler::PrintCollisionList()
 {
-    EntitiesCouple*couple;
+    DEBUG_MSG("PrintCollisionList:", "START")
+    CollisionCouple*couple;
     int cnt=0;
-    while((couple=(EntitiesCouple*)COLLISION_LIST->GetData(cnt++)) != nullptr)
+    while((couple=(CollisionCouple*)COLLISION_LIST->GetData(cnt++)) != nullptr)
     {
-        Entity*active_entity = couple->first;
-        Entity*check_entity = couple->second;
-        std::cout << active_entity << " " << check_entity<< " ";
-        std::cout << "| " << active_entity->position.x << " " << active_entity->position.y<< " ";
-        std::cout << active_entity->GetRadius()<< " ";
-        std::cout << active_entity->hitbox.type<< " ";
-        std::cout << "| " << check_entity->position.x << " " << check_entity->position.y<< " ";
-        std::cout << check_entity->GetRadius()<< " ";
-        std::cout << check_entity->hitbox.type<< " ";
-        std::cout << "| " <<  active_entity->cell_id << " " << check_entity->cell_id<< " ";
+        Hitbox* h1 = couple->first;
+        Hitbox* h2 = couple->second;
+        std::cout << h1 << " | ";
+        std::cout << "c= " << h1->center.x << ", " << h1->center.y << " | ";
+        std::cout << "t= " << h1->type << " r= " << h1->radius << " ";
+        std::cout << "h= " << h1->height << " w= " << h1->width << " | ";
+        std::cout << "cell= " << h1->cell_id << " /";
+
+        std::cout << h2 << " | ";
+        std::cout << "c= " << h2->center.x << ", " << h2->center.y << " | ";
+        std::cout << "t= " << h2->type << " r= " << h2->radius << " ";
+        std::cout << "h= " << h2->height << " w= " << h2->width << " | ";
+        std::cout << "cell= " << h2->cell_id << " /";
         std::cout <<std::endl;
     }
 

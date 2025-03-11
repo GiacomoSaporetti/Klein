@@ -1,15 +1,18 @@
 #include "LinkedList.h"
+#include <typeinfo>
+
 using namespace Klein;
 
 Node * LinkedList::FindLastNode()
 {
      
-    Node* current_node = LIST;
+    /*Node* current_node = LIST;
     if(LIST == nullptr)
         return nullptr;   
     while(current_node->next != nullptr)
         current_node = current_node->next;
-    return current_node;
+    return current_node;*/
+    return last_node;
 }
 
 Node* LinkedList::AddNodeEnd()
@@ -21,6 +24,7 @@ Node* LinkedList::AddNodeEnd()
         LIST->data = nullptr;
         LIST->next = nullptr;
         number_of_nodes ++;
+        last_node = LIST;
         return LIST;
     }
     Node* newer = new Node;
@@ -29,6 +33,7 @@ Node* LinkedList::AddNodeEnd()
 
     last->next = newer;
     number_of_nodes ++;
+    last_node = newer;
     return newer;
 }
 Node* LinkedList::AddNodeEnd(void* ptr)
@@ -40,6 +45,7 @@ Node* LinkedList::AddNodeEnd(void* ptr)
         LIST->data = ptr;
         LIST->next = nullptr;
         number_of_nodes ++;
+        last_node = LIST;
         return LIST;
     }
     Node* newer = new Node;
@@ -48,6 +54,7 @@ Node* LinkedList::AddNodeEnd(void* ptr)
 
     last->next = newer;
     number_of_nodes ++;
+    last_node = newer;
     return newer;
 }
 
@@ -77,7 +84,7 @@ Node* LinkedList::AddNodeBeginning()
 
 Node* LinkedList::AddNodePosition(int p)
 {
-     
+    DEBUG_MSG("AddNodePosition: START", p)
     Node* current_node = LinkedList::GetNodeAtPosition(p);
 
     if(current_node == nullptr)
@@ -124,6 +131,7 @@ bool LinkedList::DeleteNodeEnd()
     Node* new_last = LinkedList::GetNodeAtPosition(number_of_nodes-1);
     new_last->next = nullptr;
     number_of_nodes --;
+    last_node = new_last;
     return true;
 }
 
@@ -208,9 +216,10 @@ int LinkedList::GetNumberOfNodes()
 
 void LinkedList::Clear()
 {
-    for(int i=number_of_nodes-1; i>=0; i--)
-        delete GetNodeAtPosition(i); 
+    /*for(int i=number_of_nodes-1; i>=0; i--)
+        delete GetNodeAtPosition(i);*/ 
     LIST = nullptr;
+    last_node = LIST;
     number_of_nodes = 0;
 }
 
@@ -219,7 +228,7 @@ void LinkedList::AppendList(LinkedList* append)
     DEBUG_MSG("AppendList:", append);
     if(append == nullptr) 
         return;
-    Node* current_last_node = GetNodeAtPosition(number_of_nodes-1);
+    Node* current_last_node = last_node;
 
     Node*first = GetNodeAtPosition(0);
     DEBUG_MSG("AppendList:First node", first);
@@ -238,10 +247,16 @@ void LinkedList::AppendList(LinkedList* append)
     DEBUG_MSG("AppendList:# of new nodes", nodes_to_append);
 
     if(current_last_node == nullptr)
-        LIST = first_node_to_append;
+        {DEBUG_MSG("AppendList: Last node NULL", current_last_node)
+            LIST = first_node_to_append;}
     else
+    {
+        //std::cout << typeid(current_last_node).name() << std::endl;
         current_last_node->next = first_node_to_append;
+        
+    }  
+   
     number_of_nodes += nodes_to_append;
-
+    last_node = append->FindLastNode();
     DEBUG_MSG("AppendList:# of nodes now" ,number_of_nodes); 
 }

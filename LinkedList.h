@@ -9,11 +9,13 @@ namespace Klein
     {
         private:
             Node* LIST;    
-            int number_of_nodes;       
+            int number_of_nodes;  
+            Node* last_node;     
         public:
             LinkedList()
             {
                 LIST = nullptr;
+                last_node = LIST;
                 /*LIST = new Node;
                 LIST->data = nullptr;
                 LIST->next = nullptr;*/

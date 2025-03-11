@@ -9,18 +9,21 @@
 
 namespace Klein
 {
-    struct EntitiesCouple
+    
+
+    struct CollisionCouple
     {
-        Entity* first;
-        Entity* second;
+        Hitbox* first;
+        Hitbox* second;
     };
 
     class CollisionHandler
     {
         private:
             LinkedList* ENTITIES_LIST;
+            LinkedList* HITBOXES_LIST;
             int number_of_entities;    
-            void AddToCheckList(LinkedList* sublist, LinkedList* CheckList);
+            
             Grid* GRID = new Grid;
             LinkedList* COLLISION_LIST;
         public:
@@ -29,21 +32,22 @@ namespace Klein
                 ENTITIES_LIST = new LinkedList;
                 number_of_entities = 0;
                 COLLISION_LIST = new LinkedList;
+                HITBOXES_LIST = new LinkedList;
             }
             ~CollisionHandler() = default;   
             void SetEntitiesList(LinkedList* list) {ENTITIES_LIST=list;}
-            int Run();
-            int RunOptimized();
-            int RunOptimized2();
-            int RunOptimized3();
-            int RunOptimized4();
-            int RunOptimized5();
-            int RunOptimized6(int depth);
-            int CountCollision(LinkedList* list);
-            int CountCollision(LinkedList* active,LinkedList* passive);
-            bool CheckCollision(Entity* e1, Entity* e2);
+            int RunNaive();
+            int RunQuadrantOptimization();
+            int RunGridOptimization();
+
+            //int CountCollision(LinkedList* list);
+            //int CountCollision(LinkedList* active, LinkedList* passive);
+            
+            //bool CheckCollision(Hitbox* h1, Hitbox* h2);
+
             void ClearEntitiesCollisionList();
-            int SubProcessForOptimization6(int depth, LinkedList*list);
             void PrintCollisionList();
+
+            void PopulateHitboxesList();
     };
 }
