@@ -12,8 +12,10 @@ namespace Klein
         private:
             LinkedList* recently_collided;
             LinkedList* hitboxes;
+            sem_t semaphore;
         public:
             vector speed;
+            vector next_speed;
             Point position;
             float birth;
             float death;
@@ -24,8 +26,10 @@ namespace Klein
             int number_of_hitboxes;
             static int time_direction;
             static TimeHandler * TIMER;
+            float dissipation_factor;
             Entity()
             {
+                sem_init(&semaphore, 0, 1);
                 mass = 1.0f;
                 speed.x = 0.0f;
                 speed.y = 1.0f;
@@ -44,9 +48,13 @@ namespace Klein
                 hitboxes = new LinkedList;
 
                 number_of_hitboxes = 0;
+
+                next_speed = {0,0};
+                dissipation_factor = 1;
+                
             }
             ~Entity() = default;   
-            
+
             void Run();
             int GetTimeDirection();
             void DeathState();
@@ -54,22 +62,20 @@ namespace Klein
             vector GetSpeed();
             float GetMass();
             LinkedList* GetHitboxes();
-            //float GetRadius();
+
             void SetPosition(Point pos);
             void SetSpeed(vector vel);
             void SetMass(float m);
             
             void AddHitbox(HITBOX_TYPE TYPE, Point* CENTER, float RADIUS, int WIDTH, int HEIGHT);
             void SetFaction(int f);
-            /*void SetRadius(float r);
-            void SetWidth(int w);
-            void SetHeight(int h);*/
+ 
             void ClearCollided();
             void AddCollided(Entity*e);
-            bool HasAlreadyCollided(Entity*e);
-            /*int Top();
-            int Bottom();
-            int Left();
-            int Right();*/
+            bool HasAlreadyCollided(Entity*e);  
+
+            void UpdateMotion();
     };
+
+    
 }

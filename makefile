@@ -1,14 +1,18 @@
+export BASE_DIR = ${CURDIR}
 SRC = ${wildcard *.cpp}
-LIST = ${patsubst %.cpp,%.o,${SRC}}
+OBJECTS = ${patsubst %.cpp,./obj/%.o,${SRC}}
+INCLUDES = ./include
 EXECUTABLE = klein.exe
 
-default: $(LIST)
-	@g++ $(LIST) -o $(EXECUTABLE)
+default: main
+	@g++ ${wildcard ./obj/*.o} -o ../$(EXECUTABLE)
 	./$(EXECUTABLE)
 
-%.o: %.cpp %.h
-	@echo $@ 
-	@g++ -c $<
+main:
+	@cd ./src && ${MAKE}
 
 clean: 
+	@cd ./src/ && $(MAKE) clean
 	@rm -rf *.o
+
+rebuild: clean default

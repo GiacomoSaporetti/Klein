@@ -1,0 +1,2 @@
+This folder is for object files.
+This README is here to prevent git from not tracking the folder, necessary to the makefile.

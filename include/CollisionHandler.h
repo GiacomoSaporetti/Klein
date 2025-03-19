@@ -9,8 +9,6 @@
 
 namespace Klein
 {
-    
-
     struct CollisionCouple
     {
         Hitbox* first;
@@ -40,14 +38,11 @@ namespace Klein
             int RunQuadrantOptimization();
             int RunGridOptimization();
 
-            //int CountCollision(LinkedList* list);
-            //int CountCollision(LinkedList* active, LinkedList* passive);
-            
-            //bool CheckCollision(Hitbox* h1, Hitbox* h2);
-
             void ClearEntitiesCollisionList();
             void PrintCollisionList();
 
             void PopulateHitboxesList();
+            void ResetMotion();
+            void UpdateMotion();
     };
 }

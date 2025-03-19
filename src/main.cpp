@@ -12,7 +12,7 @@
 #include "CollisionHandler.h"
 
 #define N 1000
-#define R 100
+#define R 1000
 
 
 //#define RES
@@ -48,10 +48,11 @@ int main()
         Klein::Entity* t_entity;
         for(int i=0; i<N; i++)
         {
+            //cout << "new entity" << endl;
             t_entity = new Klein::Entity;
             int x, y, r;
-            x = rand()%SCREEN_X/10;
-            y = rand()%SCREEN_Y/10;
+            x = rand()%SCREEN_X;
+            y = rand()%SCREEN_Y;
             r = rand()%10 - 11;
             //cout << "Entity: " << t_entity << endl;
             number_of_hitbox ++;
@@ -71,37 +72,9 @@ int main()
             LIST.AddNodeEnd(t_entity);
         }
 
-        //MEAN AND VARIANCE
-
-        /*begin = std::chrono::steady_clock::now();*/
-       /*Klein::vector mean={0,0};
-        Klein::vector var={0,0};
-
-        for(int i=0; i<N; i++)
-        {
-            Klein::Entity* entity = (Klein::Entity*)LIST.GetData(i);
-            Klein::Point position = entity->GetPosition();
-            mean.x += position.x;
-            mean.y += position.y;
-            var.x += position.x*position.x;
-            var.y += position.y*position.y;
-        }
-
-        mean.x = mean.x/N;
-        mean.y = mean.y/N;
-        var.x = (var.x/N - mean.x*mean.x);
-        var.y = (var.y/N - mean.y*mean.y);
-        
-
-        /*end = std::chrono::steady_clock::now();
-        cout << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << endl;*/
-        //cout << "mean: " << mean.x << ", " << mean.y << " | var: " << var.x << ", " << var.y << endl;
-
-
-
         int res=0;
     
-        begin = std::chrono::steady_clock::now();
+        /*begin = std::chrono::steady_clock::now();
         res = COLLISION.RunNaive();
         end = std::chrono::steady_clock::now();
         times[0] += std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
@@ -112,13 +85,14 @@ int main()
         res = COLLISION.RunQuadrantOptimization();
         end = std::chrono::steady_clock::now();
         times[1] += std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
-        PRINT_RES
+        PRINT_RES*/
     
         begin = std::chrono::steady_clock::now();
         res = COLLISION.RunGridOptimization();
         end = std::chrono::steady_clock::now();
         times[2] += std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
         PRINT_RES
+        //cout << endl;
     }
 
     cout << N << " | ";
@@ -128,37 +102,6 @@ int main()
     cout << times[2]/R << " : " <<(float)times[0]/(float)times[2]<< " | ";
     cout << endl;
 
-    /*const auto processor_count = std::thread::hardware_concurrency();
-    
-    cout << processor_count << endl;
-    long long int* res;
-    res = (long long int*) malloc(Klein::MAX_NUMBER_THREADS*sizeof(long long int));
-    int L = 10000;
-    for(int i=0; i<L; i++)
-    {
-    auto begin = std::chrono::steady_clock::now();
-
-    for(int th=0; th<Klein::MAX_NUMBER_THREADS; th++)
-    {
-        Klein::THREADS[th] = std::thread(fun1, 2*th, res + th);
-    }
-
-    for(int th=0; th<Klein::MAX_NUMBER_THREADS; th++)
-    {
-        Klein::THREADS[th].join();
-    }
-
-    auto end = std::chrono::steady_clock::now();
-    times[0] += std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count(); 
-    }
-    
-    cout << "Total time: " << times[0]/L << endl;
-    for(int th=0; th<Klein::MAX_NUMBER_THREADS; th++)
-    {
-    cout << *(res + th) << endl;
-    }
-    cout << Klein::MAX_NUMBER_THREADS << endl;*/
-    
     return 0;
 }
 

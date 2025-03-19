@@ -2,10 +2,7 @@
 
 using namespace Klein;
 
-int Entity::GetTimeDirection()
-{
-    return time_direction;
-}
+int Entity::GetTimeDirection(){return time_direction;}
 
 Point Entity::GetPosition()
 {return position;}
@@ -51,12 +48,7 @@ void Entity::SetSpeed(vector vel){speed = vel;}
 
 void Entity::SetMass(float m){mass = m;}
 
-/*void Entity::SetRadius(float r){hitbox.SetRadius(r);}
-void Entity::SetWidth(int w){hitbox.SetWidth(w);}
-void Entity::SetHeight(int h){hitbox.SetHeight(h);}*/
-
 float Entity::GetMass(){return mass;}
-//float Entity::GetRadius(){return hitbox.radius;}
 
 void Entity::ClearCollided()
 {
@@ -67,11 +59,15 @@ void Entity::ClearCollided()
 void Entity::AddCollided(Entity*e)
 {
     DEBUG_MSG("AddCollided: ", e);
+
+    sem_wait(&semaphore);
     recently_collided->AddNodeEnd(e);
+    sem_post(&semaphore);
 }
-        
+   
 bool Entity::HasAlreadyCollided(Entity*e)
 {
+    sem_wait(&semaphore);
     DEBUG_MSG("HasAlreadyCollided: ", e);
     Entity* temp;
     Node* n = recently_collided->GetNodeAtPosition(0);
@@ -79,9 +75,13 @@ bool Entity::HasAlreadyCollided(Entity*e)
     {
         temp = (Entity*)n->data;
         if(temp == e)
-            return true;
+            {
+                sem_post(&semaphore);
+                return true;
+            }
         n = n->next;
     }
+    sem_post(&semaphore);
     return false;
 }
 
@@ -102,11 +102,12 @@ void Entity::SetFaction(int f)
     }    
 }
 
-/*int Entity::Top()
-{return hitbox.Top();}
-int Entity::Bottom()
-{return hitbox.Bottom();}
-int Entity::Left()
-{return hitbox.Left();}
-int Entity::Right()
-{return hitbox.Right();}*/
+
+
+void Entity::UpdateMotion()
+{
+    speed = next_speed;
+    position.x += speed.x*TIMER->GetGameDelta();
+    position.y += speed.y*TIMER->GetGameDelta();
+    next_speed = {0, 0};
+}
