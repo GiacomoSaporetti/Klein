@@ -31,13 +31,15 @@ Klein::Entity * e;
 int Klein::Entity::time_direction = 1;
 Klein::TimeHandler* Klein::Entity::TIMER = &TIME;
 Klein::CollisionHandler COLLISION;
-
+Klein::LinkedList ENTITIES_LIST;
 
 long long int times[7]={1,1,1,1,1,1,1};
 int number_of_hitbox = 0;
 int main()
 {
     srand((unsigned)time(NULL));
+
+    COLLISION.SetEntitiesList(&ENTITIES_LIST);
 
     for(int t=0; t<R; t++)
     {
@@ -73,34 +75,16 @@ int main()
         }
 
         int res=0;
-    
-        /*begin = std::chrono::steady_clock::now();
-        res = COLLISION.RunNaive();
-        end = std::chrono::steady_clock::now();
-        times[0] += std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
-        PRINT_RES
-   
-
-        begin = std::chrono::steady_clock::now();
-        res = COLLISION.RunQuadrantOptimization();
-        end = std::chrono::steady_clock::now();
-        times[1] += std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
-        PRINT_RES*/
-    
-        begin = std::chrono::steady_clock::now();
         res = COLLISION.RunGridOptimization();
-        end = std::chrono::steady_clock::now();
-        times[2] += std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
-        PRINT_RES
-        //cout << endl;
+ 
     }
 
-    cout << N << " | ";
+    /*cout << N << " | ";
     cout << number_of_hitbox/R << " | ";
     cout << times[0]/R << " | ";
     cout << times[1]/R << " : " <<(float)times[0]/(float)times[1]<< " | ";
     cout << times[2]/R << " : " <<(float)times[0]/(float)times[2]<< " | ";
-    cout << endl;
+    cout << endl;*/
 
     return 0;
 }
