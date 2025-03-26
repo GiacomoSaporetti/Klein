@@ -9,7 +9,7 @@ namespace Klein
 {
     class Entity
     {
-        private:
+        protected:
             LinkedList* recently_collided;
             LinkedList* hitboxes;
             sem_t semaphore;

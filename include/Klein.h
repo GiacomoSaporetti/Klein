@@ -23,23 +23,6 @@
 
 #define INT_ERROR_VALUE -1
 
-/*Klein::vector mean={0,0};
-Klein::vector var={0,0};
-
-for(int i=0; i<N; i++)
-{
-    Klein::Entity* entity = (Klein::Entity*)LIST.GetData(i);
-    Klein::Point position = entity->GetPosition();
-    mean.x += position.x;
-    mean.y += position.y;
-    var.x += position.x*position.x;
-    var.y += position.y*position.y;
-}
-
-mean.x = mean.x/N;
-mean.y = mean.y/N;
-var.x = (var.x/N - mean.x*mean.x);
-var.y = (var.y/N - mean.y*mean.y);*/
 namespace Klein
 {
     static int MAX_NUMBER_THREADS = std::thread::hardware_concurrency();
