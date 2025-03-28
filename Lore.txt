@@ -1,32 +1,180 @@
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!CONTAINS SPOILERS!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!CONTAINS SPOILERS!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-SISTEMA MAGICO
+--------------[SISTEMA MAGICO]--------------
+
+-Introduzione:
+
 Il Klein è una sostanza che si trova nello stato solido in natura. Esso non è magico, in quanto la magia come tale non esiste, ma segue, ed introduce, leggi della natura che erano fino alla sua scoperta inosservate. 
 La principale proprietà di questa sostanza è la capacità di esistere nella dimensione temporale, ovvero la capacità di spostarsi non solo nello spazio, ma anche nel tempo.
 Quando il Klein si muove nel tempo, 'scomparendo' nello spazio, produce una grande quantità di energia, nello stesso modo in cui la scissione di un atomo, durante la fissione nucleare, produce enormi quantità di energia riducendo la massa della materia.
-È chiaramente osservabile anche il fenomeno opposto, ovvero la comparsa spontanea di una particella di Klein. Quando nella stessa region di spazio si accumula una notevole quantità di energia, prevalentemente sotto forma di energia termica, è possibile che questa energia collassi in un singolo punto dello spazio, assorbendo tutta l'energia e producendo una particella di sostanza.
-A parità di massa, l'energia ceduta da una quantità di Klein che viaggia nel tempo è pari all'energia necessaria perchè questa possa teoricamente formarsi spontaneamente.
-In verità non esiste che una singola particella di Klein, che si muove nel tessuto dello spazio-tempo, non esiste che un 'serpente' quadridimensionale che forma un'immagine statica nell'universo. 
-Quando una particella scompare non significa altro se non che il serpente sta curvando, e tornando da dove è venuto. Per lui non esiste passato e futuro, non esiste nemmeno il tempo, esso esiste e basta, dall'inizio dell'universo, al nuovo inizio, a quello dopo ancora.
-Infatti le particelle sono sempre state osservate comparire e scomparerire in numero pari, a coppie.
-Sottolineiamo che non esiste un atomo di Klein, o una molecola di Klein, ne esistono particelle, elementi indivisibili come elettroni o muoni, e sono dunque inipendenti dall'atomo o molecola che orbitano.
-È importante infine sottolineare la naturale capacità del Klein di legarsi a qualsiasi materia, non si esclude quindi la possibilità che possa lagersi a materiale organico.
+È chiaramente osservabile anche il fenomeno opposto, ovvero la comparsa spontanea di una particella di Klein. 
+Quando nella stessa regione di spazio si accumula una notevole quantità di energia, prevalentemente sotto forma di energia termica, è possibile che questa energia collassi in un singolo punto dello spazio, assorbendo tutta l'energia e producendo particelle di sostanza.
+A parità di particelle prodotte, l'energia ceduta da una quantità di Klein che viaggia nel tempo è pari all'energia necessaria perché questa possa teoricamente formarsi spontaneamente.
+Questo causa il cosiddetto 'Effetto Batteria', per cui il Klein funge da accumulatore di energia utilizzabile in un secondo momento.
+Il processo vede quindi Calore > Klein (materia) > Calore.
+
+
+-La varietà 1-dimensionale, o 'oroboro':
+
+In verità non esiste che una singola particella di Klein, che si muove nel tessuto dello spazio-tempo, non esiste che un 'oroboro' che vive nelle dimensioni spazio-tempo e che forma un'immagine statica nell'universo. 
+Quando una particella scompare non significa altro se non che l'oroboro sta curvando, e tornando da dove è venuto. Per lui non esiste passato e futuro, non esiste nemmeno il tempo, esso esiste e basta, dall'inizio dell'universo, al nuovo inizio, a quello dopo ancora.
+Infatti le particelle sono sempre state osservate comparire e scomparire in numero pari, a coppie.
+Volendo essere precisi  quelle che appaiono e scompaiono non sono coppie di Klein uguali. 
+Una di esse è la particella che si muove avanti nel tempo, dal momento in cui la vediamo comparire al momento in cui poi, collidendo con un altro Klein, scompare. 
+La seconda particella invece è la sua opposta e si muove indietro nel tempo. 
+Per lei il momento che noi consideriamo la sua comparsa è in realtà la morte, in quanto collide con un Klein che si muove avanti nel tempo (K+ e K- sono i simboli usati per indicare queste due particelle).
+Volendo andare ancora più in profondità di questo fenomeno lasciate che vi illumini: le particelle K+ e K- che si formano e scompaiono sono la medesima,  che si incontra alla curva dell'oroboro.
+
+
+-Reazione a catena:
+
+L'energia contenuta nel Klein sottoforma di Effetto Batteria non può quindi venir acceduta mediante due particelle K+ o due K-, ma da almeno una coppia K+ e K-.
+Come detto in precedenza l'energia prodotta durante la collisione è la medesima richiesta per la creazione delle 2 particelle. 
+È dunque possibile che istantaneamente dopo la collisione di due particelle, altre due vengano formate con quantità di moto in direzioni casuali.
+Consideriamo ora una grande quantità di particelle K+ che giacciono immobili in un cumulo.
+Verso questo gruppo viene sparate una singola particella K-, la quale collidendo con una K+ svanisce rilasciando energia. Se immediatamente dopo la collisione l'energia viene assorbita per formare altre due particelle, quello che può verificarsi è una reazione a catena, in cui coppie di particelle continuano a scomparire e riapparire per un tempo indefinito.
+
+ 
+-Simbiosi:
+
+Sottolineiamo che non esiste un atomo di Klein, o una molecola di Klein, ne esistono particelle, elementi indivisibili come elettroni o muoni, e sono dunque indipendenti dall'atomo o molecola che orbitano.
+È importante infine sottolineare la naturale capacità del Klein di legarsi a qualsiasi materia, non si esclude quindi la possibilità che possa legarsi a materiale organico.
+Nonostante il Klein possa muoversi attraverso il tempo, la materia che lo ospita non può, a causa della legge di conservazione della materia e della causalità: supponiamo di vivere in un universo vuoto come osservatori immateriali. Supponiamo che in questo universo esista un unico atomo di materia, in grado di ospitare una coppia di particelle Klein. Per tutta la durata di questo universo coppie di particelle Klein appaiono e scompaiono dall'esistenza, seguendo il citato 'oroboro'.
+Il nostro atomo  solitario invece, esiste sempre, ovvero durante ogni istante di vita del nostro universo esso è presente univocamente, per mantenere la massa totale dell'universo.
+Non è dunque possibile che, se orbitato da una particella Klein, questo possa scomparire e riapparire da qualche altra parte.
+
+
+-Inversione di Entropia:
+
+Ipotizziamo ora che il nostro universo ospiti una nuvola di atomi che collidono tra di loro, aumentando come ci si aspetterebbe l'entropia dell'universo.  
+È naturale pensare che alcune di queste siano atomi-K, ovvero che sono orbitati da Klein. 
+In queste condizione si può verificare un particolare fenomeno per cui gli atomi-K inizino a muoversi indietro nel tempo, invertendo gli effetti delle collisioni appena avvenute. 
+È importante sottolineare che questi atomi non si muovono realmente indietro nel tempo, in quanto questo andrebbe contro ciò che è stato detto in precedenza.
+Quello che accade è che il Klein che ospitano le guida attraverso lo spazio seguendo a ritroso l'esatto percorso che hanno compiuto, di fatto invertendo l'entropia di questo gruppo ristretto.
+Questi atomi si muovono dunque avanti nel tempo, ma inversamente rispetto all'entropia, che tende in ogni caso ad incrementare su lunghe scale dei tempi.
+Un atomo non soggetto a questo fenomeno vedrà dunque la nuvola di atomi-K muoversi come indietro nel tempo. 
+Se prendiamo in considerazione due orologi, uno composto da atomi-K, e l'altro da atomi normali, possiamo meglio spiegare questo fenomeno.
+Entrambi partono con le lancette sullo 0 e si comportano normalmente. Passati 5 secondi l'orologio-K inizia ad invertire la sua entropia, muovendo di fatto le sue lancette al contrario, contemporaneamente l'orologio normale continua a muovere le sue lancette in senso orario.
+Passato un secondo allora l'orologio normale segnerà il passaggio di 6 secondi, mentre quello contaminato ne segnerà 4 e così via fino alla fine del fenomeno, che attualmente non è mai stato osservato durare più di 5 secondi.
+Che succede se proviamo a prevenire il fenomeno? Ovvero, dato che gli atomi-K tendono a ripercorrere le traiettorie percorse, cosa succede se questa traiettoria viene bloccata da un altro atomo, non soggetto all'inversione di entropia? 
+Quello che accade è che il Klein viene trasferito, così come tutta l'energia cinetica, al nuovo atomo durante la collisione, invertendo i ruoli dei due atomi.
+
+
+-Congelamento nel tempo:
+
+Il secondo curioso fenomeno osservabile nella nostra nuvola di atomi-K è il congelamento del tempo. 
+È possibile che di punto in bianco tutti gli atomi del nostro modello cedano la propria energia cinetica e quantità di moto al Klein che le orbita, rimanendo immobilizzate nel nostro sistema di riferimento finché una forza esterna non le rimette di nuovo in moto. 
+Le particelle Klein sfruttano questa energia cinetica per aumentare la propria velocità orbitale, ovvero viene tramutata in energia potenziale che viene rilasciata successivamente di nuovo all'atomo  che riprende istantaneamente il moto precedentemente interrotto.
+
+
+-Time Skip:
+
+Giungiamo infine al terzo ed ultimo fenomeno specifico del Klein. Questo è forse più importante addirittura dei due enunciati in precedenza.
+Per esplicare questo fenomeno si consideri in questo caso due corpi solidi che si muovono con velocità costante l'uno verso l'altro, presagendo quindi uno scontro tra i due.
+Supponiamo che uno di questi corpi, detto corpo K, sia costituito da atomi K, mentre il secondo, detto corpo N, sia costituito da normali atomi, o atomi N.
+All'attivarsi di questo fenomeno vedremo il corpo K rallentare progressivamente, fino a fermarsi completamente. L'energia cinetica ceduta dal corpo in movimento causerà una graduale comparsa di particelle Klein che orbitano il corpo (Effetto Batteria).
+La parte più curiosa si osserva però con la collisione dei due corpi, dei quali ora uno è fermo.
+Durante la collisione avverrà non solo il perfetto trasferimento di energia cinetica e Klein da un corpo all'altro, ma in caso di atomi diversi tra i due corpi, questi verranno scomposti e ricomposti gradualmente fino a ricomparire dalla parte opposta.
+Gli atomi del corpo in movimento prenderanno dunque, uno alla volta, il posto degli atomi del corpo fermo, seguendo la filosofia della nave di Teseo.
+Questo risultato ha gli stessi effetti che avremmo se il corpo K fosse composto da materia intangibile, quasi come fosse un fantasma fermo nel tempo, inamovibile.
+Se dal punto di vista del corpo N il corpo K appare fermarsi, e congelarsi nel tempo, dal punto di vista del corpo K avviene il contrario, ovvero l'intero universo sembra accelerare , per poi rallentare e riprendere il suo normale svolgimento.
+
+
+-Gravità:
+
+Il Klein NON ha massa, e quindi non è soggetto alla forza di gravità.  L'unico effetto della gravità che si può osservare sul Klein è quello indiretto causato dalla gravità che agisce sull'atomo attorno a cui orbita la particella. 
+Non ha nemmeno carica elettrica ed è quindi immune ai campi elettromagnetici.
+Tuttavia, durante uno dei tre effetti sopraelencati, la materia K stessa diventa immune agli effetti della gravità e dell' elettromagnetismo.
+Come questo avvenga rimane un mistero.
+
+
+-Entanglement:
+
+Il Klein, essendo in realtà un unica particella che si muove nel tempo, subisce una sorta di effetto entanglement con se stessa, ovvero ogni particella Klein nell'universo in ogni dato istante si comporta come le altre. Questo significa che se si verifica l'inversione dell'entropia, questo accadrà a tutta la materia K nell'universo, stesso vale per il time Freeze ed il Time Skip 
+
+
+-Riassunto:
+
+Il Klein è dunque una particella fondamentale per il funzionamento di questo universo.
+Essa non ha inizio ne fine, esiste nel tessuto spazio-temporale come noi esistiamo in quello spaziale.
+È immune a qualsiasi tipo di forza, ma per spostarsi necessita di aggrapparsi ad un atomo di materia.
+È un perfetto accumulatore di energia, in grado di conservare l'energia assorbita alla sua comparsa per un tempo indefinito, per rilasciarlo poi con la sua collisione con un altra particella con temporalità opposta.
 
 STORIA ANTICA
-La narrazione di Klein prende luogo in una società profondamente divisa in due blocchi, Nord e Sud.
-Il mondo abitato è composto da un'unica enorme isola simil Pangea, denominata Godel. 
-Per tutta la sua storia la società che l'ha abitata era stutturata gerarchicamente. Pochi al potere controllavano tutte le risorse, mentre la maggioranza doveva lavorare per continuare a produrre queste risorse, in cambio però di una minima parte di esse.
-50 anni prima degli avvenimenti del gioco il mondo stava attraversando una nuova rivoluzione dell'industria. Nuove invenzione permisero di moltiplicare la produzione e decimare la forza lavoro richiesta, aumentando però la richiesta di energia per alimentare queste macchine. Fortuitamente, per i proprietari delle industrie, in quel periodo un gruppo di ricercatori scopri sotto il suolo che si estendava per gran parte della regione Sud, una vasta rete di gallerie, ricolme di una sostanza mai vista. Le prime indagini su questa sostanza rivelarono immediatamente come questa fosse un'immensa fonte di energia, utile per alimentare i nuovi macchinari.
-Fu allora ordinato alle popolazioni del sud di iniziare immediatamente l'estrazione di quanto piu sostanza possibie, che fu denominata Klein in onore di un matematico.
-L'economia del sud venne presto trasformata dalla crescente richiesta di estrazioni. Molti siti nacquero sopra una cava, e vicino ad esse vennero instaurato villaggi per ospitare i minatori e le loro famiglie.
-L'estrazione era però un lavoro faticoso e soggetto a scarse norme sanitarie. Molti finirono per ammalarsi a causa delle contaminazioni da parte della sostanza che era evidentemente cancerogena. Molti morirono, e questo diede luogo a malcontento da parte dei minatori e della popolazione locale. malcontento che venne punito con orari di lavoro piu stringenti e meno diritti. Questo non fece altro che alimentare la frustrazione dei lavoratori, che si organizzarono tra di loro e misero in atto una protesta contro i padroni.
+
+-Nascita dell'universo:
+
+Le evidenze scientifiche mostrano che l'universo fosse originariamente condensato in un unico punto e abbia iniziato successivamente una rapida accelerazione. Non vi fu però alcuna 'origine'. L'universo in cui viviamo subisce periodicamente un ciclo di rinascita, prima collassando su se stesso e successivamente espandendosi nuovamente, in un nuovo universo, con le stesse leggi della natura ma composizione differente.
+Non esiste un universo primo, il numero di universi esistenti ed esistiti è finito, un numero molto grande, ma finito.
+È un ciclo che si ripete nella visione spazio-centrica. 
+Questa serie di universo collegati fra loro forma, come per il Klein un oroboro che esiste e basta, non è mutabile, ed è tutto già prestabilito
+
+
+-Elementi ricorrenti:
+
+Per quanto gli universi possano differire tra loro, essi presentano sempre elementi comuni, come le leggi della natura, sempre costanti, oppure la formazione del pianeta e di Godel, così come la rete di caverne nella regione Sud.
+Questi sono elementi imprescindibili e si formeranno ad ogni ricorrenza.
+Ciò che può variare è specialmente dovuto agli esseri viventi: simpatie ed antipatie, relazioni personali, geopolitica e punti di vista.
+Questo è dovuto al fatto che gli esseri viventi sono elementi instabili e fortemente dipendenti dalle condizioni inziali del sistema.
+
+
+STORIA DELLA SOCIETA
+
+-Il Mondo pre-Klein
+
+Il mondo abitato è composto da un'unica enorme isola simil Pangea, denominata Godel, che occupa circa metà della superficie del pianeta, mentre la metà opposta è ricoperta da una vasta distesa di acqua denominata Grande Mare.
+Per gran parte della sua storia la società che ha vissuto qui è stata strutturata seguendo un principio piramidale. Pochi al potere controllavano tutte le risorse (detti Padroni), comandando i loro sottoposti (detti Mediani), mentre la maggioranza doveva lavorare per continuare a produrre queste risorse, in cambio però di una minima parte di esse (detti Bolbi).
+Il sogno di ogni membro della fascia più bassa era la scalata sociale per diventare qualcuno.
+
+
+-La scoperta del Klein:
+
+50 anni prima degli avvenimenti del gioco il mondo stava attraversando una nuova rivoluzione dell'industria. 
+Nuove invenzioni permisero di moltiplicare la produzione e decimare la forza lavoro richiesta, aumentando però la richiesta di energia per alimentare queste macchine. 
+Fortuitamente, per i proprietari delle industrie, in quel periodo un gruppo di ricercatori scopri sotto il suolo che si estendeva per gran parte della regione Sud, una vasta rete di gallerie, ricolme di una sostanza mai vista. 
+Le prime indagini su questa sostanza rivelarono immediatamente come questa fosse un'immensa fonte di energia, utile per alimentare i nuovi macchinari.
+Fu allora ordinato alle popolazioni del sud di iniziare immediatamente l'estrazione di quanto più sostanza possibile, che fu denominata Klein in onore del capo dei ricercatori che lo scoprirono.
+L'economia del sud venne presto trasformata dalla crescente richiesta di estrazioni. Molti siti di estrazione nacquero sopra le cave, e vicino ad esse vennero instaurati dei villaggi per ospitare i minatori e le loro famiglie.
+
+
+-La rivolta:
+
+L'estrazione era però un lavoro faticoso e soggetto a scarse norme sanitarie. 
+Molti finirono per ammalarsi a causa delle contaminazioni da parte della sostanza che era evidentemente cancerogena. 
+Molti morirono, e questo diede luogo a malcontento da parte dei minatori e della popolazione locale. 
+Malcontento che venne punito con orari di lavoro più stringenti e meno diritti. Questo non fece altro che alimentare la frustrazione dei lavoratori, che si organizzarono tra di loro e misero in atto una protesta contro i Padroni.
 La protesta venne soppressa con la violenza, ma questo fece scoppiare la guerra civile.
-Grazie al loro controllo della materia prima, e avendo affamato a livello energetico il Nord, il Sud riusci a cacciare le truppe nordiste,  posizionando la linea di confine circa all'altezza dell'equatore.
-La vittoria non fu fortuita, ma fu resa tale anche grazie all'aiuto degli scienziati, che studiarono il modo per creare potenti armi che sfruttassero l'energia prodotta dal Klein, riuscendo in questo modo a mantenere il controllo del territorio per i successivi 50 anni. Nel frattempo la società al sud adottò un sistema di collettivizzazione delle risorse. Grazie alla nuova sostanza furono in grado di creare macchinari autonomi che si occupassero dell'industria agricola, tessile, ittica etc etc..., permettendo all'umanità di concentrarsi ulteriormante sulla ricerca scientifica e sull'arte.
+Grazie al loro controllo della materia prima, e avendo affamato a livello energetico il Nord, il Sud riuscì a cacciare le truppe nordiste,  posizionando la linea di confine circa all'altezza dell'equatore.
+La vittoria non fu fortuita, ma fu resa tale anche grazie all'aiuto degli scienziati, che studiarono il modo per creare potenti armi che sfruttassero l'energia prodotta dal Klein, riuscendo in questo modo a mantenere il controllo del territorio per i successivi 50 anni. 
+Nel frattempo la società al sud adottò un sistema di collettivizzazione delle risorse. Grazie alla nuova sostanza furono in grado di creare macchinari autonomi che si occupassero dell'industria agricola, tessile ed ittica, permettendo all'umanità di concentrarsi ulteriormente sulla ricerca scientifica e sull'arte.
 
 
 STORIA MODERNA
+
 Giungiamo allora al presente, dopo 50 anni dalla guerra di separazione.
+Godel è ancora separata in due blocchi, ora denominati 'Laplace'  per l'area Sud, mentre il Nord mantiene la denominazione di 'Godel'.
+
+
+-Area Godel
+
+La regione del Nord vide la rivoluzione industriale di 50 anni fa arrestarsi bruscamente a causa della richiesta troppo ingente di energia, a cui non riuscirono a sopperire causa la mancanza di Klein.
+L'economia regredì alla fase precedente, basata principalmente sulla lavorazione dell'acciaio e agricoltura.
+La fabbriche che furono costruite nella frenesia della rivoluzione industriale vennere presto abbandonate, ed ancora oggi si ergono nei luoghi in cui furono inaugurate, ricolme di materiale di scarto.
+La società è ancora strutturata piramidalmente: i Padroni sontrollano le industrie, decidono cosa viene prodotto, chi deve lavorare, quanto costano i beni.
+I Mediani sovraintendono i luoghi di lavoro. Si assicurano che i Bolbi lavorino bene e non si lamentino, in cambio di un trattamento di favore rispetto al ceto più basso.
+I Bolbi sono schiavi. Compongono il 97% della popolazione, e tutto cio che possono fare è lavorare. Il divertimento è un diritto che spetta solo ai Padroni, ogni tanto anche a qualche Mediano, ma non devono montarsi la testa.
+
+
+-Tensioni tra Padroni:
+ 
+Tra i Padroni di Godel nacquero due correnti di pensiero: la prima si rassegnava alla consessione del Sud e delle sue risorse ai Laplaciani, riconoscendone la superiorità militare, la seconda invece era la corrente irredentista. Chi portava avanti questa visione erano soprattutto i figli e nipoti dei Padroni che combatterono attivamente nella Guerra dei Poli.
+La tensione tra gli esponenti di quest movimenti è cresciuta notevolmente negli ultimi anni, dovuta soprattutto all'incombente crisi energetica del paese.
+Difatti le ultime risorse disponibili stanno terminando, e l'unica via percorribile sembrerebbe il Klein, che rimane però ben protetto oltre il confine Sud.
+Queste tensioni scateneranno una guerra interna, in cui il leader dei Concessori verrà assassinato, lasciando gli irredentisti al potere pronti a muovere guerra a Laplace.
+
+
+-Area Laplace:
+
