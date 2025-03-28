@@ -7,11 +7,10 @@
 
 -Introduzione:
 
-Il Klein è una sostanza che si trova nello stato solido in natura. Esso non è magico, in quanto la magia come tale non esiste, ma segue, ed introduce, leggi della natura che erano fino alla sua scoperta inosservate. 
-La principale proprietà di questa sostanza è la capacità di esistere nella dimensione temporale, ovvero la capacità di spostarsi non solo nello spazio, ma anche nel tempo.
-Quando il Klein si muove nel tempo, 'scomparendo' nello spazio, produce una grande quantità di energia, nello stesso modo in cui la scissione di un atomo, durante la fissione nucleare, produce enormi quantità di energia riducendo la massa della materia.
-È chiaramente osservabile anche il fenomeno opposto, ovvero la comparsa spontanea di una particella di Klein. 
-Quando nella stessa regione di spazio si accumula una notevole quantità di energia, prevalentemente sotto forma di energia termica, è possibile che questa energia collassi in un singolo punto dello spazio, assorbendo tutta l'energia e producendo particelle di sostanza.
+Il Klein è una delle particelle fondamentali di questo universo, come i Quark, i Fermioni o i Leptoni. Esso non è magico, in quanto la magia come tale non esiste, ma segue, ed introduce, leggi della natura che erano fino alla sua scoperta inosservate. 
+La principale proprietà di questa particella è la capacità di esistere nella dimensione temporale, ovvero la capacità di spostarsi non solo nello spazio, ma anche nel tempo.
+Quando il Klein si muove nel tempo, 'scomparendo' nello spazio, produce una grande quantità di energia, nello stesso modo in cui la scissione di un atomo durante la fissione nucleare, produce energia riducendo la massa della materia.
+È chiaramente osservabile anche il fenomeno opposto, ovvero la comparsa spontanea di una particella di Klein: Quando nella stessa regione di spazio si accumula una notevole quantità di energia, prevalentemente sotto forma di energia termica, è possibile che questa energia collassi in un singolo punto dello spazio, assorbendo tutta l'energia e producendo particelle di sostanza.
 A parità di particelle prodotte, l'energia ceduta da una quantità di Klein che viaggia nel tempo è pari all'energia necessaria perché questa possa teoricamente formarsi spontaneamente.
 Questo causa il cosiddetto 'Effetto Batteria', per cui il Klein funge da accumulatore di energia utilizzabile in un secondo momento.
 Il processo vede quindi Calore > Klein (materia) > Calore.
@@ -35,7 +34,8 @@ L'energia contenuta nel Klein sottoforma di Effetto Batteria non può quindi ven
 Come detto in precedenza l'energia prodotta durante la collisione è la medesima richiesta per la creazione delle 2 particelle. 
 È dunque possibile che istantaneamente dopo la collisione di due particelle, altre due vengano formate con quantità di moto in direzioni casuali.
 Consideriamo ora una grande quantità di particelle K+ che giacciono immobili in un cumulo.
-Verso questo gruppo viene sparate una singola particella K-, la quale collidendo con una K+ svanisce rilasciando energia. Se immediatamente dopo la collisione l'energia viene assorbita per formare altre due particelle, quello che può verificarsi è una reazione a catena, in cui coppie di particelle continuano a scomparire e riapparire per un tempo indefinito.
+Verso questo gruppo viene sparate una singola particella K-, la quale collidendo con una K+ svanisce rilasciando energia. Se immediatamente dopo la collisione l'energia viene assorbita per formare altre due particelle, quello che può verificarsi è una reazione a catena, in cui coppie di particelle continuano a scomparire e riapparire per un tempo indefinito, la cui energia risultante è comunque nulla.
+Questo potrebbe essere pericolo nel caso che il Klein si fosse legato ad un atomo di un elemento instabile, o radioattivo, in quanto potrebbe amplificare una catena di fissioni nucleari.
 
  
 -Simbiosi:
@@ -143,7 +143,7 @@ L'economia del sud venne presto trasformata dalla crescente richiesta di estrazi
 -La rivolta:
 
 L'estrazione era però un lavoro faticoso e soggetto a scarse norme sanitarie. 
-Molti finirono per ammalarsi a causa delle contaminazioni da parte della sostanza che era evidentemente cancerogena. 
+Molti finirono per ammalarsi a causa delle radiazioni. 
 Molti morirono, e questo diede luogo a malcontento da parte dei minatori e della popolazione locale. 
 Malcontento che venne punito con orari di lavoro più stringenti e meno diritti. Questo non fece altro che alimentare la frustrazione dei lavoratori, che si organizzarono tra di loro e misero in atto una protesta contro i Padroni.
 La protesta venne soppressa con la violenza, ma questo fece scoppiare la guerra civile.
@@ -151,6 +151,15 @@ Grazie al loro controllo della materia prima, e avendo affamato a livello energe
 La vittoria non fu fortuita, ma fu resa tale anche grazie all'aiuto degli scienziati, che studiarono il modo per creare potenti armi che sfruttassero l'energia prodotta dal Klein, riuscendo in questo modo a mantenere il controllo del territorio per i successivi 50 anni. 
 Nel frattempo la società al sud adottò un sistema di collettivizzazione delle risorse. Grazie alla nuova sostanza furono in grado di creare macchinari autonomi che si occupassero dell'industria agricola, tessile ed ittica, permettendo all'umanità di concentrarsi ulteriormente sulla ricerca scientifica e sull'arte.
 
+
+-Il Terzo Polo:
+
+Non tutti i Padroni e Mediani che abitavano prima al Sud fecero in tempo a fuggire al Nord.
+Alcuni di essi si rifugiarono in una città-fortezza che sorgeva sulla costa Est dell'Isola, ma all'interno del territorio di Laplace.
+Questa città, chiamata Torde, veniva originariamente utilizzata come centro militare per le operazioni navali, ed è dunque ben protetta.
+Questa città era celebre inoltre per un'importante industria produttrice di macchinari che venivano distribuiti in tutto il mondo.
+Con l'isolamento dal resto di Laplace l'esportazione verso il sud terminò, mentre alle regione del Nord continuarono ad arrivare i prodotti mediante navi militari.
+Si istituì quindi un terzo stato, circondato dai territori di Laplace, con le proprie regole e costumi, ma che di fatto non era altro che un fantoccio di Godel
 
 STORIA MODERNA
 
@@ -162,19 +171,125 @@ Godel è ancora separata in due blocchi, ora denominati 'Laplace'  per l'area Su
 
 La regione del Nord vide la rivoluzione industriale di 50 anni fa arrestarsi bruscamente a causa della richiesta troppo ingente di energia, a cui non riuscirono a sopperire causa la mancanza di Klein.
 L'economia regredì alla fase precedente, basata principalmente sulla lavorazione dell'acciaio e agricoltura.
-La fabbriche che furono costruite nella frenesia della rivoluzione industriale vennere presto abbandonate, ed ancora oggi si ergono nei luoghi in cui furono inaugurate, ricolme di materiale di scarto.
-La società è ancora strutturata piramidalmente: i Padroni sontrollano le industrie, decidono cosa viene prodotto, chi deve lavorare, quanto costano i beni.
+La fabbriche che furono costruite nella frenesia della rivoluzione industriale vennero presto abbandonate, ed ancora oggi si ergono nei luoghi in cui furono inaugurate, ricolme di materiale di scarto.
+La società è ancora strutturata piramidalmente: i Padroni controllano le industrie, decidono cosa viene prodotto, chi deve lavorare, quanto costano i beni.
 I Mediani sovraintendono i luoghi di lavoro. Si assicurano che i Bolbi lavorino bene e non si lamentino, in cambio di un trattamento di favore rispetto al ceto più basso.
-I Bolbi sono schiavi. Compongono il 97% della popolazione, e tutto cio che possono fare è lavorare. Il divertimento è un diritto che spetta solo ai Padroni, ogni tanto anche a qualche Mediano, ma non devono montarsi la testa.
+I Bolbi sono schiavi. Compongono il 97% della popolazione, e tutto ciò che possono fare è lavorare. Il divertimento è un diritto che spetta solo ai Padroni, ogni tanto anche a qualche Mediano, ma non devono montarsi la testa.
 
 
 -Tensioni tra Padroni:
  
-Tra i Padroni di Godel nacquero due correnti di pensiero: la prima si rassegnava alla consessione del Sud e delle sue risorse ai Laplaciani, riconoscendone la superiorità militare, la seconda invece era la corrente irredentista. Chi portava avanti questa visione erano soprattutto i figli e nipoti dei Padroni che combatterono attivamente nella Guerra dei Poli.
-La tensione tra gli esponenti di quest movimenti è cresciuta notevolmente negli ultimi anni, dovuta soprattutto all'incombente crisi energetica del paese.
+Tra i Padroni di Godel nacquero due correnti di pensiero: la prima si rassegnava alla concessione del Sud e delle sue risorse ai Laplaciani, riconoscendone la superiorità militare, la seconda invece era la corrente irredentista. Chi portava avanti questa visione erano soprattutto i figli e nipoti dei Padroni che combatterono attivamente nella Guerra dei Poli.
+La tensione tra gli esponenti di questi movimenti è cresciuta notevolmente negli ultimi anni, dovuta soprattutto all'incombente crisi energetica del paese.
 Difatti le ultime risorse disponibili stanno terminando, e l'unica via percorribile sembrerebbe il Klein, che rimane però ben protetto oltre il confine Sud.
 Queste tensioni scateneranno una guerra interna, in cui il leader dei Concessori verrà assassinato, lasciando gli irredentisti al potere pronti a muovere guerra a Laplace.
 
 
 -Area Laplace:
 
+La regione Sud, dopo aver cacciato i Padroni ed i Mediani, iniziò un sistema di collettivizzazione delle risorse, sfruttando il Klein per creare potenti robot che si occupassero dei lavori più pesanti.
+L'estrazione del Klein terminò poco dopo la fine della guerra, in quanto fu considerato troppo pericoloso per la salute, e le cave di estrazione vennero sigillate.
+Il Klein accumulato fino ad allora viene in parte utilizzato per alimentare i robot lavoratori, che hanno a disposizione ancora numerosi decenni di autonomia grazie all'incredibile densità energetica del Klein.
+La parte restante fu inviata al laboratorio nazionale di ricerca, che sorge nel villaggio centrale e più grande della regione.
+Il laboratorio si occupa di ricercare le proprietà del Klein quando entra in simbiosi con la materia.
+Sono riusciti per il momento ad individuare un particolare fenomeno, che è stato denominato Inversione Entropica che è ancora in fase di studio, ma la continue ricerche fanno sperare di riuscire ad individuare nuove proprietà di questa particella.
+
+
+-Cave di Klein:
+
+Le cave furono presto sigillate. In realtà ciò che tiene fuori i visitatori sono solo qualche porta in acciaio ed il dirupo che si presenta appena dentro, oltre ai numerosi cartelli di avvertimento ed il buonsenso della popolazione.
+Il Klein qui si è legato a vari minerali come carbone, pirite, ma anche semplice terra.
+La pericolosità di queste cave era legata oltre al luogo umido e buio, nonché pieno di polveri inalabili, ad una forte presenza in profondità di materiale radioattivo in stato di decadimento.
+Le radiazioni, giunte fino in superficie, fecero i minatori che lavorarono qui, facendoli ammalare di tumore.
+Ad oggi le radiazioni sono sotto controllo, ma gli effetti sono visibili ancora oggi nelle nuove generazioni, dove qualcuno nasce con leggere deformità o con la predisposizione a malattie gravi.
+
+
+-Area di Torde
+
+Lo stato fantoccio mantiene un certa vigilanza del confine per evitare un'incursione da parte di Laplace. 
+Gli abitanti sanno perfettamente quanto i macchinari che producono siano necessari ai Laplaciani, e per questo evitano di darglieli.
+Ufficialmente Torde si dichiara indipendente, libera dal giogo di Godel, ma in realtà i legami commerciali li legano indissolubilmente.
+Il confine è ben sorvegliato, ed i Laplaciani che osano attraversare il confine rischiano di rimanere uccisi dai cecchini  che lo presiedono.
+Allo stesso modo è vietato ai cittadini di Torde l'emigrazione verso Laplace dalle stesse guardie Tordine.
+La difficoltà a produrre autonomamente i macchinari che esporta Torde, ha alimentato una corrente Laplaciana che desidera annettere Torde con la forza, e cacciare i Pardoni che ancora la abitano.
+
+
+
+PERSONAGGI NON GIOCANTI
+
+-Ricercatrice del laboratorio:
+
+Cosa si chiede?		Se esiste il libero arbitrio, oppure siamo solo atomi che si muovono seguendo lo schema pianificato dalle leggi dell'universo
+Cosa vuole?		Essere la più intelligente e soddisfare il suo sentimento agonistico per le materie scientifiche, venendo considerata la miglior scienziata al mondo.
+Di cosa ha bisogno?	Che lei si lasci andare, imparando a vivere il momento, lasciando perdere le pianificazioni di una vita.
+
+Nome: Carla Hosimoff
+Età: 30-33
+Segni particolari: è nera
+
+Pre gioco:
+La dottoressa Carla ha sempre avuto uno spirito curioso ed attento, sin dall sua infanzia quando il padre Olov, che combattè nella guerra quando aveva appena 20 anni, la portava al laghetto del loro villaggio. In quel luogo Carla entrava in contatto con la natura, osservando gli strani comportamenti del nostro universo. 
+Quando però riempiva il padre di domande, tutto ciò che riusciva ad ottenere era un misero 'Non lo so'.
+Presto la disillusione di Carla nei confronti di suo padre crebbe, capendo che era solo un povero ignorante, buono solo a scavare e fare la guerra.
+Lei non voleva diventare così: la sua sete di conoscenza era un pozzo senza fondo, ciononostante andava saziata. 
+Si mise a studiare duramente e riusci a laurearsi all'università di Laplace nel corso di Fisica Teorica.
+Un talento del genere non poteva passare inosservato: entrò subito a far parte del team di ricercatori del laboratorio nazionale, prima come assistente e dopo pochi anni come ricercatrice.
+In questo luogo verrà a contatto con il Klein, di cui aveva soltanto sentito parlare, ed inizierà a sperimentare con esso, scoprendo infine il fenomeno di Inversione Entropica.
+
+Post gioco:
+La dottoressa è facile da trovare al laboratorio, qui sarà felice di far fare al giocatore un giro al museo interno.
+Con il progredire della storia scoprirà il secondo fenomeno del Klein: l'Arresto Temporale, che servirà al giocatore per progredire.
+Giunti a circa metà gioco, scoprirà la vera natura del Klein, l'oroboro. Questo la farà cadere in depressione, facendole chiedere se il libero arbitrio esista, e quale sia il senso della vita.
+Giunti verso la fine scoprirà l'ultimo fenomeno del Klein: L'Accelerazione Atomica, che permetterà al giocatore di proseguire ulteriormante.
+Ultimata questa scoperta, ma ancora scossa dall'oroboro, deciderà di lasciare perdere la ricerca scientifica, cercando di vivere la vita a pieno.
+
+
+-Musicista:
+
+Cosa si chiede?		Perchè è così solo, e perchè tutti lo abbandonano.
+Cosa vuole?			Fidanzarsi con la storpia
+Di cosa ha bisogno?	.
+
+Nome: Joel ???
+Età: 21
+Segni particolari: sembra un barbone
+
+Pre gioco:
+Il ragazzo fu abbandonato all'orfanotrofio gestito dalla signora Helia quando ancora era un neonato. 
+Non ha mai conosciuto i suoi genitori, e questo ha instaurato in lui un forte senso di abbandono ed inadeguatezza, che lo porta ad essere sempre eccessivo, a volersi mettere in mostra per dimostrare di essere degno dell'attenzione degli altri.
+Quando ancora stava all'orfanotrofio qualche coppia venne a vederlo, ma finì sempre per essere scartato, lasciando a chiedersi per quale motivo.
+All'interno della struttura gli risultava difficile fare amicizia, non solo per il suo carattere, ma anche perchè tutti gli altri bambini venivano adottati in fretta, lasciandolo dopo pochi mesi.
+L'unica con cui riuscì a legare fu la figlia della signora Helia, Nala, che veniva spesso a fare compagnia ai bambini e probabilmente, notando che non era ancora stato adottato, si sentiva in colpa per lui.
+Essendo l'unica che le rivolgeva la minima attenzione, lui finì presto per innamorarsene.
+
+Post gioco:
+Durante il gioco è possibile trovarlo a ronzare attorno a Nala, specialmente al parco.
+In alternativa è possibile trovarlo nella catapecchia in cui vive, intento a comporre musica drone.
+Con lo svilupparsi della trama tenderà ad alienarsi sempre di più, fino impazzire completamente.
+Dopo la morte di Nala il sua carattere cambierà completamente, diventando distaccato e pensieroso.
+Verso la fine giungerà all'epifania 
+
+
+
+-Storpia:
+Cosa si chiede?		Perchè le sia toccata una grave malattia.
+Cosa vuole?			Guarire e continuare a vivere.
+Di cosa ha bisogno?	Accettare la sua impotenza rispetto al grande schema dell'universo.
+
+Nome: Nala 
+Età: 20
+Segni particolari: è in sedia a rotelle
+
+pre-gioco:
+Nala è la figlia della signora Helia. Ha sempre sentito il bisogno di aiutare i più deboli, spinta anche dalla figura materna e dalla sua professione.
+Spesso andava a trovare i bambini dell'orfanotrofio per fare loro compagnia e tiragli su il morale.
+Qui notò un ragazzo che cercava sempre di essere al centro dell'attezione. 
+Notò anche che, nonostante fossero molti anni che abitava la struttura, nessuno aveva ancora deciso di adottarlo, probabilmente a causa proprio del suo carattere che faceva allontanare chi cercava una vita più tranquilla.
+A lei stava simpatico, pensava che sarebbero potuti diventare buoni amici.
+Iniziò allora ad avvicinarsi a lui. Poi i mesi divennero anni, e i due ragazzi divennero adulti. Compiuta la maggiore età il ragazzo decise di andare a vivere da solo, ma loro continuarono a vedersi di tanto in tanto, specialmente al parco del villaggio, dove Nala passava il tempo a curare le aiuole e piantare fiori.
+Poco dopo, però, Nala si ammalò. Le radiazioni liberate mezzo secolo prima ancora portavano effetti devastanti, avendo risparmiato prima suo nonno, poi sua madre per giungere infine a lei.
+
+
+
+
+Abbandonati come cani dal padrone, quando la moglie è allergica al pelo
