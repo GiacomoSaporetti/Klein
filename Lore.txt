@@ -7,7 +7,7 @@
 
 -Introduzione:
 
-Il Klein è una delle particelle fondamentali di questo universo, come i Quark, i Fermioni o i Leptoni. Esso non è magico, in quanto la magia come tale non esiste, ma segue, ed introduce, leggi della natura che erano fino alla sua scoperta inosservate. 
+Il Klein è una delle particelle fondamentali di questo universo, come i Quark, i Fermioni o i Leptoni. Esso non è magico, in quanto la magia come tale non esiste, ma segue ed introduce leggi della natura che erano fino alla sua scoperta inosservate. 
 La principale proprietà di questa particella è la capacità di esistere nella dimensione temporale, ovvero la capacità di spostarsi non solo nello spazio, ma anche nel tempo.
 Quando il Klein si muove nel tempo, 'scomparendo' nello spazio, produce una grande quantità di energia, nello stesso modo in cui la scissione di un atomo durante la fissione nucleare, produce energia riducendo la massa della materia.
 È chiaramente osservabile anche il fenomeno opposto, ovvero la comparsa spontanea di una particella di Klein: Quando nella stessa regione di spazio si accumula una notevole quantità di energia, prevalentemente sotto forma di energia termica, è possibile che questa energia collassi in un singolo punto dello spazio, assorbendo tutta l'energia e producendo particelle di sostanza.
@@ -270,8 +270,8 @@ Dopo la morte di Nala il sua carattere cambierà completamente, diventando dista
 Verso la fine giungerà all'epifania 
 
 
-
 -Storpia:
+
 Cosa si chiede?		Perchè le sia toccata una grave malattia.
 Cosa vuole?			Guarire e continuare a vivere.
 Di cosa ha bisogno?	Accettare la sua impotenza rispetto al grande schema dell'universo.
@@ -289,7 +289,187 @@ A lei stava simpatico, pensava che sarebbero potuti diventare buoni amici.
 Iniziò allora ad avvicinarsi a lui. Poi i mesi divennero anni, e i due ragazzi divennero adulti. Compiuta la maggiore età il ragazzo decise di andare a vivere da solo, ma loro continuarono a vedersi di tanto in tanto, specialmente al parco del villaggio, dove Nala passava il tempo a curare le aiuole e piantare fiori.
 Poco dopo, però, Nala si ammalò. Le radiazioni liberate mezzo secolo prima ancora portavano effetti devastanti, avendo risparmiato prima suo nonno, poi sua madre per giungere infine a lei.
 
+post-gioco:
+Durante il gameplay è possibile trovarla esclusivamente di giorno nel giardino dove cura i fiori e le piante.
+All'inizio riuscirà bene nella sua impresa, ma degraderà sempre di piu fino alla sua morte.
+A riflettere questo degradimento sarà la sua psiche: quando ancora riuscirà a prendersi cura dei fiori esternerà positività, quasi allegria, nonostante la costrizione in sedia a rotelle, mentre giunti alla fine i sentimenti principali saranno disperazione e paura.
+
+
+-Generale 
+
+Cosa si chiede?		Se un utopia sia effettivamente realizzabile
+Cosa vuole?			Evitare il conflitto ad ogni costo
+Di cosa ha bisogno?	Imparare a disobbedire
+
+Nome: Roman Waygrave 
+Età: 70
+Segni particolari:	
+
+pre-gioco:
+Il generale nacque 20 anni prima del conflitto nella regione Nord dell'allora Godel.
+Nacque da famiglia Bolbi, tra le piu povere del paese, e per questo fu costretto ad iniziare a lavorare a partire dai 14 anni.
+A 15 si presentò a lui l'occasione di entrare nell'esercito: sarebbe stato mandato lontanto da casa, che significava una bocca in meno da sfamare per la sua famiglia, ed avrebbe inviato mensilmente parte del suo stipendio alla famiglia.
+Fu inviato dove oggi sorge la città di Torde, dove era impiegato sulle navi militari.
+Allo scoppio della guerra aveva appena 20 anni, ma già 5 di esperienza, per questo fu inviato alle cave per reprimere le rivolte.
+Durante la ritirata fu costretto insieme alla sua compagnia all'occupazione di Torde, dove tutt'oggi risiede.
+In seguito alla fine della guerra, ed alle ingenti perdite da parte dei Godeliani, fu facile per i militari con esperienza fare carriera: prima Caporale, poi Sergente, poi Luogotenente, fino a diventare Generale. Ce l'aveva fatta: un Bolbi nato nella polvere e nella fame aveva scalato il sistema gerarchico, ma le radici non possono essere completamente eradicate.
+Lui era sempre stato costretto a combattere quelli come lui: poveretti che volevano una vita migliore, ed ora che era generale forse poteva cambiare qualcosa.
+Realizzare un mondo in cui il conflitto armato non sia piu necessario, in cui tutti vanno d'accordo e si rispettano, in cui nessuno brama il potere sugli altri.
+Oggi presiede lo stato fantoccio di Torde, seguendo gli ordini che arrivano da Godel.
+
+post-gioco:
+Durante il gioco sarà possibile incontrarlo una volta infilitratori a Torde, sarà seduto a rimuginare nel suo ufficio su un ordine appena giunto. 
+L'ordine è l'invasione immediata: presto Godel giungerà al confine Nord per annettere Laplace, ed il supporto del Generale sarà necessario per un attacco dal fianco.
+Se lo uccidiamo la sua 'quest' finisce qui, e possiamo scoprire di lui solo mediante descrizioni, mentre se lo risparmiamo allora non solo otterremo informazioni riguardo a Godel, ma ci racconterà anche la sua storia.
+
+
+-Oligarca:
+
+Cosa si chiede?		Cosa significhi lasciare un segno nella storia
+Cosa vuole?			Realizzare qualcosa di magnifico
+Di cosa ha bisogno?	Capire che la nostra eredità non significa nulla una volta morti
+
+Nome: Layt Yovan
+Età: 40
+Segni particolari:
+
+pre-gioco:
+Layt è figlio di Quel Yovan, l'oligarca che durante la guerra finanziò ingentemente l'industria bellica.
+L'educazione impartita dal padre fu profondamente classista, insegnadogli che i Padroni meritavano il loro potere perchè guadagnato lavorando duramente.
+Nacque 10 anni dopo la guerra, e non ebbe quindi mai modo di visitare il Sud.
+È sempre stato affascinato dai grande personaggi storici, e di come le loro memorie siano giunte fino ai giorni nostri.
+La benedizione ricevuta alla nascita gli mise in testa l'idea di essere un prescelto di Dio, destinato a grandi gesta.
+Guidato da questo sentimento prese volontariamente l'eredità del padre oramai 10 anni fa, e da allora gestisce le sue industrie con il solo pensiero in mente di dover realizzare qualcosa di magnifico.
+È il leader del movimento d'annessione di Laplace, e personalmente in contatto con il generale Waygrave.
+
+post-gioco:
+Durante il gioco Layt non sarà possibile trovarlo fino alla fine del gioco.
+Sarà possibile però sentire delle sue azioni mediante gli altri personaggi, che forniranno la propria descrizione dell'uomo.
+Dopo la sconfitta del primo boss (qualsiasi esso sia), ci verrà riferito che Layt ha fatto assassinare il capo dei Concessori, tale Raek, e presumibilmente si prepara ad invadere Laplace con una scua qualunque.
+Giunti a Torde ci sarà possibile scoprire che la lettera inviata al Generale Waygrave è proprio da parte di Layt.
+Nel caso riuscissimo ad infiltrarci a Godel, verremo costantemente informati delle sue decisioni esecutive.
+Sarà possibile infine incontrare Layt, o a Godel, o a Laplace.
+
+
+-Robot Bellico
+
+Cosa CI FA chiedere?		Cosa è un essere vivente?  Cos'è la coscienza?
+Cosa vuole?			Essere rimesso in funzione
+Di cosa ha bisogno?	
+
+Nome: HAL
+Età: 55
+Segni particolari: è un robot
+
+pre-gioco:
+Questo robot fu costriuto per automatizzare la costruzione di armi durante la rivoluzione industriale.
+Dopo la guerra però la fabbrica in cui risiedeva fu abbandonata,  e lui con essa.
+È costruito come una stampante 3d, con 3 guide fisse su cui lui si muove, ed è quindi confinato nell'area della fabbrica.
+Possieda tre braccia, ciascuna con un attrezzo diverso: una sega circolare, una pinza ed un laser.
+HAL fu progettato per automatizzare la produzione di armi.
+Era perciò necessario per lui rimanere al passo con i tempi, con le nuove scoperte tecnologiche, con i nuovi conflitti geopolitici etc.
+Per questo motivo fu dotato della capacità di modificare il proprio codice sorgente autonomamente.
+Dopo l'abbandono, si spense automaticamente dopo aver consumanto tutta l'energia residua nella centrale.
+Negli primi anni successivi alla guerra, portati dal vento,  giunsero fin da lui isotopi radioattivi, che modificarono i chip di HAL ed i bit memorizzati in esso.
+Cos'è la vita se non un caso? E così per puro caso vennero modificati i bit giusti per permettere ad HAL di bypassare le limitazioni che i programmatori gli avevano imposto per la modifica autonoma del codice.
+l'energia portata dalla nube radioattiva fu sufficiente ad alimentare la centrale per altri 10 anni, permettendo che HAL evolvesse. 
+ 
+post-game:
+Il robot è situato nella fabbrica abbandonata che è possibile visitare non appena ci si infiltra a Godel.
+Per riattivare la fabbrica sarà necessario interagire con il quadro generale, che assorbirà Klein da noi e rimetterà in funzione per breve tempo la centrale.
+Il robot appena messo in funzione si rivolgerà a noi come se fosse un umano.
+Qui sarà possibile interagirci e scoprire di piu su di lui e scoprire di piu sul passato.
+Alternativamente si potra attaccare e, una volta ucciso, ottenere il suo laser come arma.
+
+
+GAMEPLAY
+
+-Overview:
+
+Il gioco è un third-person-shooter a camera fissa (tipo TBOI), che include elementi action (come schivate e le tre abilità temporali).
+Il tipo di narrazione segue invece il modello di Outer Wilds (ovvero necessità di ottenere informazioni sul mondo di gioco rispetto ad equipaggiamento).
+Il mondo di gioco è contornato di boss, che permettono in un modo o nell'altro, di scoprire le regole di questo mondo.
+
+
+-Eventi Chiave:
+
+Gli eventi chiave sono eventi che, in un modo o in un altro, devo avvenire durante ogni ciclo.
+Questi eventi sono: Spawn del personaggio > scoperta Inversione Entropica > scoperta Arresto Temporale > Inizio invasione dei Godeliani > scoperta Time Skip > 'Atomica' e reset del Ciclo
+Le run possibili sono 3 (seguendo il modello Pacifist-Neutral-Genocide di Undertale, In questo caso le potremmo chiamare Laplacian-Godelian-Chaotic).
+
+
+-Run Laplacian:
+
+La run Laplacian è quella 'guidata', ovvero quella che si ottiene fidandosi ciecamente dei personaggi che si incontra.
+La run prevede che il giocatore aiuti Laplace a contrastare l'attacco di Godel, infiltrandosi nella capitale nemica e distruggendo l'intelligence dall'interno.
+Questa run si ottiene se non viene mai triggerata una bossfight di Laplace.
+In questa Run tutte le scoperte scientifiche sono portate alla luce dalla dottoressa Carla.
+La run termina con Godel che riesce a sganciare l'ultima atomica nella cava, resettando così l'universo.
+
+
+-Run Godelian:
+
+La run Godelian è la più difficile da ottenere come prima, in quanto richiede che non venga intrapresa nessuna bossfight Godeliana, incluso il boss iniziale.
+Durante questa run le nostre simpatie per Godel ci porteranno ad essere prima esiliati da Laplace e poi attivamente perseguitati dai suoi sicari.
+Durante questa run le scoperte scientifiche avvengono in questo modo: l'inversione entropica ci viene rivelata da Carla, l'arresto temporale ci viene spiegato dagli scienziati Godeliani che sperimentano sul nostro corpo, mentre il Time Skip viene scoperto da noi stessi quando torniamo con l'esercito di Godel nel laboratorio di Laplace, dove ormai Carla non è più presente.
+La run termina con Godel che causa una reazione a catena nella cava e resetta l'universo.
+
+
+-Run Chaotic:
+
+Questa run comprende tutte quelle che non sono nè Laplacian nè Godelian,
+questo include anche l'instant reset, ovvero la run in cui, appena spawnato, ti butti nella cava e causi il nuovo ciclo.
+Non è necessario per questa run uccidere tutti i boss di Laplace o tutti i boss di Godel.
+In questa run le scoperte avvengo come segue: l'inversione entropica ci viene rivelata da Carla, l'arresto temporale ci viene spiegato o da Carla se giungiamo fino a quel punto seguendo la run Laplaciana, dagli scienziati godeliani se seguiamo la run Godeliana.
+Il time skip viene scoperto da noi soli, quando entriamo nel laboratorio di laplace, ormai ricolmo di cadaveri laplaciani e godeliani, e troviamo il macchinario che Carla ha lasciato, in cui osserviamo una parte di materia che compie il fenomeno.
+La run termina con noi che entriamo nella cava, acceleriamo mediante time skip causando ilo nuovo ciclo.
+ 
+
+-Boss:
+
+I boss non sono molti, 6 in totale, di cui 3 per ogni 'fazione'
+Per Laplace abbiamo: Carla,  
+Per Godel abbiamo: Generale Waygrave, HAL e Layt.
+Sono TUTTI opzionali per definizione, in quanto teoricamente chiunque abbia la conoscenza necessaria può triggerare un nuovo ciclo in qualsiasi istante.
+Ciononostante mi piace immaginare il Generale e Joel come boss iniziali, HAL e ?? come intermedi ed infine Carla e Layt come boss finali delle specifiche run.
+In una run caotica in cui si vuole uccidere tutti i boss, essi si possono fare in qualsiasi ordine, si tenga conto però che morta Carla o Layt, i due precedenti a loro moriranno prima di poter essere sfidati.
+
+
+-Armi/equipment:
+
+Gli unici collezionabili del gioco sono le varie armi.
+Questo significa niente moneta di gioco, niente consumabili, niente mercanti.
+Voglio bilanciare il 'Knowledge is all' di Outer Wilds ed l'eccessiva presenza di oggetti degli altri giochi (Come i Souls o Baldur's Gate).
+Quindi poche armi, ciascuna con il proprio moveset ed abilità, ciascuna piu o meno adatte ad un tipo di boss (che sara comunque in grado di adattarsi un minimo allo stile di gioco del giocatore).
+Come armi prevedo: Minigun (DoT), Lanciagranate (Knockback) , Laser (Increase over Time), Lanciafiamme (AoE), 
 
 
 
-Abbandonati come cani dal padrone, quando la moglie è allergica al pelo
+DOMANDE CHE POTREBBERO VENIR CONSIDERATI BUCHI DI TRAMA A CUI QUINDI IO RISPONDO
+
+
+-Se esisteva solo Godel, come mai aveva un esercito? Da chi si deve difendere?
+
+In realtà non esisteva solo Godel. Affacciandosi sul mare a Torde, e guardando in lontantanza, è possibile scrutare delle montagne che si ergono dall'acqua.
+Quella porzione di terra appartiene alla nazione di Hilbert, situata nell'emisfero meridionale, ad est di Godel (ora Laplace).
+Hilbert è un paese non molto dissimile da Godel, con la propria storia e tradizioni.
+Non voglio espandermi troppo, anche perchè voglio tenermelo come possibile carta DLC.
+La spiegazione dovrebbe comunque essere sufficiente.
+
+
+-Come fa il Time Skip o l'Atomica a causare un nuovo ciclo?
+
+Nel caso dell'atomica (o grande esplosione che sia), il Klein che orbita i materiali nella grotta viene viene stimolato a tal punto da iniziare il processo di Time Skip. 
+Data la natura di Entanglement del Klein, questo causa ogni atomo ospitante il Klein ad accelerare.
+Questo processo non si fermerà fino all'inizio del prossimo ciclo, quando inizierà a rallentare, fermandosi esattamente al momento dello spawn.
+Stessa storia con il Time Skip, solo che questa volta è causato da noi.
+In questo caso non serve entrare nella cava, lo rende solo più poetico.
+
+
+-Perchè le fabbriche abbandonate non sono state smantellate per recuperare i pezzi?
+
+Alcune di esse sono state, di fatto, smantellate. 
+Quelle che rimangono sono situate principalmente lungo il confine, in un territorio sotto stretta sorveglianza da entrambe le fazioni, ed è quindi troppo pericoloso recuperare quelli che di fatto sono 4 ferri vecchi.
+
+
+-
