@@ -1,18 +1,22 @@
+#define SDL_ENABLE_OLD_NAMES
+
 #include <stdlib.h>
 #include <time.h>
 #include <stdio.h>
 #include <iostream>
 #include <chrono>
-//#include <Windows.h>
-//#include "SDL3/SDL.h"
+#include <Windows.h>
+#include "SDL3/SDL.h"
 #include "Klein.h"
 #include "TimeHandler.h"
 #include "Entity.h"
 #include "LinkedList.h"
 #include "CollisionHandler.h"
+#include "MainCharacter.h"
 
 #define N 1000
 #define R 1000
+using namespace std;
 
 
 //#define RES
@@ -23,7 +27,16 @@
 #define PRINT_RES
 #endif
 
-using namespace std;
+Klein::MainCharacter PG;
+
+void ReadKeys()
+{
+    if(GetKeyState('A') & 0x8000)   ;
+    if(GetKeyState('D') & 0x8000)   ;
+    if(GetKeyState('S') & 0x8000)   ;
+    if(GetKeyState('W') & 0x8000)   ;
+}
+
 
 Klein::TimeHandler TIME;
 
@@ -35,11 +48,29 @@ Klein::LinkedList ENTITIES_LIST;
 
 long long int times[7]={1,1,1,1,1,1,1};
 int number_of_hitbox = 0;
+
+SDL_Event event;
+int quit = 0;
 int main()
 {
     srand((unsigned)time(NULL));
 
-    COLLISION.SetEntitiesList(&ENTITIES_LIST);
+    std::cout << "New compiled" << std::endl;
+    float x=0, y=0, prev_x, prev_y;
+    while( !quit )
+    {
+        prev_x = x;
+        prev_y = y;
+        TIME.Run();
+        
+        //system("cls");
+        std::cout << PG.position.x << ", " << PG.position.y << " | " << 1/TIME.GetRealDelta() <<std::endl;
+        //std::cout << 1/TIME.GetRealDelta() <<std::endl;
+        while(!TIME.WaitUntil(1.0f/30))
+        {;}
+    }
+
+    /*COLLISION.SetEntitiesList(&ENTITIES_LIST);
 
     for(int t=0; t<R; t++)
     {

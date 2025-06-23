@@ -43,7 +43,7 @@ namespace Klein
                     area.bottom = center.y - height/2;
                     area.right = center.x + width/2;
                     area.left = center.x - width/2;
-                    radius = std::sqrtf(width*width + height*height)/2;
+                    radius = std::sqrt(width*width + height*height)/2;
                 }
                 mass = 0;
                 cell_id = 0;

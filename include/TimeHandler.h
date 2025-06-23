@@ -26,5 +26,7 @@ namespace Klein
             void ChangeSpeed(float s);
 
             void Run();
+
+            bool WaitUntil(float millis);
     };
 }
