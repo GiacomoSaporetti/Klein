@@ -5,76 +5,98 @@
 #include "LinkedList.h"
 #include "Hitbox.h"
 
+
 namespace Klein
 {
+    const int KARMA_THRESHOLD_LOWEST = -1000;
+    const int KARMA_THRESHOLD_LOW = -500;
+    const int KARMA_THRESHOLD_MID = 0;
+    const int KARMA_THRESHOLD_HIGH = 500;
+    const int KARMA_THRESHOLD_HIGHEST = 1000;
+
+    enum aggro_t
+    {
+        AGGRO_PROTECTIVE,
+        AGGRO_FRIENDLY,
+        AGGRO_NEUTRAL,
+        AGGRO_UNFRIENDLY,
+        AGGRO_AGGRESSIVE
+    };
+
     class Entity
     {
-        protected:
-            LinkedList* recently_collided;
-            LinkedList* hitboxes;
-            sem_t semaphore;
-        public:
-            vector speed;
-            vector next_speed;
-            Point position;
-            float birth;
-            float death;
-            float mass;
-            int hp=50;
+        private:
+            LinkedList* recentlyCollidedEntities;
+            LinkedList* hitboxesList;
+            float timeOfBirth;
+            float timeOfDeath;
+            int hp;
             int faction;
-            int cell_id;
-            int number_of_hitboxes;
-            static int time_direction;
+            int cellID;
+            int numberOfHitboxes;
+            sem_t semaphore;
+            static int directionOfTime;
             static TimeHandler * TIMER;
-            float dissipation_factor;
+
+            void goInDeathState();
+        
+        public:
+            vector_t speed;
+            vector_t nextSpeed;
+            point_t position;
+            float mass;
+            float dissipationFactor;
+
             Entity()
             {
                 sem_init(&semaphore, 0, 1);
+                hp = 50;
                 mass = 1.0f;
                 speed.x = 0.0f;
                 speed.y = 1.0f;
                 position.x = 0;
                 position.y = 0;
 
-                if(TIMER != NULL)
-                    birth  = TIMER->GetGameTime();
-                else birth = -1.0f;
+                timeOfBirth  = TIMER==NULL? -1.0f : TIMER->getGameTime();
+                timeOfDeath = -1.0f;
 
-                death = -1.0f;
                 faction = 0;
-                cell_id = -1;
+                cellID = -1;
 
-                recently_collided = new LinkedList;
-                hitboxes = new LinkedList;
+                recentlyCollidedEntities = new LinkedList;
+                hitboxesList = new LinkedList;
 
-                number_of_hitboxes = 0;
+                numberOfHitboxes = 0;
 
-                next_speed = {0,0};
-                dissipation_factor = 1;
+                nextSpeed = {0,0};
+                dissipationFactor = 1;
                 
             }
-            ~Entity() = default;   
-
-            void Run();
-            int GetTimeDirection();
-            void DeathState();
-            Point GetPosition();
-            vector GetSpeed();
-            float GetMass();
-            LinkedList* GetHitboxes();
-
-            void SetPosition(Point pos);
-            void SetSpeed(vector vel);
-            void SetMass(float m);
+            ~Entity()
+            {
+                delete recentlyCollidedEntities;
+                delete hitboxesList;
+            }
             
-            void AddHitbox(HITBOX_TYPE TYPE, Point* CENTER, float RADIUS, int WIDTH, int HEIGHT);
-            void SetFaction(int f);
- 
-            void ClearCollided();
-            void AddCollided(Entity*e);
-            bool HasAlreadyCollided(Entity*e);  
+            void Run();
+            int getTimeDirection();
+            point_t getPosition();
+            vector_t getSpeed();
+            float getMass();
+            LinkedList* getHitboxes();
 
-            void UpdateMotion();
+            void setPosition(point_t pos);
+            void setSpeed(vector_t vel);
+            void setMass(float m);
+            
+            void addHitbox(hitbox_type_t hitboxType, point_t& center, float radius, int width, int height);
+            void setFaction(int f);
+ 
+            void clearCollided();
+            void addCollided(Entity*e);
+            bool hasAlreadyCollided(Entity*e);  
+
+            void updateMotion();
     };
 
     

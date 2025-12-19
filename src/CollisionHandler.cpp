@@ -1,29 +1,16 @@
 #include "CollisionHandler.h"
 #include <chrono>
-#define PARTITION 2
-std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
-std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
 
 //#define PRINT_COLLISION
 //#define MEASURE_TIME
 #define FACTIONS
 
-#ifdef MEASURE_TIME
-#define BEGIN_TIME begin = std::chrono::steady_clock::now();
-#define END_TIME end = std::chrono::steady_clock::now();
-#define PRINT_TIME(name)  std::cout << "Time: " << name << " "<< std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << std::endl;
-#define GET_TIME std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()
-#else
-#define BEGIN_TIME 
-#define END_TIME 
-#define PRINT_TIME(name)  
-#define GET_TIME 
-#endif
+std::chrono::steady_clock::time_point timeMeasureBegin;
+std::chrono::steady_clock::time_point timeMeasureEnd;
+
 
 #ifdef PRINT_COLLISION
-#define PRINT_COLLISION_LIST PrintCollisionList();
+#define PRINT_COLLISION_LIST printCollisionList();
 #else
 #define PRINT_COLLISION_LIST
 #endif
@@ -32,135 +19,135 @@ using namespace Klein;
 
 int global_time = 0;
 int global_cnt = 0;
+
+/*Prototypes*/
 bool CheckDistanceWithinRadius(Hitbox* h1, Hitbox* h2);
 void CountCollisionThread(LinkedList* list, int* res);
 bool CheckCollision(Hitbox* h1, Hitbox* h2);
-int CountCollision(LinkedList* list);
-void PopulateCells(Grid* grid, LinkedList*list, int start, int stop);
+int  CountCollision(LinkedList& list);
+void PopulateCells(Grid* grid, LinkedList* list, int start, int stop);
 void CountGridMultithread(Grid* grid, int start_x, int stop_x, int start_y, int stop_y, int* res);
-
+void ComputeCollision(Entity* e1, Entity* e2);
 
 
 void ComputeCollision(Entity* e1, Entity* e2)
 {
-    float total_dissipation = e1->dissipation_factor*e2->dissipation_factor/2;
-    vector momentum = {e1->mass*e1->speed.x + e2->mass*e2->speed.x, e1->mass*e1->speed.y + e2->mass*e2->speed.y}; 
+    float total_dissipation = e1->dissipationFactor*e2->dissipationFactor/2;
+    vector_t momentum = {e1->mass*e1->speed.x + e2->mass*e2->speed.x, e1->mass*e1->speed.y + e2->mass*e2->speed.y}; 
 
-    e1->next_speed.x += momentum.x*total_dissipation/e1->mass;
-    e2->next_speed.x += momentum.x*total_dissipation/e2->mass;
+    e1->nextSpeed.x += momentum.x*total_dissipation/e1->mass;
+    e2->nextSpeed.x += momentum.x*total_dissipation/e2->mass;
 
-    e1->next_speed.y += momentum.y*total_dissipation/e1->mass;
-    e2->next_speed.y += momentum.y*total_dissipation/e2->mass;
+    e1->nextSpeed.y += momentum.y*total_dissipation/e1->mass;
+    e2->nextSpeed.y += momentum.y*total_dissipation/e2->mass;
 }
 
-void CollisionHandler::ResetMotion()
+void CollisionHandler::resetMotion()
 {
-    Entity* e;
-    Node* n = ENTITIES_LIST->GetNodeAtPosition(0);
+    node_t* currentNode = ENTITIES_LIST->getFirstNode();
 
-    while(n != nullptr)
+    while(currentNode != nullptr)
     {
-        e = (Entity*) n->data;
-        e->next_speed = {0, 0};
-        n = n->next;
+        Entity* e = (Entity*) currentNode->data;
+        ASSERT(e != nullptr)
+        e->nextSpeed = {0, 0};
+        currentNode = currentNode->next;
     }
 }
 
-void CollisionHandler::UpdateMotion()
+void CollisionHandler::updateMotion()
 {
-    Entity* e;
-    Node* n = ENTITIES_LIST->GetNodeAtPosition(0);
+    node_t* currentNode = ENTITIES_LIST->getFirstNode();
 
-    while(n != nullptr)
+    while(currentNode != nullptr)
     {
-        e = (Entity*) n->data;
-        e->UpdateMotion();
-        n = n->next;
+        Entity* e = (Entity*) currentNode->data;
+        ASSERT(e!=nullptr)
+        e->updateMotion();
+        currentNode = currentNode->next;
     }
 }
 
-void CollisionHandler::PopulateHitboxesList()
+int CollisionHandler::populateHitboxesList()
 {
-    DEBUG_MSG("PopulateHitboxesList:", "START")
-    HITBOXES_LIST->Clear();
-    Entity* e;
-    Node* n = ENTITIES_LIST->GetNodeAtPosition(0);
+    HITBOXES_LIST.clear();
+    ASSERT(HITBOXES_LIST.getFirstNode() == nullptr)
 
-    while(n != nullptr)
+    node_t* currentNode = ENTITIES_LIST->getFirstNode();
+
+    while(currentNode != nullptr)
     {
-        e = (Entity*) n->data;
-        HITBOXES_LIST->AppendList(e->GetHitboxes());
-        n = n->next;
+        Entity* e = (Entity*) currentNode->data;
+        HITBOXES_LIST.appendList(*e->getHitboxes());
+        currentNode = currentNode->next;
     }
+
+    return HITBOXES_LIST.getNumberOfNodes();
 }
 
 
-int CollisionHandler::RunNaive()
+int CollisionHandler::runNaiveImplementation()
 {
-    DEBUG_MSG("RunNaive:", "START")
-    PopulateHitboxesList();
+    if(populateHitboxesList() == 0) return 0;
     int res = CountCollision(HITBOXES_LIST);
+    
     PRINT_COLLISION_LIST;
-    ClearEntitiesCollisionList();
-    UpdateMotion();
+    clearEntitiesCollisionList();
+    updateMotion();
     return res;
 }
 
 
-int CollisionHandler::RunQuadrantOptimization()
+int CollisionHandler::runQuadrantOptimization()
 {
-    DEBUG_MSG("RunQuadrantOptimization:", "START")
-    PopulateHitboxesList();
-    int number_of_collisions = 0;
-    int number_of_hitboxes = HITBOXES_LIST->GetNumberOfNodes();
+    if(populateHitboxesList() == 0) return 0;
+
+    int numberOfCollisions = 0;
+    int numberOfHitboxes = HITBOXES_LIST.getNumberOfNodes();
     Hitbox* h;
 
-    LinkedList* NE = new LinkedList;
-    LinkedList* NO = new LinkedList;
-    LinkedList* SE = new LinkedList;
-    LinkedList* SO = new LinkedList;
+    LinkedList* NorthEast = new LinkedList;
+    LinkedList* NorthWest = new LinkedList;
+    LinkedList* SouthEast = new LinkedList;
+    LinkedList* SouthWest = new LinkedList;
 
-    Point weigth_position = {0,0};
+    point_t meanWeightedPosition = {0,0};
 
-    Node* n = HITBOXES_LIST->GetNodeAtPosition(0);
+    node_t* currentNode = HITBOXES_LIST.getFirstNode();
 
-    while(n != nullptr)
+    while(currentNode != nullptr)
     {
-        h = (Hitbox*) n->data;
-        Point pos = h->GetPosition();
-        weigth_position.x += pos.x;
-        weigth_position.y += pos.y;
-        n = n->next;
+        h = (Hitbox*) currentNode->data;
+        point_t pos = h->getPosition();
+        meanWeightedPosition.x += pos.x;
+        meanWeightedPosition.y += pos.y;
+        currentNode = currentNode->next;
     }
-    weigth_position.x = weigth_position.x/number_of_hitboxes;
-    weigth_position.y = weigth_position.y/number_of_hitboxes;
+    meanWeightedPosition.x = meanWeightedPosition.x/numberOfHitboxes;
+    meanWeightedPosition.y = meanWeightedPosition.y/numberOfHitboxes;
   
-    n = HITBOXES_LIST->GetNodeAtPosition(0);
+    currentNode = HITBOXES_LIST.getFirstNode();
     
-    while(n != nullptr)
+    while(currentNode != nullptr)
     {
-        h = (Hitbox*) n->data;
-        float radius = h->GetRadius();
-        Point center = h->GetPosition();
+        h = (Hitbox*) currentNode->data;
+        float radius = h->getRadius();
+        point_t center = h->getPosition();
         bool N=false;
         bool E=false;
         bool S=false;
         bool O=false;
         
-        if(center.x + radius >= weigth_position.x)
-            E = true;    
-        if(center.x - radius < weigth_position.x)    
-            O = true;
-        if(center.y + radius >= weigth_position.y)
-            N = true;    
-        if(center.y - radius < weigth_position.y)    
-            S = true;
+        if(center.x + radius >= meanWeightedPosition.x)      E = true;    
+        if(center.x - radius <  meanWeightedPosition.x)      O = true;
+        if(center.y + radius >= meanWeightedPosition.y)      N = true;    
+        if(center.y - radius <  meanWeightedPosition.y)      S = true;
 
-        if(N && O)  NO->AddNodeEnd(h);
-        if(N && E)  NE->AddNodeEnd(h);
-        if(S && O)  SO->AddNodeEnd(h);
-        if(S && E)  SE->AddNodeEnd(h);
-        n = n->next;
+        if(N && O)  NorthWest->appendNode(h);
+        if(N && E)  NorthEast->appendNode(h);
+        if(S && O)  SouthWest->appendNode(h);
+        if(S && E)  SouthEast->appendNode(h);
+        currentNode = currentNode->next;
     }
     
 
@@ -168,10 +155,10 @@ int CollisionHandler::RunQuadrantOptimization()
 
     /*if(MAX_NUMBER_THREADS >= 4)
     {
-        THREADS[0] = std::thread(CountCollisionThread, NE, &nne);
-        THREADS[1] = std::thread(CountCollisionThread, NO, &nno);
-        THREADS[2] = std::thread(CountCollisionThread, SE, &nse);
-        THREADS[3] = std::thread(CountCollisionThread, SO, &nso);
+        THREADS[0] = std::thread(CountCollisionThread, NorthEast, &nne);
+        THREADS[1] = std::thread(CountCollisionThread, NorthWest, &nno);
+        THREADS[2] = std::thread(CountCollisionThread, SouthEast, &nse);
+        THREADS[3] = std::thread(CountCollisionThread, SouthWest, &nso);
 
         THREADS[0].join();
         THREADS[1].join();
@@ -180,41 +167,47 @@ int CollisionHandler::RunQuadrantOptimization()
     }
     if(MAX_NUMBER_THREADS == 2)
     {*/
-        THREADS[0] = std::thread(CountCollisionThread, NE, &nne);
-        THREADS[1] = std::thread(CountCollisionThread, NO, &nno);
+        THREADS[0] = std::thread(CountCollisionThread, NorthEast, &nne);
+        THREADS[1] = std::thread(CountCollisionThread, NorthWest, &nno);
         THREADS[0].join();
         THREADS[1].join();
-        THREADS[0] = std::thread(CountCollisionThread, SE, &nse);
-        THREADS[1] = std::thread(CountCollisionThread, SO, &nso);
+        THREADS[0] = std::thread(CountCollisionThread, SouthEast, &nse);
+        THREADS[1] = std::thread(CountCollisionThread, SouthWest, &nso);
         THREADS[0].join();
         THREADS[1].join();
     /*}
     if(MAX_NUMBER_THREADS == 1)
     {*/
-        /*nne = CountCollision(NE);
-        nno = CountCollision(NO);
-        nse = CountCollision(SE);
-        nso = CountCollision(SO);*/
+        /*nne = CountCollision(NorthEast);
+        nno = CountCollision(NorthWest);
+        nse = CountCollision(SouthEast);
+        nso = CountCollision(SouthWest);*/
     //}
 
-    number_of_collisions = nne + nno + nse + nso;
+    numberOfCollisions = nne + nno + nse + nso;
 
     PRINT_COLLISION_LIST
-    ClearEntitiesCollisionList();
-    UpdateMotion();
-    return number_of_collisions;
+    clearEntitiesCollisionList();
+    updateMotion();
+
+
+    delete NorthEast;
+    delete NorthWest;
+    delete SouthEast;
+    delete SouthWest;
+    return numberOfCollisions;
 }
 
 void PopulateCells(Grid* grid, LinkedList*list, int start, int stop)
 {
     Hitbox* h;
-    Node* current_node = list->GetNodeAtPosition(start);
+    node_t* current_node = list->getNodeAtPosition(start);
 
     for(int i=start; i<stop; i++)
     {
         h = (Hitbox*)current_node->data;
         if(h != nullptr)
-            grid->AddHitboxToCell(h);
+            grid->addHitboxToCell(h);
         current_node = current_node->next;
         if(current_node == nullptr)
             break;
@@ -225,98 +218,85 @@ void PopulateCells(Grid* grid, LinkedList*list, int start, int stop)
 void CountGridMultithread(Grid* grid, int start_x, int stop_x, int start_y, int stop_y, int* res)
 {
     //auto my_begin = std::chrono::steady_clock::now();
-    int number_of_collisions = 0;
+    int numberOfCollisions = 0;
     for(int x=start_x; x<=stop_x; x+=2)
     {
         for(int y=start_y; y<=stop_y; y+=2)
         {
-            LinkedList* CheckList = new LinkedList;
-            CheckList->AppendList(grid->GetListOfCell(x-1, y-1));
-            CheckList->AppendList(grid->GetListOfCell(x-1, y));
-            CheckList->AppendList(grid->GetListOfCell(x-1, y+1));
-            CheckList->AppendList(grid->GetListOfCell(x, y-1));
-            CheckList->AppendList(grid->GetListOfCell(x, y));
-            CheckList->AppendList(grid->GetListOfCell(x, y+1));
-            CheckList->AppendList(grid->GetListOfCell(x+1, y-1));
-            CheckList->AppendList(grid->GetListOfCell(x+1, y));
-            CheckList->AppendList(grid->GetListOfCell(x+1, y+1));
+            LinkedList CheckList = LinkedList();
+            CheckList.appendList(grid->getListOfCell(x-1, y-1));
+            CheckList.appendList(grid->getListOfCell(x-1, y));
+            CheckList.appendList(grid->getListOfCell(x-1, y+1));
+            CheckList.appendList(grid->getListOfCell(x, y-1));
+            CheckList.appendList(grid->getListOfCell(x, y));
+            CheckList.appendList(grid->getListOfCell(x, y+1));
+            CheckList.appendList(grid->getListOfCell(x+1, y-1));
+            CheckList.appendList(grid->getListOfCell(x+1, y));
+            CheckList.appendList(grid->getListOfCell(x+1, y+1));
             
-            number_of_collisions += CountCollision(CheckList);
-           
-            delete CheckList;
+            numberOfCollisions += CountCollision(CheckList);
         }
     }
 
-    *res = number_of_collisions;
+    *res = numberOfCollisions;
     //auto my_end = std::chrono::steady_clock::now();
     //std::cout << "Time:  "<< std::chrono::duration_cast<std::chrono::microseconds>(my_end - my_begin).count() << std::endl;
 }
 
 
-int CollisionHandler::RunGridOptimization()
+int CollisionHandler::runGridOptimization()
 {
-    DEBUG_MSG("RunGridOptimization:", "START")
-    PopulateHitboxesList();
+    if(populateHitboxesList() == 0) return 0;
+    
+    int numberOfCollisions = 0;
 
-    int number_of_collisions = 0;
+    node_t* currentNode = HITBOXES_LIST.getFirstNode();
 
-    Hitbox* h;
-    int active_cnt = 0;
-    Node*n = HITBOXES_LIST->GetNodeAtPosition(0);
-
-    while(n != nullptr)
+    while(currentNode != nullptr)
     {
-        h = (Hitbox*) n->data;
-        if(h != nullptr)
-            GRID->AddHitboxToCell(h);
-        n = n->next;
+        Hitbox* h = (Hitbox*) currentNode->data;
+        if(h != nullptr)    GRID->addHitboxToCell(h);
+        currentNode = currentNode->next;
     }
+    
 
-    int temp_res=0;
-    for(int x=1; x<=GRID->horizontal_cells; x+=2)
+    for(int x=1; x<=GRID->getNumberOfHorizontal(); x+=2)
     {
-        for(int y=1; y<=GRID->vertical_cells; y+=2)
+        for(int y=1; y<=GRID->getNumberOfVetical(); y+=2)
         {
-            LinkedList* CheckList = new LinkedList;
-            CheckList->AppendList(GRID->GetListOfCell(x-1, y-1));
-            CheckList->AppendList(GRID->GetListOfCell(x-1, y));
-            CheckList->AppendList(GRID->GetListOfCell(x-1, y+1));
-            CheckList->AppendList(GRID->GetListOfCell(x, y-1));
-            CheckList->AppendList(GRID->GetListOfCell(x, y));
-            CheckList->AppendList(GRID->GetListOfCell(x, y+1));
-            CheckList->AppendList(GRID->GetListOfCell(x+1, y-1));
-            CheckList->AppendList(GRID->GetListOfCell(x+1, y));
-            CheckList->AppendList(GRID->GetListOfCell(x+1, y+1));
+            LinkedList CheckList = LinkedList();
+            CheckList.appendList(GRID->getListOfCell(x-1, y-1));
+            CheckList.appendList(GRID->getListOfCell(x-1, y));
+            CheckList.appendList(GRID->getListOfCell(x-1, y+1));
+            CheckList.appendList(GRID->getListOfCell(x, y-1));
+            CheckList.appendList(GRID->getListOfCell(x, y));
+            CheckList.appendList(GRID->getListOfCell(x, y+1));
+            CheckList.appendList(GRID->getListOfCell(x+1, y-1));
+            CheckList.appendList(GRID->getListOfCell(x+1, y));
+            CheckList.appendList(GRID->getListOfCell(x+1, y+1));
             
-            int number_of_nodes = CheckList->GetNumberOfNodes();
-            int number_of_checks = number_of_nodes*number_of_nodes/2;
-
-            number_of_collisions += CountCollision(CheckList);
-            delete CheckList;
+            numberOfCollisions += CountCollision(CheckList);
         }
     }
 
-    for(int i=0; i<GRID->number_of_cells; i++)
-        GRID->ClearCell(i);
+    for(int i=0; i<GRID->getNumberOfCells(); i++)  GRID->clearCell(i);
     
     PRINT_COLLISION_LIST
-    ClearEntitiesCollisionList();
-    UpdateMotion();
-    return number_of_collisions;  
+    clearEntitiesCollisionList();
+    updateMotion();
+    return numberOfCollisions;  
 }
 
 
 bool CheckCollision(Hitbox* h1, Hitbox* h2)
 {
-    DEBUG_MSG("CheckCollision:", "START")
-    
-    Entity*e1 = (Entity*) h1->GetParentEntity();
-    Entity*e2 = (Entity*) h2->GetParentEntity();
+    Entity*e1 = (Entity*) h1->getParentEntity();
+    Entity*e2 = (Entity*) h2->getParentEntity();
 
     if(e1 == e2)
         return false;
  
-    if(e2->HasAlreadyCollided(e1))
+    if(e2->hasAlreadyCollided(e1))
         return false;
     
     int type1 = h1->type;
@@ -328,40 +308,31 @@ bool CheckCollision(Hitbox* h1, Hitbox* h2)
 
     /*Check the boundaries, if no match they do NOT collide
     either if they are 2 rectangles or 1 circle and 1 rectangle*/
-    if(h1->GetTop() < h2->GetBottom())
-        return false;
-    if(h2->GetTop() < h1->GetBottom())
-        return false;
-    if(h1->GetRight() < h2->GetLeft())
-        return false;
-    if(h2->GetRight() < h1->GetLeft())
-        return false;   
+    if(h1->getTop() < h2->getBottom())  return false;
+    if(h2->getTop() < h1->getBottom())  return false;
+    if(h1->getRight() < h2->getLeft())  return false;
+    if(h2->getRight() < h1->getLeft())  return false;   
     
-    /*If they are different shapes che the distance between center*/
-    if(type1 != type2)
-        return CheckDistanceWithinRadius(h1, h2);
+    /*If they are different shapes check the distance between center*/
+    if(type1 != type2)  return CheckDistanceWithinRadius(h1, h2);
     
     return true;
 }
 
 bool CheckDistanceWithinRadius(Hitbox* h1, Hitbox* h2)
 {
-    DEBUG_MSG("CheckDistanceWithinRadius:", "START")
-  
-    Point p1 = h1->GetPosition();
-    Point p2 = h2->GetPosition();
-    vector distance={float(p1.x - p2.x), float(p1.y - p2.y)};
+    point_t p1 = h1->getPosition();
+    point_t p2 = h2->getPosition();
+    vector_t distance={float(p1.x - p2.x), float(p1.y - p2.y)};
 
-    if(distance.Magnitude() < (h1->GetRadius() + h2->GetRadius()))
-            return true;
+    if(distance.getMagnitude() < (h1->getRadius() + h2->getRadius()))   return true;
 
     return false;
 }
 
 void CountCollisionThread(LinkedList* list, int* res)
 {
-    DEBUG_MSG("CountCollision(single):", "START")
-    int number_of_collisions = 0;
+    int numberOfCollisions = 0;
     Entity* active_entity;
     Entity* check_entity;
     Hitbox* active_hitbox;
@@ -369,13 +340,13 @@ void CountCollisionThread(LinkedList* list, int* res)
     int active_cnt = 0;
     int check_cnt = 0;
     
-    Node* active_node = list->GetNodeAtPosition(0);
-    Node* check_node;
+    node_t* active_node = list->getFirstNode();
+    node_t* check_node;
 
     while(active_node !=  nullptr)
     {
         active_hitbox = (Hitbox*) active_node->data;
-        active_entity = (Entity*) active_hitbox->GetParentEntity();
+        active_entity = (Entity*) active_hitbox->getParentEntity();
         int active_faction = active_hitbox->faction;
         check_node = active_node;
         while((check_node = check_node->next)!= nullptr)
@@ -385,31 +356,31 @@ void CountCollisionThread(LinkedList* list, int* res)
             if(active_faction == check_faction)
                     continue;       
             if(CheckCollision(active_hitbox, check_hitbox))
-                {
-                    #ifdef PRINT_COLLISION
-                        CollisionCouple* couple = new CollisionCouple;
-                        couple->first = active_hitbox;
-                        couple->second = check_hitbox;
-                        COLLISION_LIST->AddNodeEnd(couple);
-                    #endif
-                    check_entity = (Entity*) check_hitbox->GetParentEntity();
-                    active_entity->AddCollided(check_entity);
-                    check_entity->AddCollided(active_entity);
-                    ComputeCollision(active_entity, check_entity);
-                    number_of_collisions++;
-                }
+            {
+                #ifdef PRINT_COLLISION
+                CollisionCouple* couple = new CollisionCouple;
+                couple->first = active_hitbox;
+                couple->second = check_hitbox;
+                COLLISION_LIST.appendNode(couple);
+                #endif
+                
+                check_entity = (Entity*) check_hitbox->getParentEntity();
+                active_entity->addCollided(check_entity);
+                check_entity->addCollided(active_entity);
+                ComputeCollision(active_entity, check_entity);
+                numberOfCollisions++;
+            }
         }
         active_node = active_node->next;
     }
     
-    *res =  number_of_collisions;
+    *res =  numberOfCollisions;
 }
 
 
-int CountCollision(LinkedList* list)
+int CountCollision(LinkedList& list)
 {
-    DEBUG_MSG("CountCollision(single):", "START")
-    int number_of_collisions = 0;
+    int numberOfCollisions = 0;
     Entity* active_entity;
     Entity* check_entity;
     Hitbox* active_hitbox;
@@ -417,18 +388,23 @@ int CountCollision(LinkedList* list)
     int active_cnt = 0;
     int check_cnt = 0;
     
-    Node* active_node = list->GetNodeAtPosition(0);
-    Node* check_node;
+    node_t* active_node = list.getFirstNode();
+    node_t* first_node = active_node;
+    node_t* check_node;
+
 
     while(active_node !=  nullptr)
     {
+        if(first_node == active_node) break; /*Prevents infinite loops*/
+        
         active_hitbox = (Hitbox*) active_node->data;
-        active_entity = (Entity*) active_hitbox->GetParentEntity();
+        active_entity = (Entity*) active_hitbox->getParentEntity();
         int active_faction = active_hitbox->faction;
         check_node = active_node;
-        
+        printf("active %p\n", active_node);
         while((check_node = check_node->next)!= nullptr)
         {
+            if(check_node == active_node) break; /*Prevents infinite loops*/
             
             check_hitbox = (Hitbox*) check_node->data;
             int check_faction = check_hitbox->faction;
@@ -436,47 +412,47 @@ int CountCollision(LinkedList* list)
                     continue;    
            
             if(CheckCollision(active_hitbox, check_hitbox))
-                {
-                    #ifdef PRINT_COLLISION
-                        CollisionCouple* couple = new CollisionCouple;
-                        couple->first = active_hitbox;
-                        couple->second = check_hitbox;
-                        COLLISION_LIST->AddNodeEnd(couple);
-                    #endif
-                    check_entity = (Entity*) check_hitbox->GetParentEntity();
-                    active_entity->AddCollided(check_entity);
-                    check_entity->AddCollided(active_entity);
-                    ComputeCollision(active_entity, check_entity);
-                    number_of_collisions++;
-                }  
+            {
+                #ifdef PRINT_COLLISION
+                CollisionCouple* couple = new CollisionCouple;
+                couple->first = active_hitbox;
+                couple->second = check_hitbox;
+                COLLISION_LIST.appendNode(couple);
+                #endif
+
+                check_entity = (Entity*) check_hitbox->getParentEntity();
+                active_entity->addCollided(check_entity);
+                check_entity->addCollided(active_entity);
+                ComputeCollision(active_entity, check_entity);
+                numberOfCollisions++;
+            }  
         }
 
         active_node = active_node->next;
     }
     
-    return number_of_collisions;
+    return numberOfCollisions;
 }
 
-void CollisionHandler::ClearEntitiesCollisionList()
+void CollisionHandler::clearEntitiesCollisionList()
 {
-    DEBUG_MSG("ClearEntitiesCollisionList:", "START")
-    Node* n = ENTITIES_LIST->GetNodeAtPosition(0);
+    node_t* currentNode = ENTITIES_LIST->getFirstNode();
     Entity* ent;
     int cnt=0;
-    while(n != nullptr)
+    while(currentNode != nullptr)
     {
-        ent = (Entity*) n->data;
-        ent->ClearCollided();
-        n = n->next;
+        ent = (Entity*) currentNode->data;
+        ent->clearCollided();
+        currentNode = currentNode->next;
     }
 }
 
-void CollisionHandler::PrintCollisionList()
+/*For debug use only*/
+void CollisionHandler::printCollisionList()
 {
-    DEBUG_MSG("PrintCollisionList:", "START")
     CollisionCouple*couple;
     int cnt=0;
-    while((couple=(CollisionCouple*)COLLISION_LIST->GetData(cnt++)) != nullptr)
+    while((couple=(CollisionCouple*)COLLISION_LIST.getData(cnt++)) != nullptr)
     {
         Hitbox* h1 = couple->first;
         Hitbox* h2 = couple->second;
@@ -484,16 +460,15 @@ void CollisionHandler::PrintCollisionList()
         std::cout << "c= " << h1->center.x << ", " << h1->center.y << " | ";
         std::cout << "t= " << h1->type << " r= " << h1->radius << " ";
         std::cout << "h= " << h1->height << " w= " << h1->width << " | ";
-        std::cout << "cell= " << h1->cell_id << " /";
+        std::cout << "cell= " << h1->cellID << " /";
 
         std::cout << h2 << " | ";
         std::cout << "c= " << h2->center.x << ", " << h2->center.y << " | ";
         std::cout << "t= " << h2->type << " r= " << h2->radius << " ";
         std::cout << "h= " << h2->height << " w= " << h2->width << " | ";
-        std::cout << "cell= " << h2->cell_id << " /";
+        std::cout << "cell= " << h2->cellID << " /";
         std::cout <<std::endl;
     }
 
-    COLLISION_LIST->Clear();
+    COLLISION_LIST.clear();
 }
-

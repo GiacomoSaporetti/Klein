@@ -2,27 +2,28 @@
 
 #include "Klein.h"
 
+
 namespace Klein
 {
     class Hitbox
     {
         public:
-            enum HITBOX_TYPE type;
-            struct Point center;
+            enum hitbox_type_t type;
+            struct point_t center;
             float radius;
             int width;
             int height;
             int faction;
             float mass;
-            int cell_id;
-            struct Rectangle area;
+            int cellID;
+            struct rectangle_t area;
             void* parent_entity;
-            Hitbox(void* ENTITY, HITBOX_TYPE TYPE, Point* CENTER, float RADIUS, int WIDTH, int HEIGHT)
+            Hitbox(void* ENTITY, hitbox_type_t TYPE, point_t& CENTER, float RADIUS, int WIDTH, int HEIGHT)
             {
                 //std::cout << "My Parent: " << ENTITY << std::endl;
                 parent_entity = ENTITY;
                 type = TYPE;
-                center = *CENTER;
+                center = CENTER;
                 radius = RADIUS;
                 width = WIDTH;
                 height = HEIGHT;
@@ -39,30 +40,30 @@ namespace Klein
 
                 if(type == RECTANGLE)
                 {
-                    area.top = center.y + height/2;
-                    area.bottom = center.y - height/2;
-                    area.right = center.x + width/2;
-                    area.left = center.x - width/2;
+                    area.top    =   center.y + height/2;
+                    area.bottom =   center.y - height/2;
+                    area.right  =   center.x + width/2;
+                    area.left   =   center.x - width/2;
                     radius = std::sqrt(width*width + height*height)/2;
                 }
                 mass = 0;
-                cell_id = 0;
+                cellID = 0;
             }
             
             ~Hitbox() = default;
 
-            Point GetPosition();
+            point_t getPosition();
 
-            void SetWidth(int w);
-            void SetHeight(int h);
-            void SetRadius(float r);
+            void setWidth(int w);
+            void setHeight(int h);
+            void setRadius(float r);
 
-            int GetTop();
-            int GetBottom();
-            int GetLeft();
-            int GetRight();
-            float GetRadius();
+            int getTop();
+            int getBottom();
+            int getLeft();
+            int getRight();
+            float getRadius();
 
-            void* GetParentEntity();
+            void* getParentEntity();
     };
 }

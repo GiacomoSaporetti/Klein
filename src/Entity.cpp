@@ -2,112 +2,110 @@
 
 using namespace Klein;
 
-int Entity::GetTimeDirection(){return time_direction;}
+int Entity::getTimeDirection(){return directionOfTime;}
 
-Point Entity::GetPosition()
+point_t Entity::getPosition()
 {return position;}
 
-vector Entity::GetSpeed()
+vector_t Entity::getSpeed()
 {return speed;}
 
-LinkedList* Entity::GetHitboxes()
-{return hitboxes;}
+LinkedList* Entity::getHitboxes()
+{return hitboxesList;}
 
 void Entity::Run()
 {
     if(hp<=0)
     {
-        DeathState();
+        goInDeathState();
         return;
     }
 
-    float d = TIMER->GetGameDelta();
+    float d = TIMER->getGameDelta();
     position.x += d*speed.x;
     position.y += d*speed.y;
 }
 
-void Entity::DeathState()
+/*Death State is an Entities state in which the Entity 
+has reached 0 HP, but the object is not yet destroyed
+in case the player uses the ability to reverse time, 
+thus bringing them alive again*/
+void Entity::goInDeathState()
 {
-    float time = TIMER->GetGameTime(); 
-    if(death<0)
-        death = time;
+    float currentGameTime = TIMER->getGameTime(); 
+    if(timeOfDeath<0)
+        timeOfDeath = currentGameTime;
     
-    if(time < death)
+    if(currentGameTime < timeOfDeath)
     {
-        death = -1.0f;
+        timeOfDeath = -1.0f;
         hp = 1;
     }
     
-    if(time > death + 5.0f)
+    if(currentGameTime > timeOfDeath + 5.0f)
         delete this;
 }
 
-void Entity::SetPosition(Point pos){position = pos;}            
+void Entity::setPosition(point_t pos){position = pos;}            
             
-void Entity::SetSpeed(vector vel){speed = vel;}
+void Entity::setSpeed(vector_t vel){speed = vel;}
 
-void Entity::SetMass(float m){mass = m;}
+void Entity::setMass(float m){mass = m;}
 
-float Entity::GetMass(){return mass;}
+float Entity::getMass(){return mass;}
 
-void Entity::ClearCollided()
-{
-    DEBUG_MSG("ClearCollided: ", "");
-    recently_collided->Clear();
-}
+void Entity::clearCollided(){recentlyCollidedEntities->clear();}
             
-void Entity::AddCollided(Entity*e)
+void Entity::addCollided(Entity*e)
 {
-    DEBUG_MSG("AddCollided: ", e);
-
     sem_wait(&semaphore);
-    recently_collided->AddNodeEnd(e);
+    recentlyCollidedEntities->appendNode(e);
     sem_post(&semaphore);
 }
    
-bool Entity::HasAlreadyCollided(Entity*e)
+bool Entity::hasAlreadyCollided(Entity*e)
 {
     sem_wait(&semaphore);
-    DEBUG_MSG("HasAlreadyCollided: ", e);
-    Entity* temp;
-    Node* n = recently_collided->GetNodeAtPosition(0);
+
+    node_t* n = recentlyCollidedEntities->getFirstNode();
     while(n != nullptr)
     {
-        temp = (Entity*)n->data;
+        Entity* temp = (Entity*)n->data;
         if(temp == e)
-            {
-                sem_post(&semaphore);
-                return true;
-            }
+        {
+            sem_post(&semaphore);
+            return true;
+        }
         n = n->next;
     }
     sem_post(&semaphore);
     return false;
 }
 
-void Entity::AddHitbox(HITBOX_TYPE TYPE, Point* CENTER, float RADIUS, int WIDTH, int HEIGHT)
+void Entity::addHitbox(hitbox_type_t hitboxType, point_t& center, float radius, int width, int height)
 {
-    number_of_hitboxes++;
-    Hitbox* hb = new Hitbox(this, TYPE, CENTER, RADIUS, WIDTH, HEIGHT);
-    hitboxes->AddNodeEnd(hb);
+    Hitbox* hb = new Hitbox(this, hitboxType, center, radius, width, height);
+    ASSERT(hb != nullptr)
+    numberOfHitboxes++;
+    hitboxesList->appendNode(hb);
 }
 
-void Entity::SetFaction(int f)
+void Entity::setFaction(int f)
 {
     faction = f;
-    for(int i=0; i<number_of_hitboxes; i++)
+    for(int i=0; i<numberOfHitboxes; i++)
     {
-        Hitbox* hb = (Hitbox*) hitboxes->GetData(i);
+        Hitbox* hb = (Hitbox*) hitboxesList->getData(i);
         hb->faction = f;
     }    
 }
 
 
 
-void Entity::UpdateMotion()
+void Entity::updateMotion()
 {
-    speed = next_speed;
-    position.x += speed.x*TIMER->GetGameDelta();
-    position.y += speed.y*TIMER->GetGameDelta();
-    next_speed = {0, 0};
+    speed = nextSpeed;
+    position.x += speed.x*TIMER->getGameDelta();
+    position.y += speed.y*TIMER->getGameDelta();
+    nextSpeed = {0, 0};
 }

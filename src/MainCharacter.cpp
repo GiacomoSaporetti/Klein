@@ -1,4 +1,5 @@
 #include "MainCharacter.h"
+using namespace Klein;
 
 void MainCharacter::Move(int up, int down, int left, int right)
 {

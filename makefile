@@ -1,3 +1,5 @@
+FLAGS?= 
+export FLAGS
 export BASE_DIR = ${CURDIR}
 SRC = ${wildcard *.cpp}
 OBJECTS = ${patsubst %.cpp,./obj/%.o,${SRC}}

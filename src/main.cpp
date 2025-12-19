@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <chrono>
-#include <Windows.h>
+//#include <Windows.h>
 #include "SDL3/SDL.h"
 #include "Klein.h"
 #include "TimeHandler.h"
@@ -14,8 +14,11 @@
 #include "CollisionHandler.h"
 #include "MainCharacter.h"
 
-#define N 1000
-#define R 1000
+//extern std::chrono::steady_clock::time_point timeMeasureBegin;
+//extern std::chrono::steady_clock::time_point timeMeasureEnd;
+
+#define NUMBER_OF_ENTITIES 10000
+#define NUMBER_OF_REPETITIONS 1
 using namespace std;
 
 
@@ -29,25 +32,25 @@ using namespace std;
 
 Klein::MainCharacter PG;
 
-void ReadKeys()
+/*void ReadKeys()
 {
-    if(GetKeyState('A') & 0x8000)   ;
-    if(GetKeyState('D') & 0x8000)   ;
-    if(GetKeyState('S') & 0x8000)   ;
-    if(GetKeyState('W') & 0x8000)   ;
-}
+    if(GetKeyState('A') & 0x8000)   printf("A");
+    if(GetKeyState('D') & 0x8000)   printf("D");
+    if(GetKeyState('S') & 0x8000)   printf("S");
+    if(GetKeyState('W') & 0x8000)   printf("W");
+}*/
 
 
-Klein::TimeHandler TIME;
+Klein::TimeHandler TIME_HANDLER;
 
 Klein::Entity * e;
-int Klein::Entity::time_direction = 1;
-Klein::TimeHandler* Klein::Entity::TIMER = &TIME;
-Klein::CollisionHandler COLLISION;
+int Klein::Entity::directionOfTime = 1;
+Klein::TimeHandler* Klein::Entity::TIMER = &TIME_HANDLER;
+Klein::CollisionHandler COLLISION_HANDLER;
 Klein::LinkedList ENTITIES_LIST;
 
 long long int times[7]={1,1,1,1,1,1,1};
-int number_of_hitbox = 0;
+int numberOfHitboxes = 0;
 
 SDL_Event event;
 int quit = 0;
@@ -55,67 +58,84 @@ int main()
 {
     srand((unsigned)time(NULL));
 
-    std::cout << "New compiled" << std::endl;
+    /*std::cout << "New compiled" << std::endl;
     float x=0, y=0, prev_x, prev_y;
     while( !quit )
     {
         prev_x = x;
         prev_y = y;
-        TIME.Run();
+        TIME_HANDLER.Run();
         
         //system("cls");
-        std::cout << PG.position.x << ", " << PG.position.y << " | " << 1/TIME.GetRealDelta() <<std::endl;
-        //std::cout << 1/TIME.GetRealDelta() <<std::endl;
-        while(!TIME.WaitUntil(1.0f/30))
+        //std::cout << PG.position.x << ", " << PG.position.y << " | " << 1/TIME_HANDLER.getRealDelta() <<std::endl;
+        //std::cout << 1/TIME_HANDLER.getRealDelta() <<std::endl;
+        while(!TIME_HANDLER.WaitUntil(1.0f/60))
         {;}
-    }
+    }*/
 
-    /*COLLISION.SetEntitiesList(&ENTITIES_LIST);
-
-    for(int t=0; t<R; t++)
+    
+    //ENTITIES_LIST.clear();
+    COLLISION_HANDLER.setEntitiesList(ENTITIES_LIST);
+    
+    for(int t=0; t<NUMBER_OF_REPETITIONS; t++)
     {
-        std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-        std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-        Klein::LinkedList LIST;
-        COLLISION.SetEntitiesList(&LIST);
-        Klein::Entity* t_entity;
-        for(int i=0; i<N; i++)
+        for(int i=0; i<NUMBER_OF_ENTITIES; i++)
         {
-            //cout << "new entity" << endl;
-            t_entity = new Klein::Entity;
-            int x, y, r;
-            x = rand()%SCREEN_X;
-            y = rand()%SCREEN_Y;
-            r = rand()%10 - 11;
-            //cout << "Entity: " << t_entity << endl;
-            number_of_hitbox ++;
-            Klein::Point p;
-            p = {x + rand()%10, y + rand()%10};
-            t_entity->AddHitbox(Klein::CIRCLE, &p, (rand()%MAX_PARTICLE_SIZE)/2, 0, 0);
-            for(int i=0; i<r; i++)
-            {
-                number_of_hitbox ++;
-                Klein::Point p;
-                p = {x + rand()%10, y + rand()%10};
-                t_entity->AddHitbox(Klein::RECTANGLE, &p, 0,rand()%MAX_PARTICLE_SIZE, rand()%MAX_PARTICLE_SIZE);
-            }
-            t_entity->SetFaction(i%2);
-            t_entity->SetPosition({x, y});
-      
-            LIST.AddNodeEnd(t_entity);
-        }
+            Klein::Entity* newEntity = new Klein::Entity;
+            int numberOfRectangles = rand()%10 - 7;
+    
+            numberOfHitboxes ++;
+            Klein::point_t randomCenter= {rand()%SCREEN_X, rand()%SCREEN_Y};    //Random center point
+            const int defaultHeight = 0; //Doesn't matter for Klein::hitbox_type_t::CIRCLE
+            const int defaultWidth = 0;  //Doesn't matter for Klein::hitbox_type_t::CIRCLE
 
-        int res=0;
-        res = COLLISION.RunGridOptimization();
- 
+            newEntity->addHitbox(
+                Klein::hitbox_type_t::CIRCLE, 
+                randomCenter, 
+                (rand()%MAX_PARTICLE_SIZE)/2.0f, 
+                defaultWidth, 
+                defaultHeight);
+
+            for(int i=0; i<numberOfRectangles; i++)
+            {
+                numberOfHitboxes ++;
+                Klein::point_t rectangleCenter;
+                rectangleCenter = {randomCenter.x + rand()%10, randomCenter.y + rand()%10};
+                const float defaultRadius = 0.0f; //Doesn't matter for Klein::hitbox_type_t::RECTANGLE
+                
+                newEntity->addHitbox(
+                    Klein::RECTANGLE, 
+                    rectangleCenter, 
+                    defaultRadius, 
+                    rand()%MAX_PARTICLE_SIZE/10, 
+                    rand()%MAX_PARTICLE_SIZE/10);
+            }
+            newEntity->setFaction(i%2);
+            newEntity->setPosition({randomCenter.x, randomCenter.y});
+      
+            ENTITIES_LIST.appendNode(newEntity);
+        }
+    
+        BEGIN_TIME
+        int optimized = COLLISION_HANDLER.runGridOptimization();
+        END_TIME
+        PRINT_TIME("optimized")
+    
+        BEGIN_TIME
+        int naive = COLLISION_HANDLER.runNaiveImplementation();
+        END_TIME
+        PRINT_TIME("naive")
+    
+        cout << optimized << "|" << naive << endl;
+        ENTITIES_LIST.clear();
     }
 
-    /*cout << N << " | ";
-    cout << number_of_hitbox/R << " | ";
-    cout << times[0]/R << " | ";
-    cout << times[1]/R << " : " <<(float)times[0]/(float)times[1]<< " | ";
-    cout << times[2]/R << " : " <<(float)times[0]/(float)times[2]<< " | ";
-    cout << endl;*/
+    cout << "Number of Entities: "<< NUMBER_OF_ENTITIES << "\n";
+    cout << numberOfHitboxes/NUMBER_OF_REPETITIONS << " | ";
+    cout << times[0]/NUMBER_OF_REPETITIONS << " | ";
+    cout << times[1]/NUMBER_OF_REPETITIONS << " : " <<(float)times[0]/(float)times[1]<< " | ";
+    cout << times[2]/NUMBER_OF_REPETITIONS << " : " <<(float)times[0]/(float)times[2]<< " | ";
+    cout << endl;
 
     return 0;
 }

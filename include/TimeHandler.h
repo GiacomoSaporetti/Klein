@@ -7,8 +7,8 @@ namespace Klein
     class TimeHandler
     {
         private:
-            time_profile REAL;
-            time_profile GAME;
+            time_profile_t REAL;
+            time_profile_t GAME;
         public:
             TimeHandler()
             {
@@ -16,12 +16,12 @@ namespace Klein
             }
             ~TimeHandler() = default;   
 
-            float GetRealDelta();
-            float GetRealTime();
+            float getRealDelta();
+            float getRealTime();
          
-            float GetGameDelta();
-            float GetGameTime();
-            float GetGameSpeed();
+            float getGameDelta();
+            float getGameTime();
+            float getGameSpeed();
 
             void ChangeSpeed(float s);
 

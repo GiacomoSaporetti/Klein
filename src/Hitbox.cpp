@@ -1,27 +1,27 @@
 #include "Hitbox.h"
 
 using namespace Klein;
+using std::sqrt;
 
-Point Hitbox::GetPosition()
-{return center;}
+point_t Hitbox::getPosition(){return center;}
 
-void Hitbox::SetWidth(int w)
+void Hitbox::setWidth(int w)
 {
     width = w;
     area.right = center.x + w/2;
     area.left = center.x - w/2;
-    radius = std::sqrt(width*width + height*height)/2;
+    radius = sqrt(width*width + height*height)/2;
 }
 
-void Hitbox::SetHeight(int h)
+void Hitbox::setHeight(int h)
 {
     height = h;
     area.top = center.y + h/2;
     area.bottom = center.y - h/2;
-    radius = std::sqrt(width*width + height*height)/2;
+    radius = sqrt(width*width + height*height)/2;
 }
 
-void Hitbox::SetRadius(float r)
+void Hitbox::setRadius(float r)
 {
     radius = r;
     area.right = center.x + r;
@@ -30,20 +30,14 @@ void Hitbox::SetRadius(float r)
     area.bottom = center.y - r;
 }
 
-int Hitbox::GetTop()
-{return area.top;}
+int Hitbox::getTop(){return area.top;}
 
-int Hitbox::GetBottom()
-{return area.bottom;}
+int Hitbox::getBottom(){return area.bottom;}
 
-int Hitbox::GetLeft()
-{return area.left;}
+int Hitbox::getLeft(){return area.left;}
 
-int Hitbox::GetRight()
-{return area.right;}
+int Hitbox::getRight(){return area.right;}
 
-void* Hitbox::GetParentEntity()
-{return parent_entity;}
+void* Hitbox::getParentEntity(){return parent_entity;}
 
-float Hitbox::GetRadius()
-{return radius;}
+float Hitbox::getRadius(){return radius;}

@@ -2,49 +2,40 @@
 
 using namespace Klein;
 
-void NPC::IncreaseKarma(int k)
+void NPC::increaseKarma(int k)
 {
-    Karma += k;
-    if(Karma > KARMA_THRESHOLD_0)
-    {feeling = PROTECTIVE; return;}
-    if(Karma > KARMA_THRESHOLD_1)
-    {feeling = FRIENDLY; return;}
-    if(Karma > KARMA_THRESHOLD_2)
-    {feeling = NEUTRAL; return;}
-    if(Karma > KARMA_THRESHOLD_3)
-    {feeling = UNFRIENDLY; return;}
-    if(Karma > KARMA_THRESHOLD_4)
-    {feeling = AGGRESSIVE; return;}
+    karma += k;
+    UpdateFeelingsTowardsPlayer();
 }
-void NPC::DecreaseKarma(int k)
+void NPC::decreaseKarma(int k)
 {
-    Karma -= k;
-    if(Karma > KARMA_THRESHOLD_0)
-    {feeling = PROTECTIVE; return;}
-    if(Karma > KARMA_THRESHOLD_1)
-    {feeling = FRIENDLY; return;}
-    if(Karma > KARMA_THRESHOLD_2)
-    {feeling = NEUTRAL; return;}
-    if(Karma > KARMA_THRESHOLD_3)
-    {feeling = UNFRIENDLY; return;}
-    if(Karma > KARMA_THRESHOLD_4)
-    {feeling = AGGRESSIVE; return;}
+    karma -= k;
+    UpdateFeelingsTowardsPlayer();
 }
 
-void NPC::HandleIA()
+void NPC::UpdateFeelingsTowardsPlayer()
 {
-    switch(feeling)
+    if(karma > KARMA_THRESHOLD_HIGHEST)   {feelingTowardsPlayer = AGGRO_PROTECTIVE; return;}
+    if(karma > KARMA_THRESHOLD_HIGH)   {feelingTowardsPlayer = AGGRO_FRIENDLY; return;}
+    if(karma > KARMA_THRESHOLD_MID)   {feelingTowardsPlayer = AGGRO_NEUTRAL; return;}
+    if(karma > KARMA_THRESHOLD_LOW)   {feelingTowardsPlayer = AGGRO_UNFRIENDLY; return;}
+    if(karma > KARMA_THRESHOLD_LOWEST)   {feelingTowardsPlayer = AGGRO_AGGRESSIVE; return;}
+}
+
+void NPC::handleIA()
+{
+    switch(feelingTowardsPlayer)
     {
-        case PROTECTIVE: ProtectiveIA(); break;
-        case FRIENDLY: FriendlyIA(); break;
-        case NEUTRAL: NeutralIA(); break;
-        case UNFRIENDLY: UnfriendlyIA(); break;
-        case AGGRESSIVE: AggressiveIA(); break;
+        case AGGRO_PROTECTIVE: executeProtectiveIA(); break;
+        case AGGRO_FRIENDLY: executeFriendlyIA(); break;
+        case AGGRO_NEUTRAL: executeNeutralIA(); break;
+        case AGGRO_UNFRIENDLY: executeUnfriendlyIA(); break;
+        case AGGRO_AGGRESSIVE: executeAggressiveIA(); break;
     }
 }
 
-void NPC::ProtectiveIA(){; /*Needs to be overwritten by child*/}
-void NPC::FriendlyIA(){; /*Needs to be overwritten by child*/}
-void NPC::NeutralIA(){; /*Needs to be overwritten by child*/}
-void NPC::UnfriendlyIA(){; /*Needs to be overwritten by child*/}
-void NPC::AggressiveIA(){; /*Needs to be overwritten by child*/}
+void NPC::executeProtectiveIA(){; /*Needs to be overwritten by child class*/}
+void NPC::executeFriendlyIA(){; /*Needs to be overwritten by child class*/}
+void NPC::executeNeutralIA(){; /*Needs to be overwritten by child class*/}
+void NPC::executeUnfriendlyIA(){; /*Needs to be overwritten by child class*/}
+void NPC::executeAggressiveIA(){; /*Needs to be overwritten by child class*/}

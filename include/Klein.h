@@ -5,18 +5,19 @@
 #include <math.h>
 #include <semaphore.h>
 #include <thread>
+#include <list>
+#include <assert.h>
 
-
-//#define DEBUG
 
 #ifdef DEBUG
-#define DEBUG_MSG(name, val) std::cout << name << " " << val << std::endl;
-
+#define PRINT_DEBUG(name, val) std::cout << name << " " << val << std::endl;
+#define ASSERT(expr)    assert(expr);
 #else
-#define DEBUG_MSG(name, val)
+#define PRINT_DEBUG(name, val)
+#define ASSERT(expr)   
 #endif
 
-//#define MAX_NUMBER_OF_ENTITIES 100
+
 #define MAX_PARTICLE_SIZE   50
 #define SCREEN_Y 1080
 #define SCREEN_X 1920
@@ -27,7 +28,7 @@ namespace Klein
 {
     static int MAX_NUMBER_THREADS = std::thread::hardware_concurrency();
     static std::thread* THREADS = (std::thread*) std::malloc(MAX_NUMBER_THREADS*sizeof(std::thread)); ;
-    struct time_profile
+    struct time_profile_t
     {
         struct timespec value;
         float delta = 0.0f;
@@ -35,58 +36,59 @@ namespace Klein
         float time = 0.0f;
     };
         
-    struct vector
+    struct vector_t
     {
         float x;
         float y;
 
-        float Magnitude()
+        float getMagnitude()
         {return sqrt(x*x + y*y);}
 
-        void Rescale(float factor)
+        void rescaleByFactor(float factor)
         {
             x = factor*x;
             y = factor*y;
         }
   
-        vector Versor()
+        vector_t getVersor()
         {
-            vector res;
+            vector_t res;
             res.x = x;
             res.y = y;
-            float m = res.Magnitude();
-            res.Rescale(1/m);
+            float m = res.getMagnitude();
+            res.rescaleByFactor(1/m);
             return res;
         }
     };
 
 
-    struct Point
+    struct point_t
     {
         int x;
         int y;
     };
 
-    struct Node 
+    struct node_t 
     {
-        Node* next = nullptr;
+        node_t* next = nullptr;
+        node_t* previous = nullptr;
         void* data = nullptr;
     };
 
-    enum HITBOX_TYPE
+    enum hitbox_type_t
     {
         CIRCLE,
         RECTANGLE,
     };
 
-    struct Rectangle
+    struct rectangle_t
     {
         int top=0;
         int right=0;
         int bottom=0;
         int left=0;
 
-        int Area()
-        {return abs((top-bottom)*(right-left));}
+        int getArea()    {return abs((top-bottom)*(right-left));}
+        int getPerimeter() {return 2*(abs(top-bottom) + abs(right-left));}
     };
 }

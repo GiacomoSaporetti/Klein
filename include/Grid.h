@@ -11,56 +11,58 @@ namespace Klein
     {
         private:
             int id;
-            LinkedList* hitboxes_list;
+            LinkedList hitboxesList;
+        
         public:
-            //static int cell_width;
-            //static int number_of_cells;
             Cell(int i)
             {
                 id = i;
-                hitboxes_list = new LinkedList;
+                hitboxesList = LinkedList();
             }
-            ~Cell() = default;  
-            void AddHitbox(Hitbox* h);
-            void Clear();
-            void SetId(int i);
-            LinkedList* GetList();
+            ~Cell() = default;
+            void addHitbox(Hitbox* h);
+            void clear();
+            void setId(int i);
+            LinkedList* getHitboxesList();
             
     };
 
     class Grid
     {
         private:
-            Cell* cells_list;
-            
+            Cell* cells;
+            int cellWidth;
+            int numberOfCells;
+
+            /*Rename possibly with matrix related names*/
+            int numberOfVerticalCells;
+            int numberOfHorizontalCells;
             
         public:
-            int cell_width;
-            int number_of_cells;
-            int vertical_cells;
-            int horizontal_cells;
             Grid()
             {
-                cell_width = MAX_PARTICLE_SIZE;
-                vertical_cells = SCREEN_Y/MAX_PARTICLE_SIZE;
-                if(SCREEN_Y%MAX_PARTICLE_SIZE != 0) vertical_cells++;
+                cellWidth = MAX_PARTICLE_SIZE;
+                numberOfVerticalCells = SCREEN_Y/MAX_PARTICLE_SIZE;
+                if(SCREEN_Y%MAX_PARTICLE_SIZE != 0) numberOfVerticalCells++;
                 
-                horizontal_cells = SCREEN_X/MAX_PARTICLE_SIZE;
-                if(SCREEN_X%MAX_PARTICLE_SIZE != 0) horizontal_cells++;
+                numberOfHorizontalCells = SCREEN_X/MAX_PARTICLE_SIZE;
+                if(SCREEN_X%MAX_PARTICLE_SIZE != 0) numberOfHorizontalCells++;
                 
-                number_of_cells = vertical_cells*horizontal_cells;
-                cells_list = (Cell*) std::malloc(number_of_cells*sizeof(Cell));
+                numberOfCells = numberOfVerticalCells*numberOfHorizontalCells;
+                cells = (Cell*) std::malloc(numberOfCells*sizeof(Cell));
 
-                for(int i=0; i<number_of_cells; i++)
-                    cells_list[i] = Cell(i);
-                //int Cell::number_of_cells = number_of_cells;
-                //int Cell::cell_width = cell_width
+                for(int i=0; i<numberOfCells; i++)    cells[i] = Cell(i);
+                std::cout << "Cell: " << sizeof(Cell) << std::endl;
             }
-            ~Grid() = default;   
-            void AddHitboxToCell(Hitbox* h);
-            inline int ConvertMatrixToId(int n , int m);
-            LinkedList* GetListOfCell(int x, int y);
-            LinkedList* GetListOfCell(int id);
-            void ClearCell(int id);
+            ~Grid() = default;  
+
+            int getNumberOfVetical(){return numberOfVerticalCells;} 
+            int getNumberOfHorizontal(){return numberOfHorizontalCells;} 
+            int getNumberOfCells(){return numberOfCells;} 
+            void addHitboxToCell(Hitbox* h);
+            inline int convertMatrixToId(int n , int m);
+            LinkedList* getListOfCell(int x, int y);
+            LinkedList* getListOfCell(int id);
+            void clearCell(int id);
     };
 }

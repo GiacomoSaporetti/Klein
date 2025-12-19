@@ -1,6 +1,7 @@
 SRC = ${wildcard *.cpp}
 OBJECTS = ${patsubst %.cpp,../obj/%.o,${SRC}}
 
+
 default: ${OBJECTS}
 	@echo
 	@echo [KLEIN] SOURCE COMPILED
@@ -8,7 +9,7 @@ default: ${OBJECTS}
 
 ../obj/%.o: %.cpp ../include/%.h
 	@echo Compiling $< 
-	@g++ -c $< ${INCLUDES} -o ../obj/${patsubst %.cpp,%.o,$<}
+	@g++ -c $< ${INCLUDES} -o ../obj/${patsubst %.cpp,%.o,$<} ${FLAGS}
 
 clean:
 	@cd ../obj && rm -rf *.o

@@ -7,6 +7,24 @@
 #include <iostream>
 #include <fstream>
 
+
+/*For performance measurement*/
+extern std::chrono::steady_clock::time_point timeMeasureBegin;
+extern std::chrono::steady_clock::time_point timeMeasureEnd;
+
+#define MEASURE_TIME
+#ifdef MEASURE_TIME
+#define BEGIN_TIME timeMeasureBegin = std::chrono::steady_clock::now();
+#define END_TIME timeMeasureEnd = std::chrono::steady_clock::now();
+#define GET_TIME std::chrono::duration_cast<std::chrono::microseconds>(timeMeasureEnd - timeMeasureBegin).count()
+#define PRINT_TIME(name)  std::cout << "Time: " << name << " "<< GET_TIME << std::endl;
+#else
+#define BEGIN_TIME 
+#define END_TIME 
+#define PRINT_TIME(name)  
+#define GET_TIME 
+#endif
+
 namespace Klein
 {
     struct CollisionCouple
@@ -19,30 +37,36 @@ namespace Klein
     {
         private:
             LinkedList* ENTITIES_LIST;
-            LinkedList* HITBOXES_LIST;
-            int number_of_entities;    
+            LinkedList HITBOXES_LIST;
+            LinkedList COLLISION_LIST;
             
-            Grid* GRID = new Grid;
-            LinkedList* COLLISION_LIST;
+            Grid* GRID;
+            
+            int numberOfEntities;    
+            
+            void printCollisionList();
+        
         public:
             CollisionHandler()
             {
-                ENTITIES_LIST = new LinkedList;
-                number_of_entities = 0;
-                COLLISION_LIST = new LinkedList;
-                HITBOXES_LIST = new LinkedList;
+                numberOfEntities =  0;
+                COLLISION_LIST   =  LinkedList();
+                HITBOXES_LIST    =  LinkedList();
+
+                GRID = new Grid;
+                ASSERT(GRID != nullptr)
             }
-            ~CollisionHandler() = default;   
-            void SetEntitiesList(LinkedList* list) {ENTITIES_LIST=list;}
-            int RunNaive();
-            int RunQuadrantOptimization();
-            int RunGridOptimization();
+            ~CollisionHandler() = default;
+            
+            void setEntitiesList(LinkedList& list) {ENTITIES_LIST=&list;}
+            int runNaiveImplementation();
+            int runQuadrantOptimization();
+            int runGridOptimization();
 
-            void ClearEntitiesCollisionList();
-            void PrintCollisionList();
+            void clearEntitiesCollisionList();
 
-            void PopulateHitboxesList();
-            void ResetMotion();
-            void UpdateMotion();
+            int populateHitboxesList();
+            void resetMotion();
+            void updateMotion();
     };
 }

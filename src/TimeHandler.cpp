@@ -2,23 +2,17 @@
 
 using namespace Klein;
 
-float TimeHandler::GetRealDelta()
-{ return REAL.delta;}
+float TimeHandler::getRealDelta(){ return REAL.delta;}
 
-float TimeHandler::GetRealTime()
-{ return REAL.time;}
+float TimeHandler::getRealTime(){ return REAL.time;}
 
-float TimeHandler::GetGameDelta()
-{ return GAME.delta;}
+float TimeHandler::getGameDelta(){ return GAME.delta;}
 
-float TimeHandler::GetGameTime()
-{ return GAME.time;}
+float TimeHandler::getGameTime(){ return GAME.time;}
 
-float TimeHandler::GetGameSpeed()
-{ return GAME.speed;}
+float TimeHandler::getGameSpeed(){ return GAME.speed;}
 
-void TimeHandler::ChangeSpeed(float s)
-{ GAME.speed = s;}
+void TimeHandler::ChangeSpeed(float s){ GAME.speed = s;}
 
 bool TimeHandler::WaitUntil(float millis)
 { 

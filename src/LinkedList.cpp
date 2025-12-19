@@ -3,260 +3,225 @@
 
 using namespace Klein;
 
-Node * LinkedList::FindLastNode()
+
+node_t* LinkedList::getFirstNode(){return firstNode;}
+
+node_t* LinkedList::getLastNode(){return lastNode;}
+
+node_t* LinkedList::getNodeAtPosition(int p)
 {
-     
-    /*Node* current_node = LIST;
-    if(LIST == nullptr)
-        return nullptr;   
-    while(current_node->next != nullptr)
-        current_node = current_node->next;
-    return current_node;*/
-    return last_node;
-}
-
-Node* LinkedList::AddNodeEnd()
-{ 
-    Node* last = LinkedList::FindLastNode();
-    if(last == nullptr)
-    {
-        LIST = new Node;
-        LIST->data = nullptr;
-        LIST->next = nullptr;
-        number_of_nodes ++;
-        last_node = LIST;
-        return LIST;
-    }
-    Node* newer = new Node;
-    newer->data = nullptr;
-    newer->next = nullptr;
-
-    last->next = newer;
-    number_of_nodes ++;
-    last_node = newer;
-    return newer;
-}
-Node* LinkedList::AddNodeEnd(void* ptr)
-{
-    Node* last = LinkedList::FindLastNode();
-    if(last == nullptr)
-    {
-        LIST = new Node;
-        LIST->data = ptr;
-        LIST->next = nullptr;
-        number_of_nodes ++;
-        last_node = LIST;
-        return LIST;
-    }
-    Node* newer = new Node;
-    newer->data = ptr;
-    newer->next = nullptr;
-
-    last->next = newer;
-    number_of_nodes ++;
-    last_node = newer;
-    return newer;
-}
-
-Node* LinkedList::AddNodeBeginning()
-{
-     
-    if(LIST == nullptr)
-    {
-        LIST = new Node;
-        LIST->data = nullptr;
-        LIST->next = nullptr;
-        number_of_nodes ++;
-        return LIST;
-    } 
-
-    Node* newer = new Node;
-    newer->data = nullptr;
-    //newer.next = nullptr;
-
-    Node* previos_first = LIST;
-    LIST = newer;
-    LIST->next = previos_first;
-    number_of_nodes ++;
-
-    return newer;
-}
-
-Node* LinkedList::AddNodePosition(int p)
-{
-    DEBUG_MSG("AddNodePosition: START", p)
-    Node* current_node = LinkedList::GetNodeAtPosition(p);
-
-    if(current_node == nullptr)
-        return nullptr;
-
-    Node* newer = new Node;
-    newer->next = current_node->next;
-    current_node->next = newer;
-    number_of_nodes ++;
-    return newer;
-}
-
-Node* LinkedList::GetNodeAtPosition(int p)
-{
-    DEBUG_MSG("GetNodeAtPosition:", p);
     int cnt=0;
-    Node* res=LIST;
+    node_t* res=firstNode;
     
-    DEBUG_MSG("GetNodeAtPosition:LIST at", res);
-
-    if(res==nullptr)
-        return nullptr;
+    if(res==nullptr)    return nullptr;
     while(cnt<p)
     {
-        if(res->next == nullptr)
-            return nullptr;
+        if(res->next == nullptr)    return nullptr;
         res = res->next;
         cnt++;
     }
-    DEBUG_MSG("GetNodeAtPosition:return value", res);
     return res;
 }
 
-bool LinkedList::DeleteNodeEnd()
+
+
+int LinkedList::appendNode(void* data)
 {
-     
-    Node* last = LinkedList::GetNodeAtPosition(number_of_nodes);
-
-    if(last == nullptr)
-        return false;
-
-    delete last;
-
-    Node* new_last = LinkedList::GetNodeAtPosition(number_of_nodes-1);
-    new_last->next = nullptr;
-    number_of_nodes --;
-    last_node = new_last;
-    return true;
-}
-
-bool LinkedList::DeleteNodeBeginning()
-{
-    Node* temp = LIST;
-
-    LIST = LIST->next;
-    delete temp;
-    number_of_nodes --;
-    return true;
-}
-
-bool LinkedList::DeleteNodePosition(int p)
-{
-    Node* node_p = LinkedList::GetNodeAtPosition(p);
-    if(node_p == nullptr)
-        return false;
-    Node*   previous_node = LinkedList::GetNodeAtPosition(p-1);
-    previous_node->next = node_p->next;
-    delete node_p;
-    number_of_nodes --;
-    return true;
-}
-
-bool LinkedList::DeleteNodeWithPointer(void * ptr)
-{
-    Node* current_node = LIST;
-    int cnt=0;
-    while(current_node->data != ptr && current_node->next != nullptr)
+    if(lastNode == nullptr)
     {
-        current_node = current_node->next;
+        ASSERT(firstNode == nullptr)
+        firstNode = new node_t;
+        firstNode->data = data;
+        firstNode->next = nullptr;
+        numberOfNodes = 1;
+        lastNode = firstNode;
+        return numberOfNodes;
+    }
+
+    node_t* newNode = new node_t;
+    ASSERT(newNode != nullptr)
+
+    newNode->data = data;
+    newNode->next = nullptr;
+
+    lastNode->next = newNode;
+    numberOfNodes ++;
+    lastNode = newNode;
+    return numberOfNodes;
+}
+
+int LinkedList::appendNode(node_t& node)
+{
+    if(lastNode == nullptr)
+    {
+        ASSERT(firstNode == nullptr)
+        firstNode = &node;
+        firstNode->next = nullptr;
+        numberOfNodes = 1;
+        lastNode = firstNode;
+        return numberOfNodes;
+    }
+
+    node.next = nullptr;
+
+    lastNode->next = &node;
+    numberOfNodes ++;
+    lastNode = &node;
+    return numberOfNodes;
+}
+
+/*node_t& LinkedList::addNodeBeginning()
+{
+    if(firstNode == nullptr)
+    {
+        firstNode = new node_t;
+        ASSERT(firstNode != nullptr)
+        firstNode->data = nullptr;
+        firstNode->next = nullptr;
+        numberOfNodes ++;
+        return firstNode;
+    } 
+
+    node_t* newer = new node_t;
+    newer->data = nullptr;
+    //newer.next = nullptr;
+
+    node_t* previos_first = firstNode;
+    firstNode = newer;
+    firstNode->next = previos_first;
+    numberOfNodes ++;
+
+    return newer;
+}
+
+node_t* LinkedList::addNodePosition(int p)
+{
+    node_t* currentNode = LinkedList::getNodeAtPosition(p);
+
+    if(currentNode == nullptr)  return nullptr;
+
+    node_t* newer = new node_t;
+    newer->next = currentNode->next;
+    currentNode->next = newer;
+    numberOfNodes ++;
+    return newer;
+}*/
+
+
+bool LinkedList::deleteNodeEnd()
+{
+    node_t* newLast =  LinkedList::getNodeAtPosition(numberOfNodes-1);
+    node_t* currentLast = newLast->next;
+
+    if(currentLast == nullptr) return false;
+
+    delete currentLast;
+
+    newLast->next = nullptr;
+    numberOfNodes --;
+    lastNode = newLast;
+    return true;
+}
+
+bool LinkedList::deleteNodeBeginning()
+{
+    node_t* temp = firstNode;
+
+    firstNode = firstNode->next;
+    delete temp;
+    numberOfNodes --;
+    return true;
+}
+
+bool LinkedList::deleteNodeAtPosition(int position)
+{
+    if(position<0 || position>(numberOfNodes-1)) return false;
+
+    node_t* previousNode = LinkedList::getNodeAtPosition(position-1);
+    node_t* node_p = previousNode->next;
+    
+    if(node_p == nullptr)  return false;
+    
+    previousNode->next = node_p->next;
+    delete node_p;
+    numberOfNodes --;
+    return true;
+}
+
+bool LinkedList::deleteNodeWithPointer(void * ptr)
+{
+    node_t* currentNode = firstNode;
+    int cnt=0;
+    while(currentNode->data != ptr && currentNode->next != nullptr)
+    {
+        currentNode = currentNode->next;
         cnt++;
     }
-    if(current_node->data != ptr)
-        return false;
+    if(currentNode->data != ptr)    return false;
     
-    LinkedList::GetNodeAtPosition(cnt-1)->next = current_node->next;
-    delete current_node;
-    number_of_nodes --;
+    LinkedList::getNodeAtPosition(cnt-1)->next = currentNode->next;
+    delete currentNode;
+    numberOfNodes --;
     return true;
 }
 
-void* LinkedList::GetData(int p)
+void* LinkedList::getData(int p)
 { 
-    Node*n = LinkedList::GetNodeAtPosition(p);
+    node_t*n = LinkedList::getNodeAtPosition(p);
      
-    if(n == nullptr)
-        return nullptr;
+    if(n == nullptr)    return nullptr;
      
     return n->data;
 }
 
-int LinkedList::GetDataInt(int p)
+int LinkedList::getDataInt(int p)
 {
-    void* ptr = LinkedList::GetData(p);
-    if(ptr == nullptr)
-        return INT_MIN;
+    void* ptr = LinkedList::getData(p);
+    if(ptr == nullptr)  return INT_MIN;
     return *(int*)ptr;
 }
 
-float LinkedList::GetDataFloat(int p)
+float LinkedList::getDataFloat(int p)
 {
      
-    void* ptr = LinkedList::GetData(p);
-    if(ptr == nullptr)
-        return -INFINITY;
+    void* ptr = LinkedList::getData(p);
+    if(ptr == nullptr)  return -INFINITY;
     return *(float*)ptr;
 }
 
-bool LinkedList::SetData(int p, void* ptr)
+bool LinkedList::setData(int p, void* ptr)
 {
-    Node* n = LinkedList::GetNodeAtPosition(p);
-    if(n == nullptr)
-        return false;
+    node_t* n = LinkedList::getNodeAtPosition(p);
+    if(n == nullptr)    return false;
     n->data = ptr;
     return true;
 }
 
-int LinkedList::GetNumberOfNodes()
-{return number_of_nodes;}
+int LinkedList::getNumberOfNodes(){return numberOfNodes;}
 
-void LinkedList::Clear()
+void LinkedList::clear()
 {
-    /*for(int i=number_of_nodes-1; i>=0; i--)
-        delete GetNodeAtPosition(i);*/ 
-    LIST = nullptr;
-    last_node = LIST;
-    number_of_nodes = 0;
+    firstNode = nullptr;
+    lastNode = firstNode;
+    numberOfNodes = 0;
 }
 
-void LinkedList::AppendList(LinkedList* append)
+void LinkedList::appendList(LinkedList& listToAppend)
 {
-    DEBUG_MSG("AppendList:", append);
-    if(append == nullptr) 
-        return;
-    Node* current_last_node = last_node;
+    node_t* firstNodeInAppendList = listToAppend.getFirstNode();
 
-    Node*first = GetNodeAtPosition(0);
-    DEBUG_MSG("AppendList:First node", first);
-    DEBUG_MSG("AppendList:Last node", current_last_node);
-
-    Node* first_node_to_append = append->GetNodeAtPosition(0);
-
-    DEBUG_MSG("AppendList:Node to append", first_node_to_append);
-
-    if(first_node_to_append == nullptr)
-        return;
-    DEBUG_MSG("AppendList:# of nodes", number_of_nodes);
-    
-    int nodes_to_append = append->number_of_nodes;
-
-    DEBUG_MSG("AppendList:# of new nodes", nodes_to_append);
-
-    if(current_last_node == nullptr)
-        {DEBUG_MSG("AppendList: Last node NULL", current_last_node)
-            LIST = first_node_to_append;}
-    else
-    {
-        //std::cout << typeid(current_last_node).name() << std::endl;
-        current_last_node->next = first_node_to_append;
+    if(firstNodeInAppendList == nullptr)    return;
         
-    }  
+    int numberOfNodesInAppendList = listToAppend.getNumberOfNodes();
+    
+    if(firstNode == nullptr) firstNode = firstNodeInAppendList;
+    else    lastNode->next = firstNodeInAppendList;  
    
-    number_of_nodes += nodes_to_append;
-    last_node = append->FindLastNode();
-    DEBUG_MSG("AppendList:# of nodes now" ,number_of_nodes); 
+    numberOfNodes += numberOfNodesInAppendList;
+    lastNode = listToAppend.getLastNode();
+}
+
+void LinkedList::appendList(LinkedList* listToAppend)
+{
+    LinkedList::appendList(*listToAppend);
 }

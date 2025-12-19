@@ -8,37 +8,37 @@ namespace Klein
     class LinkedList
     {
         private:
-            Node* LIST;    
-            int number_of_nodes;  
-            Node* last_node;     
+            node_t* firstNode;    
+            node_t* lastNode;     
+            int numberOfNodes;  
         public:
             LinkedList()
             {
-                LIST = nullptr;
-                last_node = LIST;
-                /*LIST = new Node;
-                LIST->data = nullptr;
-                LIST->next = nullptr;*/
-                number_of_nodes = 0;
+                firstNode = nullptr;
+                lastNode = firstNode;
+                numberOfNodes = 0;
             }
-            ~LinkedList() = default;   
-            Node* AddNodeEnd();
-            Node* AddNodeEnd(void* ptr);
-            Node* AddNodeBeginning();
-            Node* AddNodePosition(int p);
-            Node* FindLastNode();
-            Node* GetNodeAtPosition(int p);
-            bool DeleteNodeEnd();
-            bool DeleteNodeBeginning();
-            bool DeleteNodePosition(int p);
-            bool DeleteNodeWithPointer(void* ptr);
-            void* GetData(int p);
-            int GetDataInt(int p);
-            float GetDataFloat(int p);
-            bool SetData(int p, void* ptr);
-            int GetNumberOfNodes();
-            void Clear();
-            void AppendList(LinkedList* append);
+            ~LinkedList() = default;
+            
+            int appendNode(void* data);
+            int appendNode(node_t& node);
+            /*node_t& addNodeBeginning();
+            node_t& addNodePosition(int p);*/
+            node_t* getLastNode();
+            node_t* getNodeAtPosition(int p);
+            node_t* getFirstNode();
+            bool deleteNodeEnd();
+            bool deleteNodeBeginning();
+            bool deleteNodeAtPosition(int p);
+            bool deleteNodeWithPointer(void* ptr);
+            void* getData(int p);
+            int getDataInt(int p);
+            float getDataFloat(int p);
+            bool setData(int p, void* ptr);
+            int getNumberOfNodes();
+            void clear();
+            void appendList(LinkedList& listToAppend);
+            void appendList(LinkedList* listToAppend);
     };
      
 }

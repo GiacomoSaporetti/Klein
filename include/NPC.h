@@ -6,44 +6,33 @@
 
 namespace Klein
 {
-    #define KARMA_THRESHOLD_4 -1000
-    #define KARMA_THRESHOLD_3 -500
-    #define KARMA_THRESHOLD_2 0
-    #define KARMA_THRESHOLD_1 500
-    #define KARMA_THRESHOLD_0 1000
-
-    enum Aggro
-    {
-        PROTECTIVE,
-        FRIENDLY,
-        NEUTRAL,
-        UNFRIENDLY,
-        AGGRESSIVE
-    };
 
     class NPC : public Entity
     {
         public:
-            enum Aggro feeling;
-            int Karma;
-
-
+            enum aggro_t feelingTowardsPlayer;
+            
             NPC()
             {
-                Karma = 0;
-                IncreaseKarma(0);
+                karma = 0;
+                increaseKarma(0);
             }
             ~NPC() = default;
-            void IncreaseKarma(int k);
-            void DecreaseKarma(int k);
+            void increaseKarma(int k);
+            void decreaseKarma(int k);
             
-            void HandleIA();
+            void handleIA();
         
         protected:
-            void ProtectiveIA();
-            void FriendlyIA();
-            void NeutralIA();
-            void UnfriendlyIA();
-            void AggressiveIA();
+            int karma; //Value that determines the aggro feelingTowardsPlayer
+            float tendencyToKeepAggro; //Decaying rate of aggro over time, heading towards neutral state
+
+            void executeProtectiveIA();
+            void executeFriendlyIA();
+            void executeNeutralIA();
+            void executeUnfriendlyIA();
+            void executeAggressiveIA();
+
+            void UpdateFeelingsTowardsPlayer();
     };
 }
