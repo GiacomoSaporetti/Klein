@@ -10,7 +10,7 @@ namespace Klein
     class NPC : public Entity
     {
         public:
-            enum aggro_t feelingTowardsPlayer;
+            AggroLevel feelingTowardsPlayer;
             
             NPC()
             {

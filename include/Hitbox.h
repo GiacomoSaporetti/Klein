@@ -2,68 +2,68 @@
 
 #include "Klein.h"
 
-
 namespace Klein
 {
+    /*Forward declaration per evitare include circolare*/
+    class Entity;
+
+    /**
+     * @brief Volume di collisione.
+     * Può avere diverse geometrie (vedere HitboxType). 
+     */
     class Hitbox
     {
-        public:
-            enum hitbox_type_t type;
-            struct point_t center;
-            float radius;
-            int width;
-            int height;
-            int faction;
-            float mass;
-            int cellID;
-            struct rectangle_t area;
-            void* parent_entity;
-            Hitbox(void* ENTITY, hitbox_type_t TYPE, point_t& CENTER, float RADIUS, int WIDTH, int HEIGHT)
-            {
-                //std::cout << "My Parent: " << ENTITY << std::endl;
-                parent_entity = ENTITY;
-                type = TYPE;
-                center = CENTER;
-                radius = RADIUS;
-                width = WIDTH;
-                height = HEIGHT;
+    public:
+        /*Costruttore per hitbox circolare*/
+        Hitbox(Entity& parent, const circle_t& shape);
 
-                if(type == CIRCLE)
-                {
-                    area.top = center.y + radius;
-                    area.bottom = center.y - radius;
-                    area.right = center.x + radius;
-                    area.left = center.x - radius;
-                    width  = 2*radius;
-                    height = width;
-                }
+        /*Costruttore per hitbox rettangolare*/
+        Hitbox(Entity& parent, const rectangle_t& shape);
 
-                if(type == RECTANGLE)
-                {
-                    area.top    =   center.y + height/2;
-                    area.bottom =   center.y - height/2;
-                    area.right  =   center.x + width/2;
-                    area.left   =   center.x - width/2;
-                    radius = std::sqrt(width*width + height*height)/2;
-                }
-                mass = 0;
-                cellID = 0;
-            }
-            
-            ~Hitbox() = default;
+        ~Hitbox() = default;
 
-            point_t getPosition();
+        /*Getters*/
 
-            void setWidth(int w);
-            void setHeight(int h);
-            void setRadius(float r);
+        HitboxType  getType()           const;
+        point_t     getCenter()         const;
+        float       getRadius()         const;
+        int         getWidth()          const;
+        int         getHeight()         const;
+        int         getFaction()        const;
+        float       getMass()           const;
+        int         getCellID()         const;
+        rectangle_t getArea()           const;
+        Entity&     getParentEntity()   const;
 
-            int getTop();
-            int getBottom();
-            int getLeft();
-            int getRight();
-            float getRadius();
+        
+        /*Setters*/
 
-            void* getParentEntity();
+        /*Solo per cerchi*/
+        void setRadius(float r);
+
+        /*Solo per rettangoli*/
+        void setWidth(int w);
+        void setHeight(int h);
+
+        void setFaction(int faction);
+        void setMass(float mass);
+        void setCellID(int id);
+
+    private:
+
+
+        void computeAABB();
+
+        HitboxType  m_type;
+        point_t     m_center  = {0, 0};
+        float       m_radius  = 0.f;
+        int         m_width   = 0;
+        int         m_height  = 0;
+        int         m_faction = 0;
+        float       m_mass    = 0.f;
+        int         m_cellID  = 0;
+        rectangle_t m_area    = {};
+        Entity&     m_parent;
     };
-}
+
+} // namespace Klein

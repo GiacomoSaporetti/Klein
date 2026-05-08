@@ -2,141 +2,122 @@
 
 #include <stdlib.h>
 #include <time.h>
-#include <stdio.h>
 #include <iostream>
 #include <chrono>
-//#include <Windows.h>
+#include <vector>
+#include <iomanip>
+
 #include "SDL3/SDL.h"
 #include "Klein.h"
 #include "TimeHandler.h"
 #include "Entity.h"
-#include "LinkedList.h"
 #include "CollisionHandler.h"
-#include "MainCharacter.h"
 
-//extern std::chrono::steady_clock::time_point timeMeasureBegin;
-//extern std::chrono::steady_clock::time_point timeMeasureEnd;
+// -------------------------------------------------------------------------
+// Configurazione
+// -------------------------------------------------------------------------
 
-#define NUMBER_OF_ENTITIES 10000
-#define NUMBER_OF_REPETITIONS 1
-using namespace std;
+#define NUMBER_OF_ENTITIES  2000
+#define ENTITY_RADIUS       25.f
+#define SIMULATION_SECONDS  20.0
 
 
-//#define RES
+using namespace Klein;
 
-#ifdef RES
-#define PRINT_RES cout << res << endl;
-#else
-#define PRINT_RES
-#endif
+// -------------------------------------------------------------------------
+// Utility
+// -------------------------------------------------------------------------
 
-Klein::MainCharacter PG;
-
-/*void ReadKeys()
+static Entity* makeEntity(float maxX, float maxY, unsigned int seed)
 {
-    if(GetKeyState('A') & 0x8000)   printf("A");
-    if(GetKeyState('D') & 0x8000)   printf("D");
-    if(GetKeyState('S') & 0x8000)   printf("S");
-    if(GetKeyState('W') & 0x8000)   printf("W");
-}*/
+    srand(seed);
 
+    Entity* e = new Entity();
 
-Klein::TimeHandler TIME_HANDLER;
+    const point_t pos =
+    {
+        static_cast<float>(rand() % static_cast<int>(maxX)),
+        static_cast<float>(rand() % static_cast<int>(maxY))
+    };
+    e->setPosition(pos);
 
-Klein::Entity * e;
-int Klein::Entity::directionOfTime = 1;
-Klein::TimeHandler* Klein::Entity::TIMER = &TIME_HANDLER;
-Klein::CollisionHandler COLLISION_HANDLER;
-Klein::LinkedList ENTITIES_LIST;
+    const vector_t vel =
+    {
+        (rand() % 200 - 100) / 100.f,
+        (rand() % 200 - 100) / 100.f
+    };
+    e->setSpeed(vel);
 
-long long int times[7]={1,1,1,1,1,1,1};
-int numberOfHitboxes = 0;
+    rectangle_t shape;
+    shape.setHeight(rand() % MAX_PARTICLE_SIZE);
+    shape.setWidth(rand() % MAX_PARTICLE_SIZE);
+    shape.setCenter(pos);
 
-SDL_Event event;
-int quit = 0;
+    Hitbox* hb = new Hitbox(*e, shape);
+    e->addHitbox(hb);
+
+    return e;
+}
+
+// -------------------------------------------------------------------------
+// main
+// -------------------------------------------------------------------------
+
 int main()
 {
-    srand((unsigned)time(NULL));
+    const unsigned int baseSeed = static_cast<unsigned>(time(nullptr));
+    std::cout << "Seed: "    << baseSeed          << '\n';
+    std::cout << "Entita': " << NUMBER_OF_ENTITIES << '\n';
+    std::cout << "Durata:  " << SIMULATION_SECONDS << " secondi\n\n";
 
-    /*std::cout << "New compiled" << std::endl;
-    float x=0, y=0, prev_x, prev_y;
-    while( !quit )
+    // -- Entità -------------------------------------------------------------
+    std::vector<Entity*> entities;
+    entities.reserve(NUMBER_OF_ENTITIES);
+    for (int i = 0; i < NUMBER_OF_ENTITIES; i++)
+        entities.push_back(makeEntity(SCREEN_WIDTH, SCREEN_HEIGHT, baseSeed + i));
+
+    // -- Timer e handler ----------------------------------------------------
+    TimeHandler timer;
+    Entity::setTimer(&timer);
+
+    CollisionHandler handler;
+    handler.setEntitiesList(entities);
+
+    // -- Game loop ----------------------------------------------------------
+    int  totalCollisions = 0;
+    int  frames          = 0;
+    long long totalTime  = 0;
+
+    const auto simStart = std::chrono::steady_clock::now();
+
+    while (true)
     {
-        prev_x = x;
-        prev_y = y;
-        TIME_HANDLER.Run();
-        
-        //system("cls");
-        //std::cout << PG.position.x << ", " << PG.position.y << " | " << 1/TIME_HANDLER.getRealDelta() <<std::endl;
-        //std::cout << 1/TIME_HANDLER.getRealDelta() <<std::endl;
-        while(!TIME_HANDLER.WaitUntil(1.0f/60))
-        {;}
-    }*/
+        // Controlla se il tempo è scaduto
+        const auto now     = std::chrono::steady_clock::now();
+        const double elapsed = std::chrono::duration<double>(now - simStart).count();
+        if (elapsed >= SIMULATION_SECONDS) break;
 
-    
-    //ENTITIES_LIST.clear();
-    COLLISION_HANDLER.setEntitiesList(ENTITIES_LIST);
-    
-    for(int t=0; t<NUMBER_OF_REPETITIONS; t++)
-    {
-        for(int i=0; i<NUMBER_OF_ENTITIES; i++)
-        {
-            Klein::Entity* newEntity = new Klein::Entity;
-            int numberOfRectangles = rand()%10 - 7;
-    
-            numberOfHitboxes ++;
-            Klein::point_t randomCenter= {rand()%SCREEN_X, rand()%SCREEN_Y};    //Random center point
-            const int defaultHeight = 0; //Doesn't matter for Klein::hitbox_type_t::CIRCLE
-            const int defaultWidth = 0;  //Doesn't matter for Klein::hitbox_type_t::CIRCLE
+        timer.tick();
 
-            newEntity->addHitbox(
-                Klein::hitbox_type_t::CIRCLE, 
-                randomCenter, 
-                (rand()%MAX_PARTICLE_SIZE)/2.0f, 
-                defaultWidth, 
-                defaultHeight);
+        BEGIN_TIME;
+        const int collisions = handler.runGridOptimization();
+        END_TIME;
 
-            for(int i=0; i<numberOfRectangles; i++)
-            {
-                numberOfHitboxes ++;
-                Klein::point_t rectangleCenter;
-                rectangleCenter = {randomCenter.x + rand()%10, randomCenter.y + rand()%10};
-                const float defaultRadius = 0.0f; //Doesn't matter for Klein::hitbox_type_t::RECTANGLE
-                
-                newEntity->addHitbox(
-                    Klein::RECTANGLE, 
-                    rectangleCenter, 
-                    defaultRadius, 
-                    rand()%MAX_PARTICLE_SIZE/10, 
-                    rand()%MAX_PARTICLE_SIZE/10);
-            }
-            newEntity->setFaction(i%2);
-            newEntity->setPosition({randomCenter.x, randomCenter.y});
-      
-            ENTITIES_LIST.appendNode(newEntity);
-        }
-    
-        BEGIN_TIME
-        int optimized = COLLISION_HANDLER.runGridOptimization();
-        END_TIME
-        PRINT_TIME("optimized")
-    
-        BEGIN_TIME
-        int naive = COLLISION_HANDLER.runNaiveImplementation();
-        END_TIME
-        PRINT_TIME("naive")
-    
-        cout << optimized << "|" << naive << endl;
-        ENTITIES_LIST.clear();
+        totalCollisions += collisions;
+        totalTime       += GET_TIME;
+        frames++;
     }
 
-    cout << "Number of Entities: "<< NUMBER_OF_ENTITIES << "\n";
-    cout << numberOfHitboxes/NUMBER_OF_REPETITIONS << " | ";
-    cout << times[0]/NUMBER_OF_REPETITIONS << " | ";
-    cout << times[1]/NUMBER_OF_REPETITIONS << " : " <<(float)times[0]/(float)times[1]<< " | ";
-    cout << times[2]/NUMBER_OF_REPETITIONS << " : " <<(float)times[0]/(float)times[2]<< " | ";
-    cout << endl;
+    // -- Report finale ------------------------------------------------------
+    std::cout << "Frames simulati:     " << frames          << '\n';
+    std::cout << "Collisioni totali:   " << totalCollisions << '\n';
+    std::cout << "Tempo medio/frame:   " << (frames > 0 ? totalTime / frames : 0) << " us\n";
+    std::cout << "FPS medi:            "
+              << std::fixed << std::setprecision(1)
+              << (frames / SIMULATION_SECONDS) << '\n';
+
+    // -- Cleanup ------------------------------------------------------------
+    for (Entity* e : entities) delete e;
 
     return 0;
 }
-

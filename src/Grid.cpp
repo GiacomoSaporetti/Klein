@@ -1,49 +1,88 @@
+
 #include "Grid.h"
-using namespace Klein;
 
-void Grid::addHitboxToCell(Hitbox* h)
+namespace Klein
 {
-    point_t position = h->getPosition();
-    int hor = int(position.x)/cellWidth;
-    int ver = int(position.y)/cellWidth;
-    int id = convertMatrixToId(hor, ver);
-    if(id < 0 || id > (numberOfCells - 1))    return;
-    /*std::cout << "Added entity: " << e << " to cell " << id;
-    std::cout << " (" << hor << ", " << ver << ")";
-    std::cout << " -- " << position.x << ", "<< position.y <<std::endl;*/
-    cells[id].addHitbox(h);
-}
+    /*Cell*/
 
-inline int Grid::convertMatrixToId(int x , int y)
-{
-    if(x<0 || x>=numberOfHorizontalCells)  return -1;
-    if(y<0 || y>=numberOfVerticalCells)    return -1;
-    return  x + y*numberOfHorizontalCells;
-}
+    Cell::Cell(int id)  : m_id(id)  {}
 
-void Cell::addHitbox(Hitbox* h){hitboxesList.appendNode(h); h->cellID=id;}
+    /*Metodi*/
 
-void Cell::setId(int i){id = i;}
+    void Cell::addHitbox(Hitbox* h)  { m_hitboxes.push_back(h); }
+    void Cell::clear()               { m_hitboxes.clear();      }
+    void Cell::setCellID(int id)     { m_id = id;               }
 
-void Cell::clear(){hitboxesList.clear();}
+    /*Getters*/
+    
+    int                         Cell::getCellID()   const { return m_id;       }
+    const std::vector<Hitbox*>& Cell::getHitboxes() const { return m_hitboxes; }
+    
+    
 
-LinkedList* Cell::getHitboxesList(){return &hitboxesList;}
+    /*Grid*/
 
-LinkedList* Grid::getListOfCell(int x, int y)
-{
-    int id = convertMatrixToId(x, y);
-    if(id < 0 || id > (numberOfCells - 1))    return nullptr;
-    return cells[id].getHitboxesList();
-}
+    Grid::Grid()
+    {
+        m_rows = SCREEN_HEIGHT / CELL_SIZE + (SCREEN_HEIGHT % CELL_SIZE != 0 ? 1 : 0);
+        m_cols = SCREEN_WIDTH  / CELL_SIZE + (SCREEN_WIDTH  % CELL_SIZE != 0 ? 1 : 0);
 
-LinkedList* Grid::getListOfCell(int id)
-{
-    if(id < 0 || id > (numberOfCells - 1))    return nullptr;
-    return cells[id].getHitboxesList();
-}
+        m_cells.reserve(m_rows * m_cols);
+        for (int i = 0; i < m_rows * m_cols; i++)
+            m_cells.emplace_back(i);
 
-void Grid::clearCell(int id)
-{
-    if(id < 0 || id > (numberOfCells - 1))    return;
-    cells[id].clear();
-}
+        KLEIN_DEBUG("Grid rows:",  m_rows);
+        KLEIN_DEBUG("Grid cols:",  m_cols);
+        KLEIN_DEBUG("Cell size:",  sizeof(Cell));
+    }
+
+    /*Getters*/
+
+    int Grid::getRows()      const { return m_rows;           }
+    int Grid::getCols()      const { return m_cols;           }
+    int Grid::getCellCount() const { return m_rows * m_cols;  }
+    
+    const std::vector<Hitbox*>& Grid::getHitboxesAt(int row, int col) const
+    {
+        return m_cells[convertToID(row, col)].getHitboxes();
+    }
+
+    const std::vector<Hitbox*>& Grid::getHitboxesAt(int id) const
+    {
+        KLEIN_ASSERT(id >= 0 && id < static_cast<int>(m_cells.size()));
+        return m_cells[id].getHitboxes();
+    }
+
+    /*Metodi*/
+
+    void Grid::assignHitboxToCell(Hitbox* h)
+    {
+        KLEIN_ASSERT(h != nullptr);
+        const point_t center = h->getCenter();
+        const int row = center.y / CELL_SIZE;
+        const int col = center.x / CELL_SIZE;
+        const int id  = convertToID(row, col);
+        h->setCellID(id);
+        m_cells[id].addHitbox(h);
+    }
+
+    int Grid::convertToID(int row, int col) const
+    {
+        KLEIN_ASSERT(row >= 0 && row < m_rows);
+        KLEIN_ASSERT(col >= 0 && col < m_cols);
+        return row * m_cols + col;
+    }
+
+    void Grid::clearCell(int id)
+    {
+        KLEIN_ASSERT(id >= 0 && id < static_cast<int>(m_cells.size()));
+        m_cells[id].clear();
+    }
+
+    void Grid::clearAllCells()
+    {
+        for(int id=0; id< m_rows*m_cols; id++)
+            m_cells[id].clear();
+    }
+
+} //namespace Klein

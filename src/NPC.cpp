@@ -15,22 +15,22 @@ void NPC::decreaseKarma(int k)
 
 void NPC::UpdateFeelingsTowardsPlayer()
 {
-    if(karma > KARMA_THRESHOLD_HIGHEST)   {feelingTowardsPlayer = AGGRO_PROTECTIVE; return;}
-    if(karma > KARMA_THRESHOLD_HIGH)   {feelingTowardsPlayer = AGGRO_FRIENDLY; return;}
-    if(karma > KARMA_THRESHOLD_MID)   {feelingTowardsPlayer = AGGRO_NEUTRAL; return;}
-    if(karma > KARMA_THRESHOLD_LOW)   {feelingTowardsPlayer = AGGRO_UNFRIENDLY; return;}
-    if(karma > KARMA_THRESHOLD_LOWEST)   {feelingTowardsPlayer = AGGRO_AGGRESSIVE; return;}
+    if(karma > KARMA_THRESHOLD_HIGHEST) {feelingTowardsPlayer = AggroLevel::Protective; return;}
+    if(karma > KARMA_THRESHOLD_HIGH)    {feelingTowardsPlayer = AggroLevel::Friendly; return;}
+    if(karma > KARMA_THRESHOLD_MID)     {feelingTowardsPlayer = AggroLevel::Neutral; return;}
+    if(karma > KARMA_THRESHOLD_LOW)     {feelingTowardsPlayer = AggroLevel::Unfriendly; return;}
+    if(karma > KARMA_THRESHOLD_LOWEST)  {feelingTowardsPlayer = AggroLevel::Aggressive; return;}
 }
 
 void NPC::handleIA()
 {
     switch(feelingTowardsPlayer)
     {
-        case AGGRO_PROTECTIVE: executeProtectiveIA(); break;
-        case AGGRO_FRIENDLY: executeFriendlyIA(); break;
-        case AGGRO_NEUTRAL: executeNeutralIA(); break;
-        case AGGRO_UNFRIENDLY: executeUnfriendlyIA(); break;
-        case AGGRO_AGGRESSIVE: executeAggressiveIA(); break;
+        case AggroLevel::Protective: executeProtectiveIA(); break;
+        case AggroLevel::Friendly: executeFriendlyIA(); break;
+        case AggroLevel::Neutral: executeNeutralIA(); break;
+        case AggroLevel::Unfriendly: executeUnfriendlyIA(); break;
+        case AggroLevel::Aggressive: executeAggressiveIA(); break;
     }
 }
 

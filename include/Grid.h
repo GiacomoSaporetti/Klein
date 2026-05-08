@@ -1,68 +1,75 @@
 #pragma once
 
 #include "Klein.h"
-#include "Entity.h"
 #include "Hitbox.h"
-#include "LinkedList.h"
+#include <vector>
 
 namespace Klein
 {
+    /**
+     * @brief Cella della griglia spaziale, contiene i riferimenti alle hitbox che la occupano.
+     */
     class Cell
     {
-        private:
-            int id;
-            LinkedList hitboxesList;
-        
-        public:
-            Cell(int i)
-            {
-                id = i;
-                hitboxesList = LinkedList();
-            }
-            ~Cell() = default;
-            void addHitbox(Hitbox* h);
-            void clear();
-            void setId(int i);
-            LinkedList* getHitboxesList();
-            
+    public:
+        explicit Cell(int id = 0);
+        ~Cell() = default;
+
+        void addHitbox(Hitbox* h);
+
+        void clear();   //Svuota la lista di hitbox della cella.
+
+        void setCellID(int id);
+
+        int                          getCellID()      const;
+        const std::vector<Hitbox*>&  getHitboxes()    const;
+
+    private:
+        int                   m_id = 0;     //Id specifico della cella
+        std::vector<Hitbox*>  m_hitboxes;   //Lista di hitbox presenti in questa cella
     };
 
+    /**
+     * @brief Griglia spaziale uniforme per la collision detection.
+     *
+     * Lo schermo viene suddiviso in celle di dimensione 'CELL_SIZE' x 'CELL_SIZE'.
+     * Ogni hitbox viene assegnata alla cella corrispondente alla sua posizione,
+     * riducendo il numero di confronti a quelli delle 8 celle più vicine
+     */
     class Grid
     {
-        private:
-            Cell* cells;
-            int cellWidth;
-            int numberOfCells;
+    public:
+        Grid();
+        ~Grid() = default;
 
-            /*Rename possibly with matrix related names*/
-            int numberOfVerticalCells;
-            int numberOfHorizontalCells;
-            
-        public:
-            Grid()
-            {
-                cellWidth = MAX_PARTICLE_SIZE;
-                numberOfVerticalCells = SCREEN_Y/MAX_PARTICLE_SIZE;
-                if(SCREEN_Y%MAX_PARTICLE_SIZE != 0) numberOfVerticalCells++;
-                
-                numberOfHorizontalCells = SCREEN_X/MAX_PARTICLE_SIZE;
-                if(SCREEN_X%MAX_PARTICLE_SIZE != 0) numberOfHorizontalCells++;
-                
-                numberOfCells = numberOfVerticalCells*numberOfHorizontalCells;
-                cells = (Cell*) std::malloc(numberOfCells*sizeof(Cell));
+        /*Assegna automaticamente una hitbox alla cella corrispondente in base alla sua posizione*/
+        void assignHitboxToCell(Hitbox* h);
 
-                for(int i=0; i<numberOfCells; i++)    cells[i] = Cell(i);
-                std::cout << "Cell: " << sizeof(Cell) << std::endl;
-            }
-            ~Grid() = default;  
+        /*Svuota la cella della griglia, da fare all'inizio di ogni frame*/
+        void clearCell(int id);
+        void clearAllCells();
 
-            int getNumberOfVetical(){return numberOfVerticalCells;} 
-            int getNumberOfHorizontal(){return numberOfHorizontalCells;} 
-            int getNumberOfCells(){return numberOfCells;} 
-            void addHitboxToCell(Hitbox* h);
-            inline int convertMatrixToId(int n , int m);
-            LinkedList* getListOfCell(int x, int y);
-            LinkedList* getListOfCell(int id);
-            void clearCell(int id);
+        /*Converte coordinate di riga/colonna in un ID cella lineare*/
+        int convertToID(int row, int col) const;
+
+        const std::vector<Hitbox*>& getHitboxesAt(int row, int col) const;
+        const std::vector<Hitbox*>& getHitboxesAt(int id)           const;
+
+
+        /*Getters*/
+
+        int getRows()         const;
+        int getCols()         const;
+        int getCellCount()    const;
+
+        
+        static constexpr int CELL_SIZE = MAX_PARTICLE_SIZE; // Dimensione di ogni cella, pari a 'MAX_PARTICLE_SIZE'
+
+    private:
+        std::vector<Cell> m_cells;  // Lista di tutte le celle
+
+        int m_rows  = 0;  // Numero di righe della griglia
+        int m_cols  = 0;  // Numero di colonne della griglia
     };
-}
+
+} //namespace Klein

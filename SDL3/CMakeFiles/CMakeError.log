@@ -1,0 +1,707 @@
+Performing C SOURCE FILE Test HAVE_GCC_WDOCUMENTATION failed with the following output:
+Change Dir: /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_7a907/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_7a907.dir/build.make CMakeFiles/cmTC_7a907.dir/build
+gmake[1]: Entering directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_7a907.dir/src.c.o
+/usr/bin/cc -DHAVE_GCC_WDOCUMENTATION  -D_GNU_SOURCE=1   -Wdocumentation -o CMakeFiles/cmTC_7a907.dir/src.c.o -c /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/src.c
+cc: error: unrecognized command-line option '-Wdocumentation'
+gmake[1]: *** [CMakeFiles/cmTC_7a907.dir/build.make:78: CMakeFiles/cmTC_7a907.dir/src.c.o] Error 1
+gmake[1]: Leaving directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:127: cmTC_7a907/fast] Error 2
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test HAVE_GCC_WDOCUMENTATION_UNKNOWN_COMMAND failed with the following output:
+Change Dir: /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_8333c/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_8333c.dir/build.make CMakeFiles/cmTC_8333c.dir/build
+gmake[1]: Entering directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_8333c.dir/src.c.o
+/usr/bin/cc -DHAVE_GCC_WDOCUMENTATION_UNKNOWN_COMMAND  -D_GNU_SOURCE=1   -Wdocumentation-unknown-command -o CMakeFiles/cmTC_8333c.dir/src.c.o -c /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/src.c
+cc: error: unrecognized command-line option '-Wdocumentation-unknown-command'
+gmake[1]: *** [CMakeFiles/cmTC_8333c.dir/build.make:78: CMakeFiles/cmTC_8333c.dir/src.c.o] Error 1
+gmake[1]: Leaving directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:127: cmTC_8333c/fast] Error 2
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test HAVE_GCC_COMMENT_BLOCK_COMMANDS failed with the following output:
+Change Dir: /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_1fb69/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_1fb69.dir/build.make CMakeFiles/cmTC_1fb69.dir/build
+gmake[1]: Entering directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_1fb69.dir/src.c.o
+/usr/bin/cc -DHAVE_GCC_COMMENT_BLOCK_COMMANDS  -D_GNU_SOURCE=1   -fcomment-block-commands=threadsafety -o CMakeFiles/cmTC_1fb69.dir/src.c.o -c /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/src.c
+cc: error: unrecognized command-line option '-fcomment-block-commands=threadsafety'
+gmake[1]: *** [CMakeFiles/cmTC_1fb69.dir/build.make:78: CMakeFiles/cmTC_1fb69.dir/src.c.o] Error 1
+gmake[1]: Leaving directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:127: cmTC_1fb69/fast] Error 2
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test HAVE_CLANG_COMMENT_BLOCK_COMMANDS failed with the following output:
+Change Dir: /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_9ed54/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_9ed54.dir/build.make CMakeFiles/cmTC_9ed54.dir/build
+gmake[1]: Entering directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_9ed54.dir/src.c.o
+/usr/bin/cc -DHAVE_CLANG_COMMENT_BLOCK_COMMANDS  -D_GNU_SOURCE=1   /clang:-fcomment-block-commands=threadsafety -o CMakeFiles/cmTC_9ed54.dir/src.c.o -c /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/src.c
+cc: warning: /clang:-fcomment-block-commands=threadsafety: linker input file unused because linking not done
+cc: error: /clang:-fcomment-block-commands=threadsafety: linker input file not found: No such file or directory
+gmake[1]: *** [CMakeFiles/cmTC_9ed54.dir/build.make:78: CMakeFiles/cmTC_9ed54.dir/src.c.o] Error 1
+gmake[1]: *** Deleting file 'CMakeFiles/cmTC_9ed54.dir/src.c.o'
+gmake[1]: Leaving directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:127: cmTC_9ed54/fast] Error 2
+
+
+Source file was:
+int main(void) { return 0; }
+Determining if the _i64toa exist failed with the following output:
+Change Dir: /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_0efaf/fast && gmake: Warning: File 'Makefile' has modification time 0.87 s in the future
+/usr/bin/gmake  -f CMakeFiles/cmTC_0efaf.dir/build.make CMakeFiles/cmTC_0efaf.dir/build
+gmake[1]: Entering directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+gmake[1]: Warning: File 'CMakeFiles/cmTC_0efaf.dir/flags.make' has modification time 0.83 s in the future
+Building C object CMakeFiles/cmTC_0efaf.dir/CheckSymbolExists.c.o
+/usr/bin/cc   -D_GNU_SOURCE=1 -o CMakeFiles/cmTC_0efaf.dir/CheckSymbolExists.c.o -c /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c: In function ‘main’:
+/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:26:19: error: ‘_i64toa’ undeclared (first use in this function)
+   26 |   return ((int*)(&_i64toa))[argc];
+      |                   ^~~~~~~
+/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:26:19: note: each undeclared identifier is reported only once for each function it appears in
+gmake[1]: *** [CMakeFiles/cmTC_0efaf.dir/build.make:78: CMakeFiles/cmTC_0efaf.dir/CheckSymbolExists.c.o] Error 1
+gmake[1]: Leaving directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:127: cmTC_0efaf/fast] Error 2
+
+
+File /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <float.h>
+#include <iconv.h>
+#include <inttypes.h>
+#include <limits.h>
+#include <malloc.h>
+#include <math.h>
+#include <memory.h>
+#include <signal.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+#include <sys/types.h>
+#include <time.h>
+#include <wchar.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef _i64toa
+  return ((int*)(&_i64toa))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the itoa exist failed with the following output:
+Change Dir: /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_bc7bc/fast && gmake: Warning: File 'Makefile' has modification time 0.72 s in the future
+/usr/bin/gmake  -f CMakeFiles/cmTC_bc7bc.dir/build.make CMakeFiles/cmTC_bc7bc.dir/build
+gmake[1]: Entering directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+gmake[1]: Warning: File 'CMakeFiles/cmTC_bc7bc.dir/flags.make' has modification time 0.65 s in the future
+Building C object CMakeFiles/cmTC_bc7bc.dir/CheckSymbolExists.c.o
+/usr/bin/cc   -D_GNU_SOURCE=1 -o CMakeFiles/cmTC_bc7bc.dir/CheckSymbolExists.c.o -c /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c: In function ‘main’:
+/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:26:19: error: ‘itoa’ undeclared (first use in this function)
+   26 |   return ((int*)(&itoa))[argc];
+      |                   ^~~~
+/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:26:19: note: each undeclared identifier is reported only once for each function it appears in
+gmake[1]: *** [CMakeFiles/cmTC_bc7bc.dir/build.make:78: CMakeFiles/cmTC_bc7bc.dir/CheckSymbolExists.c.o] Error 1
+gmake[1]: Leaving directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:127: cmTC_bc7bc/fast] Error 2
+
+
+File /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <float.h>
+#include <iconv.h>
+#include <inttypes.h>
+#include <limits.h>
+#include <malloc.h>
+#include <math.h>
+#include <memory.h>
+#include <signal.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+#include <sys/types.h>
+#include <time.h>
+#include <wchar.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef itoa
+  return ((int*)(&itoa))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the _ltoa exist failed with the following output:
+Change Dir: /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_1881b/fast && gmake: Warning: File 'Makefile' has modification time 0.46 s in the future
+/usr/bin/gmake  -f CMakeFiles/cmTC_1881b.dir/build.make CMakeFiles/cmTC_1881b.dir/build
+gmake[1]: Entering directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+gmake[1]: Warning: File 'CMakeFiles/cmTC_1881b.dir/flags.make' has modification time 0.41 s in the future
+Building C object CMakeFiles/cmTC_1881b.dir/CheckSymbolExists.c.o
+/usr/bin/cc   -D_GNU_SOURCE=1 -o CMakeFiles/cmTC_1881b.dir/CheckSymbolExists.c.o -c /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c: In function ‘main’:
+/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:26:19: error: ‘_ltoa’ undeclared (first use in this function)
+   26 |   return ((int*)(&_ltoa))[argc];
+      |                   ^~~~~
+/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:26:19: note: each undeclared identifier is reported only once for each function it appears in
+gmake[1]: *** [CMakeFiles/cmTC_1881b.dir/build.make:78: CMakeFiles/cmTC_1881b.dir/CheckSymbolExists.c.o] Error 1
+gmake[1]: Leaving directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:127: cmTC_1881b/fast] Error 2
+
+
+File /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <float.h>
+#include <iconv.h>
+#include <inttypes.h>
+#include <limits.h>
+#include <malloc.h>
+#include <math.h>
+#include <memory.h>
+#include <signal.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+#include <sys/types.h>
+#include <time.h>
+#include <wchar.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef _ltoa
+  return ((int*)(&_ltoa))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the sqr exist failed with the following output:
+Change Dir: /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_a00d0/fast && gmake: Warning: File 'Makefile' has modification time 0.88 s in the future
+/usr/bin/gmake  -f CMakeFiles/cmTC_a00d0.dir/build.make CMakeFiles/cmTC_a00d0.dir/build
+gmake[1]: Entering directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+gmake[1]: Warning: File 'CMakeFiles/cmTC_a00d0.dir/flags.make' has modification time 0.81 s in the future
+Building C object CMakeFiles/cmTC_a00d0.dir/CheckSymbolExists.c.o
+/usr/bin/cc   -D_GNU_SOURCE=1 -o CMakeFiles/cmTC_a00d0.dir/CheckSymbolExists.c.o -c /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c: In function ‘main’:
+/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:26:19: error: ‘sqr’ undeclared (first use in this function); did you mean ‘sqrt’?
+   26 |   return ((int*)(&sqr))[argc];
+      |                   ^~~
+      |                   sqrt
+/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:26:19: note: each undeclared identifier is reported only once for each function it appears in
+gmake[1]: *** [CMakeFiles/cmTC_a00d0.dir/build.make:78: CMakeFiles/cmTC_a00d0.dir/CheckSymbolExists.c.o] Error 1
+gmake[1]: Leaving directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:127: cmTC_a00d0/fast] Error 2
+
+
+File /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <float.h>
+#include <iconv.h>
+#include <inttypes.h>
+#include <limits.h>
+#include <malloc.h>
+#include <math.h>
+#include <memory.h>
+#include <signal.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+#include <sys/types.h>
+#include <time.h>
+#include <wchar.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef sqr
+  return ((int*)(&sqr))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the strlcat exist failed with the following output:
+Change Dir: /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_e6205/fast && gmake: Warning: File 'Makefile' has modification time 0.52 s in the future
+/usr/bin/gmake  -f CMakeFiles/cmTC_e6205.dir/build.make CMakeFiles/cmTC_e6205.dir/build
+gmake[1]: Entering directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+gmake[1]: Warning: File 'CMakeFiles/cmTC_e6205.dir/flags.make' has modification time 0.45 s in the future
+Building C object CMakeFiles/cmTC_e6205.dir/CheckSymbolExists.c.o
+/usr/bin/cc   -D_GNU_SOURCE=1 -o CMakeFiles/cmTC_e6205.dir/CheckSymbolExists.c.o -c /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c: In function ‘main’:
+/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:26:19: error: ‘strlcat’ undeclared (first use in this function); did you mean ‘strncat’?
+   26 |   return ((int*)(&strlcat))[argc];
+      |                   ^~~~~~~
+      |                   strncat
+/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:26:19: note: each undeclared identifier is reported only once for each function it appears in
+gmake[1]: *** [CMakeFiles/cmTC_e6205.dir/build.make:78: CMakeFiles/cmTC_e6205.dir/CheckSymbolExists.c.o] Error 1
+gmake[1]: Leaving directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:127: cmTC_e6205/fast] Error 2
+
+
+File /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <float.h>
+#include <iconv.h>
+#include <inttypes.h>
+#include <limits.h>
+#include <malloc.h>
+#include <math.h>
+#include <memory.h>
+#include <signal.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+#include <sys/types.h>
+#include <time.h>
+#include <wchar.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef strlcat
+  return ((int*)(&strlcat))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the strlcpy exist failed with the following output:
+Change Dir: /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_75cad/fast && gmake: Warning: File 'Makefile' has modification time 0.54 s in the future
+/usr/bin/gmake  -f CMakeFiles/cmTC_75cad.dir/build.make CMakeFiles/cmTC_75cad.dir/build
+gmake[1]: Entering directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+gmake[1]: Warning: File 'CMakeFiles/cmTC_75cad.dir/flags.make' has modification time 0.48 s in the future
+Building C object CMakeFiles/cmTC_75cad.dir/CheckSymbolExists.c.o
+/usr/bin/cc   -D_GNU_SOURCE=1 -o CMakeFiles/cmTC_75cad.dir/CheckSymbolExists.c.o -c /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c: In function ‘main’:
+/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:26:19: error: ‘strlcpy’ undeclared (first use in this function); did you mean ‘strncpy’?
+   26 |   return ((int*)(&strlcpy))[argc];
+      |                   ^~~~~~~
+      |                   strncpy
+/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:26:19: note: each undeclared identifier is reported only once for each function it appears in
+gmake[1]: *** [CMakeFiles/cmTC_75cad.dir/build.make:78: CMakeFiles/cmTC_75cad.dir/CheckSymbolExists.c.o] Error 1
+gmake[1]: Leaving directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:127: cmTC_75cad/fast] Error 2
+
+
+File /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <float.h>
+#include <iconv.h>
+#include <inttypes.h>
+#include <limits.h>
+#include <malloc.h>
+#include <math.h>
+#include <memory.h>
+#include <signal.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+#include <sys/types.h>
+#include <time.h>
+#include <wchar.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef strlcpy
+  return ((int*)(&strlcpy))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the strnstr exist failed with the following output:
+Change Dir: /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_cd829/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_cd829.dir/build.make CMakeFiles/cmTC_cd829.dir/build
+gmake[1]: Entering directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_cd829.dir/CheckSymbolExists.c.o
+/usr/bin/cc   -D_GNU_SOURCE=1 -o CMakeFiles/cmTC_cd829.dir/CheckSymbolExists.c.o -c /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c: In function ‘main’:
+/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:26:19: error: ‘strnstr’ undeclared (first use in this function); did you mean ‘strstr’?
+   26 |   return ((int*)(&strnstr))[argc];
+      |                   ^~~~~~~
+      |                   strstr
+/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:26:19: note: each undeclared identifier is reported only once for each function it appears in
+gmake[1]: *** [CMakeFiles/cmTC_cd829.dir/build.make:78: CMakeFiles/cmTC_cd829.dir/CheckSymbolExists.c.o] Error 1
+gmake[1]: Leaving directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:127: cmTC_cd829/fast] Error 2
+
+
+File /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <float.h>
+#include <iconv.h>
+#include <inttypes.h>
+#include <limits.h>
+#include <malloc.h>
+#include <math.h>
+#include <memory.h>
+#include <signal.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+#include <sys/types.h>
+#include <time.h>
+#include <wchar.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef strnstr
+  return ((int*)(&strnstr))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the wcslcat exist failed with the following output:
+Change Dir: /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_fbedd/fast && gmake: Warning: File 'Makefile' has modification time 0.74 s in the future
+/usr/bin/gmake  -f CMakeFiles/cmTC_fbedd.dir/build.make CMakeFiles/cmTC_fbedd.dir/build
+gmake[1]: Entering directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+gmake[1]: Warning: File 'CMakeFiles/cmTC_fbedd.dir/flags.make' has modification time 0.68 s in the future
+Building C object CMakeFiles/cmTC_fbedd.dir/CheckSymbolExists.c.o
+/usr/bin/cc   -D_GNU_SOURCE=1 -o CMakeFiles/cmTC_fbedd.dir/CheckSymbolExists.c.o -c /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c: In function ‘main’:
+/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:26:19: error: ‘wcslcat’ undeclared (first use in this function); did you mean ‘wcsncat’?
+   26 |   return ((int*)(&wcslcat))[argc];
+      |                   ^~~~~~~
+      |                   wcsncat
+/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:26:19: note: each undeclared identifier is reported only once for each function it appears in
+gmake[1]: *** [CMakeFiles/cmTC_fbedd.dir/build.make:78: CMakeFiles/cmTC_fbedd.dir/CheckSymbolExists.c.o] Error 1
+gmake[1]: Leaving directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:127: cmTC_fbedd/fast] Error 2
+
+
+File /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <float.h>
+#include <iconv.h>
+#include <inttypes.h>
+#include <limits.h>
+#include <malloc.h>
+#include <math.h>
+#include <memory.h>
+#include <signal.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+#include <sys/types.h>
+#include <time.h>
+#include <wchar.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef wcslcat
+  return ((int*)(&wcslcat))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the wcslcpy exist failed with the following output:
+Change Dir: /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_67b41/fast && gmake: Warning: File 'Makefile' has modification time 0.64 s in the future
+/usr/bin/gmake  -f CMakeFiles/cmTC_67b41.dir/build.make CMakeFiles/cmTC_67b41.dir/build
+gmake[1]: Entering directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+gmake[1]: Warning: File 'CMakeFiles/cmTC_67b41.dir/flags.make' has modification time 0.54 s in the future
+Building C object CMakeFiles/cmTC_67b41.dir/CheckSymbolExists.c.o
+/usr/bin/cc   -D_GNU_SOURCE=1 -o CMakeFiles/cmTC_67b41.dir/CheckSymbolExists.c.o -c /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c: In function ‘main’:
+/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:26:19: error: ‘wcslcpy’ undeclared (first use in this function); did you mean ‘wcsncpy’?
+   26 |   return ((int*)(&wcslcpy))[argc];
+      |                   ^~~~~~~
+      |                   wcsncpy
+/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:26:19: note: each undeclared identifier is reported only once for each function it appears in
+gmake[1]: *** [CMakeFiles/cmTC_67b41.dir/build.make:78: CMakeFiles/cmTC_67b41.dir/CheckSymbolExists.c.o] Error 1
+gmake[1]: Leaving directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:127: cmTC_67b41/fast] Error 2
+
+
+File /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <float.h>
+#include <iconv.h>
+#include <inttypes.h>
+#include <limits.h>
+#include <malloc.h>
+#include <math.h>
+#include <memory.h>
+#include <signal.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+#include <sys/types.h>
+#include <time.h>
+#include <wchar.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef wcslcpy
+  return ((int*)(&wcslcpy))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the sysctlbyname exist failed with the following output:
+Change Dir: /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_b624a/fast && gmake: Warning: File 'Makefile' has modification time 0.91 s in the future
+/usr/bin/gmake  -f CMakeFiles/cmTC_b624a.dir/build.make CMakeFiles/cmTC_b624a.dir/build
+gmake[1]: Entering directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+gmake[1]: Warning: File 'CMakeFiles/cmTC_b624a.dir/flags.make' has modification time 0.85 s in the future
+Building C object CMakeFiles/cmTC_b624a.dir/CheckSymbolExists.c.o
+/usr/bin/cc   -D_GNU_SOURCE=1 -o CMakeFiles/cmTC_b624a.dir/CheckSymbolExists.c.o -c /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:3:10: fatal error: sys/sysctl.h: No such file or directory
+    3 | #include <sys/sysctl.h>
+      |          ^~~~~~~~~~~~~~
+compilation terminated.
+gmake[1]: *** [CMakeFiles/cmTC_b624a.dir/build.make:78: CMakeFiles/cmTC_b624a.dir/CheckSymbolExists.c.o] Error 1
+gmake[1]: Leaving directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:127: cmTC_b624a/fast] Error 2
+
+
+File /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <sys/types.h>
+#include <sys/sysctl.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef sysctlbyname
+  return ((int*)(&sysctlbyname))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the elf_aux_info exist failed with the following output:
+Change Dir: /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_9698f/fast && gmake: Warning: File 'Makefile' has modification time 0.83 s in the future
+/usr/bin/gmake  -f CMakeFiles/cmTC_9698f.dir/build.make CMakeFiles/cmTC_9698f.dir/build
+gmake[1]: Entering directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+gmake[1]: Warning: File 'CMakeFiles/cmTC_9698f.dir/flags.make' has modification time 0.78 s in the future
+Building C object CMakeFiles/cmTC_9698f.dir/CheckSymbolExists.c.o
+/usr/bin/cc   -D_GNU_SOURCE=1 -o CMakeFiles/cmTC_9698f.dir/CheckSymbolExists.c.o -c /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c: In function ‘main’:
+/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:8:19: error: ‘elf_aux_info’ undeclared (first use in this function)
+    8 |   return ((int*)(&elf_aux_info))[argc];
+      |                   ^~~~~~~~~~~~
+/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:8:19: note: each undeclared identifier is reported only once for each function it appears in
+gmake[1]: *** [CMakeFiles/cmTC_9698f.dir/build.make:78: CMakeFiles/cmTC_9698f.dir/CheckSymbolExists.c.o] Error 1
+gmake[1]: Leaving directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:127: cmTC_9698f/fast] Error 2
+
+
+File /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <sys/auxv.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef elf_aux_info
+  return ((int*)(&elf_aux_info))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Performing C SOURCE FILE Test ICONV_IN_LIBICONV failed with the following output:
+Change Dir: /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_26adb/fast && gmake: Warning: File 'Makefile' has modification time 0.61 s in the future
+/usr/bin/gmake  -f CMakeFiles/cmTC_26adb.dir/build.make CMakeFiles/cmTC_26adb.dir/build
+gmake[1]: Entering directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+gmake[1]: Warning: File 'CMakeFiles/cmTC_26adb.dir/flags.make' has modification time 0.54 s in the future
+Building C object CMakeFiles/cmTC_26adb.dir/src.c.o
+/usr/bin/cc -DICONV_IN_LIBICONV  -D_GNU_SOURCE=1 -o CMakeFiles/cmTC_26adb.dir/src.c.o -c /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_26adb
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_26adb.dir/link.txt --verbose=1
+/usr/bin/cc   -D_GNU_SOURCE=1 CMakeFiles/cmTC_26adb.dir/src.c.o -o cmTC_26adb  -liconv 
+/usr/bin/ld: cannot find -liconv: No such file or directory
+collect2: error: ld returned 1 exit status
+gmake[1]: *** [CMakeFiles/cmTC_26adb.dir/build.make:99: cmTC_26adb] Error 1
+gmake[1]: Leaving directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:127: cmTC_26adb/fast] Error 2
+
+
+Source file was:
+
+        #include <stddef.h>
+        #include <iconv.h>
+        int main(int argc, char **argv) {
+            return !iconv_open(NULL,NULL);
+        }
+Performing C SOURCE FILE Test LIBC_HAS_WORKING_LIBUNWIND failed with the following output:
+Change Dir: /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_e9cb0/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_e9cb0.dir/build.make CMakeFiles/cmTC_e9cb0.dir/build
+gmake[1]: Entering directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_e9cb0.dir/src.c.o
+/usr/bin/cc -DLIBC_HAS_WORKING_LIBUNWIND  -D_GNU_SOURCE=1 -o CMakeFiles/cmTC_e9cb0.dir/src.c.o -c /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_e9cb0
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e9cb0.dir/link.txt --verbose=1
+/usr/bin/cc   -D_GNU_SOURCE=1 CMakeFiles/cmTC_e9cb0.dir/src.c.o -o cmTC_e9cb0 
+/usr/bin/ld: CMakeFiles/cmTC_e9cb0.dir/src.c.o: in function `main':
+src.c:(.text+0x36): undefined reference to `_Ux86_64_getcontext'
+/usr/bin/ld: src.c:(.text+0x45): undefined reference to `_Ux86_64_step'
+/usr/bin/ld: src.c:(.text+0x60): undefined reference to `_Ux86_64_get_reg'
+/usr/bin/ld: src.c:(.text+0x85): undefined reference to `_Ux86_64_get_proc_name'
+collect2: error: ld returned 1 exit status
+gmake[1]: *** [CMakeFiles/cmTC_e9cb0.dir/build.make:99: cmTC_e9cb0] Error 1
+gmake[1]: Leaving directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:127: cmTC_e9cb0/fast] Error 2
+
+
+Source file was:
+      #include <libunwind.h>
+      int main(int argc, char *argv[]) {
+        (void)argc; (void)argv;
+        unw_context_t context;
+        unw_cursor_t cursor;
+        unw_word_t pc;
+        char sym[256];
+        unw_word_t offset;
+        unw_getcontext(&context);
+        unw_step(&cursor);
+        unw_get_reg(&cursor, UNW_REG_IP, &pc);
+        unw_get_proc_name(&cursor, sym, sizeof(sym), &offset);
+        return 0;
+      }
+Performing C SOURCE FILE Test LIBUNWIND_HAS_WORKINGLIBUNWIND failed with the following output:
+Change Dir: /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_ea98f/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_ea98f.dir/build.make CMakeFiles/cmTC_ea98f.dir/build
+gmake[1]: Entering directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_ea98f.dir/src.c.o
+/usr/bin/cc -DLIBUNWIND_HAS_WORKINGLIBUNWIND  -D_GNU_SOURCE=1 -o CMakeFiles/cmTC_ea98f.dir/src.c.o -c /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_ea98f
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ea98f.dir/link.txt --verbose=1
+/usr/bin/cc   -D_GNU_SOURCE=1 CMakeFiles/cmTC_ea98f.dir/src.c.o -o cmTC_ea98f  -lunwind 
+/usr/bin/ld: CMakeFiles/cmTC_ea98f.dir/src.c.o: in function `main':
+src.c:(.text+0x45): undefined reference to `_Ux86_64_step'
+/usr/bin/ld: src.c:(.text+0x60): undefined reference to `_Ux86_64_get_reg'
+/usr/bin/ld: src.c:(.text+0x85): undefined reference to `_Ux86_64_get_proc_name'
+collect2: error: ld returned 1 exit status
+gmake[1]: *** [CMakeFiles/cmTC_ea98f.dir/build.make:99: cmTC_ea98f] Error 1
+gmake[1]: Leaving directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:127: cmTC_ea98f/fast] Error 2
+
+
+Source file was:
+      #include <libunwind.h>
+      int main(int argc, char *argv[]) {
+        (void)argc; (void)argv;
+        unw_context_t context;
+        unw_cursor_t cursor;
+        unw_word_t pc;
+        char sym[256];
+        unw_word_t offset;
+        unw_getcontext(&context);
+        unw_step(&cursor);
+        unw_get_reg(&cursor, UNW_REG_IP, &pc);
+        unw_get_proc_name(&cursor, sym, sizeof(sym), &offset);
+        return 0;
+      }
+Determining if the include file pthread_np.h exists failed with the following output:
+Change Dir: /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_c402d/fast && gmake: Warning: File 'Makefile' has modification time 0.93 s in the future
+/usr/bin/gmake  -f CMakeFiles/cmTC_c402d.dir/build.make CMakeFiles/cmTC_c402d.dir/build
+gmake[1]: Entering directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+gmake[1]: Warning: File 'CMakeFiles/cmTC_c402d.dir/flags.make' has modification time 0.89 s in the future
+Building C object CMakeFiles/cmTC_c402d.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -D_GNU_SOURCE=1 -D_REENTRANT -pthread -o CMakeFiles/cmTC_c402d.dir/CheckIncludeFile.c.o -c /mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp/CheckIncludeFile.c:1:10: fatal error: pthread_np.h: No such file or directory
+    1 | #include <pthread_np.h>
+      |          ^~~~~~~~~~~~~~
+compilation terminated.
+gmake[1]: *** [CMakeFiles/cmTC_c402d.dir/build.make:78: CMakeFiles/cmTC_c402d.dir/CheckIncludeFile.c.o] Error 1
+gmake[1]: Leaving directory '/mnt/c/Users/gsaporetti.TEX/Documents/Klein/SDL3/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:127: cmTC_c402d/fast] Error 2
+
+
+

@@ -1,474 +1,393 @@
 #include "CollisionHandler.h"
-#include <chrono>
+
+// -------------------------------------------------------------------------
+// Debug flags
+// -------------------------------------------------------------------------
 
 //#define PRINT_COLLISION
 //#define MEASURE_TIME
-#define FACTIONS
-
-std::chrono::steady_clock::time_point timeMeasureBegin;
-std::chrono::steady_clock::time_point timeMeasureEnd;
-
+//#define FACTIONS
 
 #ifdef PRINT_COLLISION
-#define PRINT_COLLISION_LIST printCollisionList();
+    #define PRINT_COLLISION_LIST printCollisionList()
 #else
-#define PRINT_COLLISION_LIST
+    #define PRINT_COLLISION_LIST
 #endif
 
-using namespace Klein;
 
-int global_time = 0;
-int global_cnt = 0;
-
-/*Prototypes*/
-bool CheckDistanceWithinRadius(Hitbox* h1, Hitbox* h2);
-void CountCollisionThread(LinkedList* list, int* res);
-bool CheckCollision(Hitbox* h1, Hitbox* h2);
-int  CountCollision(LinkedList& list);
-void PopulateCells(Grid* grid, LinkedList* list, int start, int stop);
-void CountGridMultithread(Grid* grid, int start_x, int stop_x, int start_y, int stop_y, int* res);
-void ComputeCollision(Entity* e1, Entity* e2);
-
-
-void ComputeCollision(Entity* e1, Entity* e2)
+namespace Klein
 {
-    float total_dissipation = e1->dissipationFactor*e2->dissipationFactor/2;
-    vector_t momentum = {e1->mass*e1->speed.x + e2->mass*e2->speed.x, e1->mass*e1->speed.y + e2->mass*e2->speed.y}; 
+    static bool checkDistanceWithinRadius(Hitbox* h1, Hitbox* h2);
+    static bool checkCollision(Hitbox* h1, Hitbox* h2);
+    static int  countCollisions(std::vector<Hitbox*>& list);
+    static void countCollisionsThread(std::vector<Hitbox*>& list, int& res);
+    static void computeCollision(Entity* e1, Entity* e2);
+    static void populateCells(Grid& grid, std::vector<Hitbox*>& list, int start, int stop);
+    static void countGridMultithread(Grid& grid, int startCol, int stopCol, int startRow, int stopRow, int& res);
 
-    e1->nextSpeed.x += momentum.x*total_dissipation/e1->mass;
-    e2->nextSpeed.x += momentum.x*total_dissipation/e2->mass;
 
-    e1->nextSpeed.y += momentum.y*total_dissipation/e1->mass;
-    e2->nextSpeed.y += momentum.y*total_dissipation/e2->mass;
-}
-
-void CollisionHandler::resetMotion()
-{
-    node_t* currentNode = ENTITIES_LIST->getFirstNode();
-
-    while(currentNode != nullptr)
+    /**
+     * @brief Calcola e applica le velocità post-collisione a due entità.
+     *
+     * Conserva la quantità di moto scalata per il fattore di dissipazione.
+     */
+    static void computeCollision(Entity* e1, Entity* e2)
     {
-        Entity* e = (Entity*) currentNode->data;
-        ASSERT(e != nullptr)
-        e->nextSpeed = {0, 0};
-        currentNode = currentNode->next;
-    }
-}
+        KLEIN_ASSERT(e1 != nullptr && e2 != nullptr);
 
-void CollisionHandler::updateMotion()
-{
-    node_t* currentNode = ENTITIES_LIST->getFirstNode();
+        const float dissipation = e1->getDissipation() * e2->getDissipation() / 2.f;
 
-    while(currentNode != nullptr)
-    {
-        Entity* e = (Entity*) currentNode->data;
-        ASSERT(e!=nullptr)
-        e->updateMotion();
-        currentNode = currentNode->next;
-    }
-}
-
-int CollisionHandler::populateHitboxesList()
-{
-    HITBOXES_LIST.clear();
-    ASSERT(HITBOXES_LIST.getFirstNode() == nullptr)
-
-    node_t* currentNode = ENTITIES_LIST->getFirstNode();
-
-    while(currentNode != nullptr)
-    {
-        Entity* e = (Entity*) currentNode->data;
-        HITBOXES_LIST.appendList(*e->getHitboxes());
-        currentNode = currentNode->next;
-    }
-
-    return HITBOXES_LIST.getNumberOfNodes();
-}
-
-
-int CollisionHandler::runNaiveImplementation()
-{
-    if(populateHitboxesList() == 0) return 0;
-    int res = CountCollision(HITBOXES_LIST);
-    
-    PRINT_COLLISION_LIST;
-    clearEntitiesCollisionList();
-    updateMotion();
-    return res;
-}
-
-
-int CollisionHandler::runQuadrantOptimization()
-{
-    if(populateHitboxesList() == 0) return 0;
-
-    int numberOfCollisions = 0;
-    int numberOfHitboxes = HITBOXES_LIST.getNumberOfNodes();
-    Hitbox* h;
-
-    LinkedList* NorthEast = new LinkedList;
-    LinkedList* NorthWest = new LinkedList;
-    LinkedList* SouthEast = new LinkedList;
-    LinkedList* SouthWest = new LinkedList;
-
-    point_t meanWeightedPosition = {0,0};
-
-    node_t* currentNode = HITBOXES_LIST.getFirstNode();
-
-    while(currentNode != nullptr)
-    {
-        h = (Hitbox*) currentNode->data;
-        point_t pos = h->getPosition();
-        meanWeightedPosition.x += pos.x;
-        meanWeightedPosition.y += pos.y;
-        currentNode = currentNode->next;
-    }
-    meanWeightedPosition.x = meanWeightedPosition.x/numberOfHitboxes;
-    meanWeightedPosition.y = meanWeightedPosition.y/numberOfHitboxes;
-  
-    currentNode = HITBOXES_LIST.getFirstNode();
-    
-    while(currentNode != nullptr)
-    {
-        h = (Hitbox*) currentNode->data;
-        float radius = h->getRadius();
-        point_t center = h->getPosition();
-        bool N=false;
-        bool E=false;
-        bool S=false;
-        bool O=false;
-        
-        if(center.x + radius >= meanWeightedPosition.x)      E = true;    
-        if(center.x - radius <  meanWeightedPosition.x)      O = true;
-        if(center.y + radius >= meanWeightedPosition.y)      N = true;    
-        if(center.y - radius <  meanWeightedPosition.y)      S = true;
-
-        if(N && O)  NorthWest->appendNode(h);
-        if(N && E)  NorthEast->appendNode(h);
-        if(S && O)  SouthWest->appendNode(h);
-        if(S && E)  SouthEast->appendNode(h);
-        currentNode = currentNode->next;
-    }
-    
-
-    int nne=0, nno=0, nse=0, nso=0;
-
-    /*if(MAX_NUMBER_THREADS >= 4)
-    {
-        THREADS[0] = std::thread(CountCollisionThread, NorthEast, &nne);
-        THREADS[1] = std::thread(CountCollisionThread, NorthWest, &nno);
-        THREADS[2] = std::thread(CountCollisionThread, SouthEast, &nse);
-        THREADS[3] = std::thread(CountCollisionThread, SouthWest, &nso);
-
-        THREADS[0].join();
-        THREADS[1].join();
-        THREADS[2].join();
-        THREADS[3].join();
-    }
-    if(MAX_NUMBER_THREADS == 2)
-    {*/
-        THREADS[0] = std::thread(CountCollisionThread, NorthEast, &nne);
-        THREADS[1] = std::thread(CountCollisionThread, NorthWest, &nno);
-        THREADS[0].join();
-        THREADS[1].join();
-        THREADS[0] = std::thread(CountCollisionThread, SouthEast, &nse);
-        THREADS[1] = std::thread(CountCollisionThread, SouthWest, &nso);
-        THREADS[0].join();
-        THREADS[1].join();
-    /*}
-    if(MAX_NUMBER_THREADS == 1)
-    {*/
-        /*nne = CountCollision(NorthEast);
-        nno = CountCollision(NorthWest);
-        nse = CountCollision(SouthEast);
-        nso = CountCollision(SouthWest);*/
-    //}
-
-    numberOfCollisions = nne + nno + nse + nso;
-
-    PRINT_COLLISION_LIST
-    clearEntitiesCollisionList();
-    updateMotion();
-
-
-    delete NorthEast;
-    delete NorthWest;
-    delete SouthEast;
-    delete SouthWest;
-    return numberOfCollisions;
-}
-
-void PopulateCells(Grid* grid, LinkedList*list, int start, int stop)
-{
-    Hitbox* h;
-    node_t* current_node = list->getNodeAtPosition(start);
-
-    for(int i=start; i<stop; i++)
-    {
-        h = (Hitbox*)current_node->data;
-        if(h != nullptr)
-            grid->addHitboxToCell(h);
-        current_node = current_node->next;
-        if(current_node == nullptr)
-            break;
-    }
-}
-
-
-void CountGridMultithread(Grid* grid, int start_x, int stop_x, int start_y, int stop_y, int* res)
-{
-    //auto my_begin = std::chrono::steady_clock::now();
-    int numberOfCollisions = 0;
-    for(int x=start_x; x<=stop_x; x+=2)
-    {
-        for(int y=start_y; y<=stop_y; y+=2)
+        /*Quantità di moto q=m*v*/
+        const vector_t momentum =
         {
-            LinkedList CheckList = LinkedList();
-            CheckList.appendList(grid->getListOfCell(x-1, y-1));
-            CheckList.appendList(grid->getListOfCell(x-1, y));
-            CheckList.appendList(grid->getListOfCell(x-1, y+1));
-            CheckList.appendList(grid->getListOfCell(x, y-1));
-            CheckList.appendList(grid->getListOfCell(x, y));
-            CheckList.appendList(grid->getListOfCell(x, y+1));
-            CheckList.appendList(grid->getListOfCell(x+1, y-1));
-            CheckList.appendList(grid->getListOfCell(x+1, y));
-            CheckList.appendList(grid->getListOfCell(x+1, y+1));
-            
-            numberOfCollisions += CountCollision(CheckList);
+            e1->getMass() * e1->getSpeed().x + e2->getMass() * e2->getSpeed().x,
+            e1->getMass() * e1->getSpeed().y + e2->getMass() * e2->getSpeed().y
+        };
+
+        /*Qui la cinematica non ha senso e andrebbe rifatta*/
+        const vector_t dv1 = { momentum.x * dissipation / e1->getMass(),
+                                momentum.y * dissipation / e1->getMass() };
+        const vector_t dv2 = { momentum.x * dissipation / e2->getMass(),
+                                momentum.y * dissipation / e2->getMass() };
+
+        e1->setAcceleration(dv1);
+        e2->setAcceleration(dv2);
+    }
+
+
+    static bool checkDistanceWithinRadius(Hitbox* h1, Hitbox* h2)
+    {
+        const point_t  p1 = h1->getCenter();
+        const point_t  p2 = h2->getCenter();
+        const vector_t d  = { static_cast<float>(p1.x - p2.x),
+                               static_cast<float>(p1.y - p2.y) };
+        return d.magnitude() < (h1->getRadius() + h2->getRadius());
+    }
+
+    /**
+     * @brief Esegue dei controlli prima di verificare 
+     * l'effettiva sovrapposizione geometrica delle figure con 'areOverlapping'
+     */
+    static bool checkCollision(Hitbox* h1, Hitbox* h2)
+    {
+        Entity* e1 = &h1->getParentEntity();
+        Entity* e2 = &h2->getParentEntity();
+
+        if (e1 == e2)                   return false;
+        if (e2->hasAlreadyCollided(e1)) return false;
+
+        #ifdef FACTIONS
+            if (h1->getFaction() == h2->getFaction()) return false;
+        #endif
+
+        return areOverlapping(h1, h2);
+    }
+
+    /**
+     * @brief Controlla se due hitbox si stanno ancora sovrapponendo
+     *         (stessa logica di checkCollision ma senza controllo stato)
+    */
+    static bool areOverlapping(Hitbox* h1, Hitbox* h2)
+    {
+        const HitboxType t1 = h1->getType();
+        const HitboxType t2 = h2->getType();
+
+        /*Caso Cerchio-Cerchio*/
+        if (t1 == HitboxType::Circle && t2 == HitboxType::Circle)    
+            return checkDistanceWithinRadius(h1, h2);
+
+        /*Almeno uno è un rettangolo, quindi verifico se è impossibile che le aree esterne siano in collisione*/
+        const rectangle_t a1 = h1->getArea();
+        const rectangle_t a2 = h2->getArea();
+        if (a1.top    < a2.bottom) return false;
+        if (a2.top    < a1.bottom) return false;
+        if (a1.right  < a2.left)   return false;
+        if (a2.right  < a1.left)   return false;
+
+        if(t1 == HitboxType::Rectangle && t2 == HitboxType::Rectangle)  return true;
+
+        /*A questo punto uno dei due è Cerchio e l'altro è rettangolo*/
+        if (t1 != t2)
+        {
+            /*Identifico quale è il cerchio e quale il rettangolo*/
+            Hitbox* circleHb = (t1 == HitboxType::Circle) ? h1 : h2;
+            Hitbox* rectHb   = (t1 == HitboxType::Circle) ? h2 : h1;
+
+            const point_t  c = circleHb->getCenter();
+            const float    r = circleHb->getRadius();
+            const rectangle_t rect = rectHb->getArea();
+
+            /*Punto del rettangolo più vicino al centro del cerchio*/
+            const float nearestX = std::clamp(c.x, rect.left, rect.right);
+            const float nearestY = std::clamp(c.y, rect.bottom, rect.top);
+
+            const float dx = c.x - nearestX;
+            const float dy = c.y - nearestY;
+            return (dx*dx + dy*dy) <= (r*r);
         }
+
+        return true;
     }
 
-    *res = numberOfCollisions;
-    //auto my_end = std::chrono::steady_clock::now();
-    //std::cout << "Time:  "<< std::chrono::duration_cast<std::chrono::microseconds>(my_end - my_begin).count() << std::endl;
-}
 
-
-int CollisionHandler::runGridOptimization()
-{
-    if(populateHitboxesList() == 0) return 0;
-    
-    int numberOfCollisions = 0;
-
-    node_t* currentNode = HITBOXES_LIST.getFirstNode();
-
-    while(currentNode != nullptr)
+    static int countCollisions(std::vector<Hitbox*>& list)
     {
-        Hitbox* h = (Hitbox*) currentNode->data;
-        if(h != nullptr)    GRID->addHitboxToCell(h);
-        currentNode = currentNode->next;
-    }
-    
+        int count = 0;
 
-    for(int x=1; x<=GRID->getNumberOfHorizontal(); x+=2)
-    {
-        for(int y=1; y<=GRID->getNumberOfVetical(); y+=2)
+        for (int i = 0; i < static_cast<int>(list.size()); i++)
         {
-            LinkedList CheckList = LinkedList();
-            CheckList.appendList(GRID->getListOfCell(x-1, y-1));
-            CheckList.appendList(GRID->getListOfCell(x-1, y));
-            CheckList.appendList(GRID->getListOfCell(x-1, y+1));
-            CheckList.appendList(GRID->getListOfCell(x, y-1));
-            CheckList.appendList(GRID->getListOfCell(x, y));
-            CheckList.appendList(GRID->getListOfCell(x, y+1));
-            CheckList.appendList(GRID->getListOfCell(x+1, y-1));
-            CheckList.appendList(GRID->getListOfCell(x+1, y));
-            CheckList.appendList(GRID->getListOfCell(x+1, y+1));
-            
-            numberOfCollisions += CountCollision(CheckList);
-        }
-    }
+            Hitbox* active       = list[i];
+            Entity* activeEntity = &active->getParentEntity();
 
-    for(int i=0; i<GRID->getNumberOfCells(); i++)  GRID->clearCell(i);
-    
-    PRINT_COLLISION_LIST
-    clearEntitiesCollisionList();
-    updateMotion();
-    return numberOfCollisions;  
-}
-
-
-bool CheckCollision(Hitbox* h1, Hitbox* h2)
-{
-    Entity*e1 = (Entity*) h1->getParentEntity();
-    Entity*e2 = (Entity*) h2->getParentEntity();
-
-    if(e1 == e2)
-        return false;
- 
-    if(e2->hasAlreadyCollided(e1))
-        return false;
-    
-    int type1 = h1->type;
-    int type2 = h2->type;
-    
-    /*Both are circles*/
-    if(type1 == CIRCLE && type2 == CIRCLE)
-        return CheckDistanceWithinRadius(h1, h2);
-
-    /*Check the boundaries, if no match they do NOT collide
-    either if they are 2 rectangles or 1 circle and 1 rectangle*/
-    if(h1->getTop() < h2->getBottom())  return false;
-    if(h2->getTop() < h1->getBottom())  return false;
-    if(h1->getRight() < h2->getLeft())  return false;
-    if(h2->getRight() < h1->getLeft())  return false;   
-    
-    /*If they are different shapes check the distance between center*/
-    if(type1 != type2)  return CheckDistanceWithinRadius(h1, h2);
-    
-    return true;
-}
-
-bool CheckDistanceWithinRadius(Hitbox* h1, Hitbox* h2)
-{
-    point_t p1 = h1->getPosition();
-    point_t p2 = h2->getPosition();
-    vector_t distance={float(p1.x - p2.x), float(p1.y - p2.y)};
-
-    if(distance.getMagnitude() < (h1->getRadius() + h2->getRadius()))   return true;
-
-    return false;
-}
-
-void CountCollisionThread(LinkedList* list, int* res)
-{
-    int numberOfCollisions = 0;
-    Entity* active_entity;
-    Entity* check_entity;
-    Hitbox* active_hitbox;
-    Hitbox* check_hitbox;
-    int active_cnt = 0;
-    int check_cnt = 0;
-    
-    node_t* active_node = list->getFirstNode();
-    node_t* check_node;
-
-    while(active_node !=  nullptr)
-    {
-        active_hitbox = (Hitbox*) active_node->data;
-        active_entity = (Entity*) active_hitbox->getParentEntity();
-        int active_faction = active_hitbox->faction;
-        check_node = active_node;
-        while((check_node = check_node->next)!= nullptr)
-        {
-            check_hitbox = (Hitbox*) check_node->data;
-            int check_faction = check_hitbox->faction;
-            if(active_faction == check_faction)
-                    continue;       
-            if(CheckCollision(active_hitbox, check_hitbox))
+            for (int j = i + 1; j < static_cast<int>(list.size()); j++)
             {
-                #ifdef PRINT_COLLISION
-                CollisionCouple* couple = new CollisionCouple;
-                couple->first = active_hitbox;
-                couple->second = check_hitbox;
-                COLLISION_LIST.appendNode(couple);
-                #endif
-                
-                check_entity = (Entity*) check_hitbox->getParentEntity();
-                active_entity->addCollided(check_entity);
-                check_entity->addCollided(active_entity);
-                ComputeCollision(active_entity, check_entity);
-                numberOfCollisions++;
+                Hitbox* check       = list[j];
+                Entity* checkEntity = &check->getParentEntity();
+
+                if (activeEntity == checkEntity)        continue;
+                if (checkEntity->hasAlreadyCollided(activeEntity)) continue;
+
+                const bool overlapping = areOverlapping(active, check);
+                const bool wasColliding = activeEntity->isActivelyColliding(checkEntity);
+
+                if (overlapping && !wasColliding)
+                {
+                    // Nuova collisione: applica impulso e registra
+                    activeEntity->addCollided(checkEntity);
+                    checkEntity->addCollided(activeEntity);
+                    activeEntity->addActiveCollision(checkEntity);
+                    checkEntity->addActiveCollision(activeEntity);
+                    computeCollision(activeEntity, checkEntity);
+                    count++;
+                }
+                else if (!overlapping && wasColliding)
+                {
+                    // Le entità si sono separate: rimuovi dalla lista persistente
+                    activeEntity->removeActiveCollision(checkEntity);
+                    checkEntity->removeActiveCollision(activeEntity);
+                }
             }
         }
-        active_node = active_node->next;
+        return count;
     }
-    
-    *res =  numberOfCollisions;
-}
 
 
-int CountCollision(LinkedList& list)
-{
-    int numberOfCollisions = 0;
-    Entity* active_entity;
-    Entity* check_entity;
-    Hitbox* active_hitbox;
-    Hitbox* check_hitbox;
-    int active_cnt = 0;
-    int check_cnt = 0;
-    
-    node_t* active_node = list.getFirstNode();
-    node_t* first_node = active_node;
-    node_t* check_node;
-
-
-    while(active_node !=  nullptr)
+    static void countCollisionsThread(std::vector<Hitbox*>& list, int& res)
     {
-        if(first_node == active_node) break; /*Prevents infinite loops*/
-        
-        active_hitbox = (Hitbox*) active_node->data;
-        active_entity = (Entity*) active_hitbox->getParentEntity();
-        int active_faction = active_hitbox->faction;
-        check_node = active_node;
-        printf("active %p\n", active_node);
-        while((check_node = check_node->next)!= nullptr)
-        {
-            if(check_node == active_node) break; /*Prevents infinite loops*/
-            
-            check_hitbox = (Hitbox*) check_node->data;
-            int check_faction = check_hitbox->faction;
-            if(active_faction == check_faction)
-                    continue;    
-           
-            if(CheckCollision(active_hitbox, check_hitbox))
-            {
-                #ifdef PRINT_COLLISION
-                CollisionCouple* couple = new CollisionCouple;
-                couple->first = active_hitbox;
-                couple->second = check_hitbox;
-                COLLISION_LIST.appendNode(couple);
-                #endif
+        res = countCollisions(list);
+    }
 
-                check_entity = (Entity*) check_hitbox->getParentEntity();
-                active_entity->addCollided(check_entity);
-                check_entity->addCollided(active_entity);
-                ComputeCollision(active_entity, check_entity);
-                numberOfCollisions++;
-            }  
+    // -------------------------------------------------------------------------
+    // Griglia
+    // -------------------------------------------------------------------------
+
+    static void populateCells(Grid& grid, std::vector<Hitbox*>& list, int start, int stop)
+    {
+        for (int i = start; i < stop && i < static_cast<int>(list.size()); i++)
+        {
+            if (list[i] != nullptr)
+                grid.assignHitboxToCell(list[i]);
+        }
+    }
+
+    /** 
+     * @brief Raccoglie le hitbox delle 9 celle attorno a (col, row) in un unico vettore
+     */
+    static std::vector<Hitbox*> gatherNeighbourhood(Grid& grid, int col, int row)
+    {
+        std::vector<Hitbox*> result;
+        for (int dc = -1; dc <= 1; dc++)
+        for (int dr = -1; dr <= 1; dr++)
+        {
+            const int c = col + dc;
+            const int r = row + dr;
+            if (c < 0 || c >= grid.getCols()) continue;
+            if (r < 0 || r >= grid.getRows()) continue;
+            const auto& cell = grid.getHitboxesAt(r, c);
+            result.insert(result.end(), cell.begin(), cell.end());
+        }
+        return result;
+    }
+
+    static void countGridMultithread(Grid& grid, int startCol, int stopCol,
+                                                 int startRow, int stopRow, int& res)
+    {
+        int count = 0;
+        for (int col = startCol; col <= stopCol; col += 2)
+        for (int row = startRow; row <= stopRow; row += 2)
+        {
+            auto neighbourhood = gatherNeighbourhood(grid, col, row);
+            count += countCollisions(neighbourhood);
+        }
+        res = count;
+    }
+
+
+    CollisionHandler::CollisionHandler()
+    {
+        KLEIN_DEBUG("CollisionHandler", "initialized");
+    }
+
+
+    void CollisionHandler::setEntitiesList(std::vector<Entity*>& entities)
+    {
+        m_entities = entities;
+    }
+
+    int CollisionHandler::populateHitboxesList()
+    {
+        m_hitboxes.clear();
+        for (Entity* e : m_entities)
+            for (Hitbox* h : e->getHitboxes())
+                m_hitboxes.push_back(h);
+        return static_cast<int>(m_hitboxes.size());
+    }
+
+
+
+    void CollisionHandler::resetMotion()
+    {
+        for (Entity* e : m_entities)
+            e->setAcceleration({0.f, 0.f});
+    }
+
+    void CollisionHandler::updateMotion()
+    {
+        for (Entity* e : m_entities)
+            e->updateMotion();
+    }
+
+    void CollisionHandler::clearEntitiesCollisionList()
+    {
+        for (Entity* e : m_entities)
+            e->clearCollidedList();
+    }
+
+
+
+    int CollisionHandler::runNaiveImplementation()
+    {
+        if (populateHitboxesList() == 0) return 0;
+
+        const int res = countCollisions(m_hitboxes);
+        PRINT_COLLISION_LIST;
+        clearEntitiesCollisionList();
+        updateMotion();
+        return res;
+    }
+
+    int CollisionHandler::runQuadrantOptimization()
+    {
+        if (populateHitboxesList() == 0) return 0;
+
+        // Calcola il baricentro pesato
+        point_t centroid = {0, 0};
+        for (Hitbox* h : m_hitboxes)
+        {
+            centroid.x += h->getCenter().x;
+            centroid.y += h->getCenter().y;
+        }
+        centroid.x /= static_cast<int>(m_hitboxes.size());
+        centroid.y /= static_cast<int>(m_hitboxes.size());
+
+        // Suddivide le hitbox nei 4 quadranti
+        std::vector<Hitbox*> NE, NW, SE, SW;
+        for (Hitbox* h : m_hitboxes)
+        {
+            const float r = h->getRadius();
+            const point_t c = h->getCenter();
+            if (c.x + r >= centroid.x && c.y + r >= centroid.y) NE.push_back(h);
+            if (c.x - r <  centroid.x && c.y + r >= centroid.y) NW.push_back(h);
+            if (c.x + r >= centroid.x && c.y - r <  centroid.y) SE.push_back(h);
+            if (c.x - r <  centroid.x && c.y - r <  centroid.y) SW.push_back(h);
         }
 
-        active_node = active_node->next;
-    }
-    
-    return numberOfCollisions;
-}
+        int ne = 0, nw = 0, se = 0, sw = 0;
 
-void CollisionHandler::clearEntitiesCollisionList()
-{
-    node_t* currentNode = ENTITIES_LIST->getFirstNode();
-    Entity* ent;
-    int cnt=0;
-    while(currentNode != nullptr)
+        std::thread* threads = getThreadPool();
+        threads[0] = std::thread(countCollisionsThread, std::ref(NE), std::ref(ne));
+        threads[1] = std::thread(countCollisionsThread, std::ref(NW), std::ref(nw));
+        threads[0].join();
+        threads[1].join();
+        threads[0] = std::thread(countCollisionsThread, std::ref(SE), std::ref(se));
+        threads[1] = std::thread(countCollisionsThread, std::ref(SW), std::ref(sw));
+        threads[0].join();
+        threads[1].join();
+
+        PRINT_COLLISION_LIST;
+        clearEntitiesCollisionList();
+        updateMotion();
+        return ne + nw + se + sw;
+    }
+
+    int CollisionHandler::runGridOptimization()
     {
-        ent = (Entity*) currentNode->data;
-        ent->clearCollided();
-        currentNode = currentNode->next;
-    }
-}
+        if (populateHitboxesList() == 0) return 0;
 
-/*For debug use only*/
-void CollisionHandler::printCollisionList()
-{
-    CollisionCouple*couple;
-    int cnt=0;
-    while((couple=(CollisionCouple*)COLLISION_LIST.getData(cnt++)) != nullptr)
+        for (Hitbox* h : m_hitboxes)
+            m_grid.assignHitboxToCell(h);
+
+        int count = 0;
+        /*
+        * Ottimizzazione: iterazione con passo 2
+        *
+        * Ogni iterazione raccoglie il "vicinato" della cella (col, row),
+        * ovvero la cella stessa più le 8 celle adiacenti, e controlla
+        * tutte le collisioni al suo interno.
+        *
+        * Poiché due celle qualsiasi distanti al più 1 passo sono sempre
+        * entrambe incluse nel vicinato della prima, avanzare di 2 in
+        * entrambe le direzioni garantisce che ogni coppia di celle
+        * venga analizzata esattamente una volta, senza omissioni né
+        * duplicati.
+        *
+        * È assolutemnte necessario che le hitbox non siano più grandi della 
+        * cella stessa. Se viene superato questo limite, un'entità può sforare
+        * oltre la cella adiacente e raggiungere una cella saltata,
+        * causando collisioni non rilevate.
+        */
+        for (int col = 1; col <= m_grid.getCols(); col += 2)
+            for (int row = 1; row <= m_grid.getRows(); row += 2)
+            {
+                auto neighbourhood = gatherNeighbourhood(m_grid, col, row);
+                count += countCollisions(neighbourhood);
+            }
+
+        m_grid.clearAllCells();
+
+        PRINT_COLLISION_LIST;
+        clearEntitiesCollisionList();
+        updateMotion();
+        return count;
+    }
+
+    // -------------------------------------------------------------------------
+    // Debug
+    // -------------------------------------------------------------------------
+
+    void CollisionHandler::printCollisionList()
     {
-        Hitbox* h1 = couple->first;
-        Hitbox* h2 = couple->second;
-        std::cout << h1 << " | ";
-        std::cout << "c= " << h1->center.x << ", " << h1->center.y << " | ";
-        std::cout << "t= " << h1->type << " r= " << h1->radius << " ";
-        std::cout << "h= " << h1->height << " w= " << h1->width << " | ";
-        std::cout << "cell= " << h1->cellID << " /";
+        for (const CollisionCouple& couple : m_collisions)
+        {
+            const Hitbox* h1 = couple.first;
+            const Hitbox* h2 = couple.second;
 
-        std::cout << h2 << " | ";
-        std::cout << "c= " << h2->center.x << ", " << h2->center.y << " | ";
-        std::cout << "t= " << h2->type << " r= " << h2->radius << " ";
-        std::cout << "h= " << h2->height << " w= " << h2->width << " | ";
-        std::cout << "cell= " << h2->cellID << " /";
-        std::cout <<std::endl;
+            std::cout << h1 << " | "
+                      << "c= " << h1->getCenter().x << ", " << h1->getCenter().y << " | "
+                      << "t= " << static_cast<int>(h1->getType())
+                      << " r= " << h1->getRadius()
+                      << " h= " << h1->getHeight()
+                      << " w= " << h1->getWidth()
+                      << " cell= " << h1->getCellID() << " / "
+                      << h2 << " | "
+                      << "c= " << h2->getCenter().x << ", " << h2->getCenter().y << " | "
+                      << "t= " << static_cast<int>(h2->getType())
+                      << " r= " << h2->getRadius()
+                      << " h= " << h2->getHeight()
+                      << " w= " << h2->getWidth()
+                      << " cell= " << h2->getCellID() << '\n';
+        }
+        m_collisions.clear();
     }
 
-    COLLISION_LIST.clear();
-}
+} // namespace Klein
