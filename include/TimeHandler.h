@@ -1,9 +1,23 @@
 #pragma once
 
 #include "Klein.h"
+#include <stdint.h>
+#include <stdio.h>
+#include <time.h>
 
 namespace Klein
 {
+    /**
+     * @brief Struttura per la gestione del tempo
+     */
+    struct time_profile_t
+    {
+        timespec value{};       // Timestamp di origine (riferimento per i delta)
+        long     delta = 0;   // Tempo trascorso dall'ultimo tick [secondi]
+        long     time  = 0;   // Tempo accumulato dall'inizio [secondi]
+        float    speed = 1.f;   // Moltiplicatore di velocità (1.0 = tempo reale)
+    };
+
     /**
      * @brief Gestisce il tempo reale e il tempo di gioco, con supporto a velocità variabile.
      *
@@ -17,16 +31,16 @@ namespace Klein
         ~TimeHandler() = default;
 
         /*Tempo trascorso dall'ultimo tick nel clock reale [secondi]*/
-        float getRealDelta() const;
+        long getRealDelta() const;
 
         /*Tempo totale accumulato nel clock reale [secondi]*/
-        float getRealTime()  const;
+        long getRealTime()  const;
 
         /*Tempo trascorso dall'ultimo tick nel clock di gioco [secondi]*/
-        float getGameDelta() const;
+        long getGameDelta() const;
 
         /*Tempo totale accumulato nel clock di gioco [secondi]*/
-        float getGameTime()  const;
+        long getGameTime()  const;
 
         /*Moltiplicatore di velocità del tempo di gioco (1.0 = tempo reale)*/
         float getGameSpeed() const;
@@ -38,14 +52,14 @@ namespace Klein
         void tick();
 
         /*Restituisce 'true' se sono trascorsi almeno 'millis' secondi dall'ultimo tick*/
-        bool hasElapsed(float millis) const;
+        bool hasElapsed(long millis) const;
 
     private:
         time_profile_t m_real; // Clock del tempo reale
         time_profile_t m_game; // Clock del tempo di gioco
 
         /*Legge il tempo reale trascorso dall'origine [secondi]*/
-        float readRawTime() const;
+        long readRawTime() const;
     };
 
 } //namespace Klein

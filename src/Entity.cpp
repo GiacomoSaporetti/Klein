@@ -1,4 +1,5 @@
 #include "Entity.h"
+#include "Hitbox.h"
 
 namespace Klein
 {
@@ -56,7 +57,6 @@ namespace Klein
     }
 
 
-    void Entity::addHitbox(Hitbox& hb) { m_hitboxes.push_back(&hb); }
     void Entity::addHitbox(Hitbox* hb) { KLEIN_ASSERT(hb != nullptr); m_hitboxes.push_back(hb); }
 
 
@@ -90,11 +90,11 @@ namespace Klein
 
     void Entity::updateMotion()
     {
-        const float dt = s_timer->getGameDelta();
-        m_speed.x     += m_acceleration.x * dt;
-        m_speed.y     += m_acceleration.y * dt;
-        m_position.x  += m_speed.x * dt;
-        m_position.y  += m_speed.y * dt;
+        const long dt = s_timer->getGameDelta();
+        m_speed.x     += m_acceleration.x * dt * 1e-9;
+        m_speed.y     += m_acceleration.y * dt* 1e-9;
+        m_position.x  += m_speed.x * dt * 1e-9;
+        m_position.y  += m_speed.y * dt * 1e-9;
         m_acceleration = {0.f, 0.f};
     }
 

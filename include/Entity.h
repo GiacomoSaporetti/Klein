@@ -1,14 +1,16 @@
 #pragma once
 
+#include <algorithm>
 #include "Klein.h"
 #include "TimeHandler.h"
-#include "Hitbox.h"
 #include <vector>
 #include <semaphore.h>
 #include <mutex>
 
 namespace Klein
 {
+    class Hitbox;
+
     /*Soglie per stabilire il cambio di comportamento verso il giocatore*/
 
     inline constexpr int KARMA_THRESHOLD_LOWEST  = -1000;
@@ -49,19 +51,12 @@ namespace Klein
         /*Getters*/
 
         point_t   getPosition()      const;
-
         vector_t  getSpeed()         const;
-
         float     getMass()          const;
-
         float     getDissipation()   const;
-
         int       getHp()            const;
-
         int       getFaction()       const;
-
         int       getCellID()        const;
-
         float     getTimeOfBirth()   const;
 
         const std::vector<Hitbox*>& getHitboxes() const;
@@ -72,25 +67,18 @@ namespace Klein
         /*Setters*/
 
         void setPosition(point_t pos);
-
         void setSpeed(vector_t vel);
-
         void setAcceleration(vector_t acc);
-
         void setMass(float m);
-
         void setFaction(int faction);
 
         /*Imposta l'ID della cella in cui si trova*/
         void setCellID(int id);
 
         static void setTimer(TimeHandler* timer);
-
         static void setTimeDirection(int dir);
  
 
-
-        void addHitbox(Hitbox& htbx);
         void addHitbox(Hitbox* htbx);
 
         void clearCollidedList();
@@ -137,6 +125,7 @@ namespace Klein
         /*Comuni a tutte le istanze*/
         static std::mutex       s_mutex;                        // Per gestire la concorrenza a membri statici
         static int              s_timeDirection; 
+        bool m_ignore_time_direction = false;
         static TimeHandler*     s_timer;                        // Clock di gioco
         std::vector<Entity*>    m_currentFrameCollisionList;    // Collisioni del frame attuale (da resettare ogni frame)
         std::vector<Entity*>    m_activeCollisions;             // Collisioni recenti, non resettata

@@ -1,4 +1,5 @@
 #include "Hitbox.h"
+#include "Entity.h"
 #include <cmath>
 
 namespace Klein
@@ -8,41 +9,44 @@ namespace Klein
     Hitbox::Hitbox(Entity& parent, const circle_t& shape)
         : m_parent(parent)
         , m_type(HitboxType::Circle)
-        , m_center(shape.center)
+        , m_offset(shape.center)
         , m_radius(static_cast<float>(shape.radius))
     {
         computeAABB();
     }
 
     Hitbox::Hitbox(Entity& parent, const rectangle_t& shape)
-        : m_parent(parent)
-        , m_type(HitboxType::Rectangle)
-        , m_center(shape.origin())
-        , m_width(shape.width())
-        , m_height(shape.height())
+    : m_parent(parent)
+    , m_type(HitboxType::Rectangle)
+    , m_width(shape.width())
+    , m_height(shape.height())
     {
+        const point_t parentPos = parent.getPosition();
+        const point_t shapeCenter = shape.center();   // ← centro geometrico, non origin()
+        m_offset = { shapeCenter.x, shapeCenter.y};
         computeAABB();
     }
 
 
     void Hitbox::computeAABB()
     {
+        printf("Offset: %.f, %.f\n", m_offset.x, m_offset.y);
         if (m_type == HitboxType::Circle)
         {
-            m_area.top    = static_cast<int>(m_center.y + m_radius);
-            m_area.bottom = static_cast<int>(m_center.y - m_radius);
-            m_area.right  = static_cast<int>(m_center.x + m_radius);
-            m_area.left   = static_cast<int>(m_center.x - m_radius);
-            m_width       = static_cast<int>(2 * m_radius);
+            m_area.top    = (m_offset.y - m_radius);
+            m_area.bottom = (m_offset.y + m_radius);
+            m_area.right  = (m_offset.x + m_radius);
+            m_area.left   = (m_offset.x - m_radius);
+            m_width       = (2 * m_radius);
             m_height      = m_width;
         }
         else
         {
-            m_area.top    = m_center.y + m_height / 2;
-            m_area.bottom = m_center.y - m_height / 2;
-            m_area.right  = m_center.x + m_width  / 2;
-            m_area.left   = m_center.x - m_width  / 2;
-            m_radius      = std::sqrt(static_cast<float>(m_width*m_width + m_height*m_height)) / 2.f;
+            m_area.top    = m_offset.y - m_height / 2;
+            m_area.bottom = m_offset.y + m_height / 2;
+            m_area.right  = m_offset.x + m_width  / 2;
+            m_area.left   = m_offset.x - m_width  / 2;
+            m_radius      = std::sqrt(m_width*m_width + m_height*m_height) / 2.f;
         }
         assert(abs(m_area.top - m_area.bottom) <= MAX_PARTICLE_SIZE);
         assert(abs(m_area.right - m_area.left) <= MAX_PARTICLE_SIZE);
@@ -52,15 +56,30 @@ namespace Klein
     /*Getters*/
 
     HitboxType  Hitbox::getType()         const { return m_type;             }
-    point_t     Hitbox::getCenter()       const { return m_center;           }
     float       Hitbox::getRadius()       const { return m_radius;           }
     int         Hitbox::getWidth()        const { return m_width;            }
     int         Hitbox::getHeight()       const { return m_height;           }
     int         Hitbox::getFaction()      const { return m_faction;          }
     float       Hitbox::getMass()         const { return m_mass;             }
     int         Hitbox::getCellID()       const { return m_cellID;           }
-    rectangle_t Hitbox::getArea()         const { return m_area;             }
     Entity&     Hitbox::getParentEntity() const { return m_parent;           }
+
+    rectangle_t Hitbox::getArea() const
+    {
+        const point_t pos = m_parent.getPosition();
+        rectangle_t area;
+        area.top    = m_area.top    + pos.y;
+        area.bottom = m_area.bottom + pos.y;
+        area.right  = m_area.right  + pos.x;
+        area.left   = m_area.left   + pos.x;
+        return area;
+    }
+
+    point_t Hitbox::getCenter() const
+    {
+        const point_t pos = m_parent.getPosition();
+        return { pos.x + m_offset.x, pos.y + m_offset.y };
+    }
 
 
     /*Setters*/

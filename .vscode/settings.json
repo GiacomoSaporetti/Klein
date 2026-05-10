@@ -71,5 +71,6 @@
         "xutility": "cpp",
         "span": "cpp",
         "source_location": "cpp"
-    }
+    },
+    "cmake.sourceDirectory": "C:/Users/giaco/Documents/Klein/SDL3"
 }

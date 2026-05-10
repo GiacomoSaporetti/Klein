@@ -6,27 +6,26 @@ namespace Klein
     TimeHandler::TimeHandler()
     {
         clock_gettime(CLOCK_REALTIME, &m_real.value);
-        m_real.time  = 0.f;
-        m_real.delta = 0.f;
-        m_game.time  = 0.f;
-        m_game.delta = 0.f;
+        m_real.time  = m_real.value.tv_sec * 1E9 + m_real.value.tv_nsec;
+        m_real.delta = 0;
+        m_game.time  = 0;
+        m_game.delta = 0;
         m_game.speed = 1.f;
     }
 
   
-    float TimeHandler::readRawTime() const
+    long TimeHandler::readRawTime() const
     {
         timespec now;
         clock_gettime(CLOCK_REALTIME, &now);
-        return static_cast<float>(now.tv_sec  - m_real.value.tv_sec)
-             + static_cast<float>(now.tv_nsec - m_real.value.tv_nsec) * 1e-9f;
+        return now.tv_sec * 1E9  + now.tv_nsec;
     }
 
 
-    float TimeHandler::getRealDelta() const { return m_real.delta; }
-    float TimeHandler::getRealTime()  const { return m_real.time;  }
-    float TimeHandler::getGameDelta() const { return m_game.delta; }
-    float TimeHandler::getGameTime()  const { return m_game.time;  }
+    long TimeHandler::getRealDelta() const { return m_real.delta; }
+    long TimeHandler::getRealTime()  const { return m_real.time;  }
+    long TimeHandler::getGameDelta() const { return m_game.delta; }
+    long TimeHandler::getGameTime()  const { return m_game.time;  }
     float TimeHandler::getGameSpeed() const { return m_game.speed; }
 
 
@@ -35,17 +34,24 @@ namespace Klein
 
     void TimeHandler::tick()
     {
-        const float now = readRawTime();
-        m_real.delta    = now - m_real.time;
-        m_real.time     = now;
+        clock_gettime(CLOCK_REALTIME, &m_real.value);
+        m_real.delta    = m_real.value.tv_sec * 1E9 + m_real.value.tv_nsec - m_real.time;
+        m_real.time     = m_real.value.tv_sec * 1E9 + m_real.value.tv_nsec;
 
-        m_game.delta    = m_game.speed * m_real.delta;
+        // Clamp per evitare salti enormi dovuti a non so cosa
+        const long maxDelta = static_cast<long>(50 * 1E6);  // 50ms in nanosecondi
+        if (m_real.delta > maxDelta) m_real.delta = maxDelta;
+
+        m_game.delta    = static_cast<long>(m_game.speed * m_real.delta);
         m_game.time    += m_game.delta;
+
+        //assert(m_real.delta < 1e9);
+        printf("m_real: %f (%f), m_game: %f (%f)\n", m_real.time/1E6, m_real.delta/1E6, m_game.time/1E6, m_game.delta/1E6);
     }
 
-    bool TimeHandler::hasElapsed(float millis) const
+    bool TimeHandler::hasElapsed(long millis) const
     {
-        return (readRawTime() - m_real.time) > millis;
+        return (readRawTime() - m_real.time) > (millis * 1E6);
     }
 
 } // namespace Klein

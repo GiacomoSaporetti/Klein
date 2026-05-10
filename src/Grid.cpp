@@ -33,7 +33,7 @@ namespace Klein
 
         KLEIN_DEBUG("Grid rows:",  m_rows);
         KLEIN_DEBUG("Grid cols:",  m_cols);
-        KLEIN_DEBUG("Cell size:",  sizeof(Cell));
+        KLEIN_DEBUG("Cell size:",  MAX_PARTICLE_SIZE);
     }
 
     /*Getters*/
@@ -61,15 +61,21 @@ namespace Klein
         const point_t center = h->getCenter();
         const int row = center.y / CELL_SIZE;
         const int col = center.x / CELL_SIZE;
+        
+        // Scarta hitbox fuori dalla griglia
+        if (row < 0 || row >= m_rows) return;
+        if (col < 0 || col >= m_cols) return;
+        
         const int id  = convertToID(row, col);
+        if(id<0) return;
         h->setCellID(id);
         m_cells[id].addHitbox(h);
     }
 
     int Grid::convertToID(int row, int col) const
     {
-        KLEIN_ASSERT(row >= 0 && row < m_rows);
-        KLEIN_ASSERT(col >= 0 && col < m_cols);
+        //KLEIN_ASSERT(row >= 0 && row < m_rows);
+        //KLEIN_ASSERT(col >= 0 && col < m_cols);
         return row * m_cols + col;
     }
 

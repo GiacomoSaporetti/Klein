@@ -9,6 +9,7 @@
 
 
 
+
 namespace Klein
 {
 
@@ -61,10 +62,13 @@ namespace Klein
     private:
         std::vector<Entity*>         m_entities;
         std::vector<Hitbox*>         m_hitboxes;
+        std::vector<Hitbox*>         m_neighbourhood;
         std::vector<CollisionCouple> m_collisions;
         Grid                         m_grid;
 
-        /// @brief Stampa la lista delle collisioni rilevate (debug).
+
+        void gatherNeighbourhood(Grid& grid, int col, int row);
+        void countGridMultithread(Grid& grid, int startCol, int stopCol, int startRow, int stopRow, int& res);
         void printCollisionList();
     };
 

@@ -11,13 +11,14 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+#define DEBUG
 /*Macros per il debug*/
 #ifdef DEBUG
-#  define KLEIN_DEBUG(name, val)  std::cout << (name) << ' ' << (val) << '\n'
-#  define KLEIN_ASSERT(expr)      assert(expr)
+    #define KLEIN_DEBUG(name, val)  std::cout << (name) << ' ' << (val) << '\n'
+    #define KLEIN_ASSERT(expr)      assert(expr)
 #else
-#  define KLEIN_DEBUG(name, val)  ;
-#  define KLEIN_ASSERT(expr)      ;
+    #define KLEIN_DEBUG(name, val)  ;
+    #define KLEIN_ASSERT(expr)      ;
 #endif
 
 
@@ -28,23 +29,12 @@ namespace Klein
     /*Costanti globali*/
     inline constexpr int SCREEN_WIDTH        = 1920;
     inline constexpr int SCREEN_HEIGHT       = 1080;
-    inline constexpr int MAX_PARTICLE_SIZE   = 50;
+    inline constexpr int MAX_PARTICLE_SIZE   = 100;
     inline constexpr int INT_ERROR_VALUE     = INT_MIN;
 
     /*Multithreading*/
     int         getMaxThreads();
     std::thread* getThreadPool();
-
-    /**
-     * @brief Struttura per la gestione del tempo
-     */
-    struct time_profile_t
-    {
-        timespec value{};       // Timestamp di origine (riferimento per i delta)
-        float    delta = 0.f;   // Tempo trascorso dall'ultimo tick [secondi]
-        float    speed = 1.f;   // Moltiplicatore di velocità (1.0 = tempo reale)
-        float    time  = 0.f;   // Tempo accumulato dall'inizio [secondi]
-    };
 
     
     /**
@@ -110,6 +100,8 @@ namespace Klein
         float perimeter() const { return 2 * (width() + height()); }
 
         point_t origin() const {return {left, top};}
+
+        point_t center() const {return { left + width()/ 2.f, top  + height()/ 2.f };}
 
         /*Restituisce true se il punto p è contenuto nel rettangolo (bordi inclusi)*/
         bool contains(point_t p) const

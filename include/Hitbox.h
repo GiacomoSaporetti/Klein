@@ -32,6 +32,10 @@ namespace Klein
         int         getFaction()        const;
         float       getMass()           const;
         int         getCellID()         const;
+
+        /**
+        @brief Fornisce i bordi della hitbox in termini assoluti rispetto alle coordinate dello schermo
+        */
         rectangle_t getArea()           const;
         Entity&     getParentEntity()   const;
 
@@ -55,14 +59,16 @@ namespace Klein
         void computeAABB();
 
         HitboxType  m_type;
-        point_t     m_center  = {0, 0};
+       
+        point_t     m_offset  = {0, 0}; // Offset del centro rispetto alla posizione del parent
+
         float       m_radius  = 0.f;
         int         m_width   = 0;
         int         m_height  = 0;
         int         m_faction = 0;
         float       m_mass    = 0.f;
         int         m_cellID  = 0;
-        rectangle_t m_area    = {};
+        rectangle_t m_area    = {}; // AABB in coordinate relative (senza posizione assoluta del parent)
         Entity&     m_parent;
     };
 
