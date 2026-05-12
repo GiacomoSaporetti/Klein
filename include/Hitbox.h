@@ -22,6 +22,9 @@ namespace Klein
 
         ~Hitbox() = default;
 
+        /*Aggiorna m_area (utile specialmente per i cerchi)*/
+        void updateAABB();
+
         /*Getters*/
 
         HitboxType  getType()           const;
@@ -36,9 +39,9 @@ namespace Klein
         /**
         @brief Fornisce i bordi della hitbox in termini assoluti rispetto alle coordinate dello schermo
         */
-        rectangle_t getArea()           const;
+        rectangle_t getBoundingBox()           const;
         Entity&     getParentEntity()   const;
-
+        
         
         /*Setters*/
 
@@ -54,10 +57,6 @@ namespace Klein
         void setCellID(int id);
 
     private:
-
-
-        void computeAABB();
-
         HitboxType  m_type;
        
         point_t     m_offset  = {0, 0}; // Offset del centro rispetto alla posizione del parent
@@ -72,4 +71,4 @@ namespace Klein
         Entity&     m_parent;
     };
 
-} // namespace Klein
+} //namespace Klein

@@ -1,8 +1,5 @@
 #include "CollisionHandler.h"
 
-// -------------------------------------------------------------------------
-// Debug flags
-// -------------------------------------------------------------------------
 
 //#define PRINT_COLLISION
 //#define MEASURE_TIME
@@ -17,14 +14,16 @@
 
 namespace Klein
 {
-    static bool areOverlapping(Hitbox* h1, Hitbox* h2);
-    static bool checkDistanceWithinRadius(Hitbox* h1, Hitbox* h2);
-    static bool checkCollision(Hitbox* h1, Hitbox* h2);
-    static int  countCollisions(std::vector<Hitbox*>& list);
-    static void countCollisionsThread(std::vector<Hitbox*>& list, int& res);
-    static void computeCollision(Entity* e1, Entity* e2);
-    static void populateCells(Grid& grid, std::vector<Hitbox*>& list, int start, int stop);
-    static void countGridMultithread(Grid& grid, int startCol, int stopCol, int startRow, int stopRow, int& res);
+    CollisionHandler    g_collision_handler;
+
+
+    CollisionHandler::CollisionHandler()
+    {
+        m_collisions.reserve(10);
+        m_collisions.clear();
+        KLEIN_DEBUG("CollisionHandler", "initialized");
+    }
+
 
 
     /**
@@ -32,13 +31,25 @@ namespace Klein
      *
      * Conserva la quantità di moto scalata per il fattore di dissipazione.
      */
-    static void computeCollision(Entity* e1, Entity* e2)
+    void CollisionHandler::computeCollision(Entity* e1, Entity* e2)
     {
         KLEIN_ASSERT(e1 != nullptr && e2 != nullptr);
-
  
+        
+        Hitbox* ha = e1->getHitboxes()[0];
+        Hitbox* hb = e2->getHitboxes()[0];
+        std::cout   << "COLLISIONE!\n"
+                    << "  A=("  << e1->getPosition().x << "," << e1->getPosition().y << ")"
+                    << "  ["  << ha->getBoundingBox().left << "," << ha->getBoundingBox().right << "]"
+                    << "  vA=(" << e1->getSpeed().x    << "," << e1->getSpeed().y    << ")"
+                    << "  B=("  << e2->getPosition().x << "," << e2->getPosition().y << ")"
+                    << "  ["  << hb->getBoundingBox().left << "," << hb->getBoundingBox().right << "]"
+                    << "  vB=(" << e2->getSpeed().x    << "," << e2->getSpeed().y    << ")"
+                    << '\n';
+        
         // Coefficiente di restituzione: 0 = anelastica totale, 1 = elastica
-        const float   = e1->getDissipation() * e2->getDissipation() / 2.f;
+        const float e  = e1->getDissipation() * e2->getDissipation();
+
 
         // Normale d'impatto (da e1 verso e2), normalizzata
         const point_t  p1 = e1->getPosition(), p2 = e2->getPosition();
@@ -46,45 +57,40 @@ namespace Klein
         n = n.normalized();
 
         // Componenti di velocità lungo la normale
-        const vector_t v1 = e1->getSpeed(), v2 = e2->getSpeed();
-        const float u1 = v1.x * n.x + v1.y * n.y;
-        const float u2 = v2.x * n.x + v2.y * n.y;
+        const vector_t v1 = e1->getSpeed();
+        const vector_t v2 = e2->getSpeed();
+        const float u1 = v1 * n;
+        const float u2 = v2 * n;
 
-        // Le particelle si stanno già allontanando: niente impulso
-        //if (u1 - u2 <= 0.f) return;
 
-        const float m1 = e1->getMass(), m2 = e2->getMass();
+        const float m1 = e1->getMass();
+        const float m2 = e2->getMass();
         const float M  = m1 + m2;
 
         // Velocità post-collisione lungo la normale
         const float u1p = (m1*u1 + m2*u2 - m2 * e * (u1 - u2)) / M;
         const float u2p = (m1*u1 + m2*u2 + m1 * e * (u1 - u2)) / M;
 
-        // Applica solo la variazione lungo n (la componente perpendicolare resta invariata)
-        e1->setSpeed({ v1.x + (u1p - u1) * n.x,  v1.y + (u1p - u1) * n.y });
-        e2->setSpeed({ v2.x + (u2p - u2) * n.x,  v2.y + (u2p - u2) * n.y });
 
-        // Separazione posizionale — spinge le entità fuori dalla sovrapposizione
-        // Usa getRadius() della hitbox, non la posizione diretta
-        const float r1      = e1->getHitboxes()[0]->getRadius();
-        const float r2      = e2->getHitboxes()[0]->getRadius();
-        const float overlap = (r1 + r2) - d;   // d è già calcolata sopra
+        const vector_t dv1 = n * (u1p - u1);
+        const vector_t dv2 = n * (u2p - u2);
 
-        if (overlap > 0.f)
-        {
-            const float push = overlap / 2.f;
-            e1->setPosition({ p1.x - n.x * push, p1.y - n.y * push });
-            e2->setPosition({ p2.x + n.x * push, p2.y + n.y * push });
-        }
+        std::cout   << "dv1: {" << dv1.x << ", " << dv1.y << "}  "
+                    << "dv2: {" << dv2.x << ", " << dv2.y << "}\n";
+
+        e1->addSpeedContribution(dv1);
+        e2->addSpeedContribution(dv2);
     }
 
 
-    static bool checkDistanceWithinRadius(Hitbox* h1, Hitbox* h2)
+    /**
+     * @brief Varifica la collisione tra 2 cerchi
+     */
+    bool CollisionHandler::areCirclesOverlapping(Hitbox* h1, Hitbox* h2)
     {
         const point_t  p1 = h1->getCenter();
         const point_t  p2 = h2->getCenter();
-        const vector_t d  = { static_cast<float>(p1.x - p2.x),
-                               static_cast<float>(p1.y - p2.y) };
+        const vector_t d  = { p1.x - p2.x, p1.y - p2.y};
         return d.magnitude() < (h1->getRadius() + h2->getRadius());
     }
 
@@ -92,13 +98,15 @@ namespace Klein
      * @brief Esegue dei controlli prima di verificare 
      * l'effettiva sovrapposizione geometrica delle figure con 'areOverlapping'
      */
-    static bool checkCollision(Hitbox* h1, Hitbox* h2)
+    bool CollisionHandler::checkCollision(Hitbox* h1, Hitbox* h2)
     {
+        //printf("Checking collision between %p, %p\n", h1, h2);
+        if(areAlreadyColliding(h1, h2)) return false;
+
         Entity* e1 = &h1->getParentEntity();
         Entity* e2 = &h2->getParentEntity();
 
-        if (e1 == e2)                   return false;
-        if (e2->hasAlreadyCollided(e1)) return false;
+        if (e1 == e2)                   return false;   //Hitbox della stessa entità non collidono
 
         #ifdef FACTIONS
             if (h1->getFaction() == h2->getFaction()) return false;
@@ -107,32 +115,24 @@ namespace Klein
         return areOverlapping(h1, h2);
     }
 
+
     /**
      * @brief Controlla se due hitbox si stanno ancora sovrapponendo
-     *         (stessa logica di checkCollision ma senza controllo stato)
     */
-    static bool areOverlapping(Hitbox* h1, Hitbox* h2)
+    bool CollisionHandler::areOverlapping(Hitbox* h1, Hitbox* h2)
     {
         const HitboxType t1 = h1->getType();
         const HitboxType t2 = h2->getType();
 
   
-
         /*Caso Cerchio-Cerchio*/
         if (t1 == HitboxType::Circle && t2 == HitboxType::Circle)    
-            return checkDistanceWithinRadius(h1, h2);
-
+            return areCirclesOverlapping(h1, h2);
 
         /*Almeno uno è un rettangolo, quindi verifico se è impossibile che le aree esterne siano in collisione*/
-        const rectangle_t a1 = h1->getArea();
-        const rectangle_t a2 = h2->getArea();
+        const rectangle_t a1 = h1->getBoundingBox();
+        const rectangle_t a2 = h2->getBoundingBox();
 
-        /*
-        std::cout << "HITBOXES"
-        << "h1 | top=" << a1.top       << " bottom=" << a1.bottom
-        << "h2 | top=" << a2.top       << " bottom=" << a2.bottom
-        << '\n';
-        */
         if (a1.top    > a2.bottom) return false;
         if (a2.top    > a1.bottom) return false;
         if (a1.right  < a2.left)   return false;
@@ -141,33 +141,29 @@ namespace Klein
         if(t1 == HitboxType::Rectangle && t2 == HitboxType::Rectangle)  return true;
 
         /*A questo punto uno dei due è Cerchio e l'altro è rettangolo*/
-        if (t1 != t2)
-        {
-            /*Identifico quale è il cerchio e quale il rettangolo*/
-            Hitbox* circleHb = (t1 == HitboxType::Circle) ? h1 : h2;
-            Hitbox* rectHb   = (t1 == HitboxType::Circle) ? h2 : h1;
 
-            const point_t  c = circleHb->getCenter();
-            const float    r = circleHb->getRadius();
-            const rectangle_t rect = rectHb->getArea();
+        /*Identifico quale è il cerchio e quale il rettangolo*/
+        Hitbox* circleHb = (t1 == HitboxType::Circle) ? h1 : h2;
+        Hitbox* rectHb   = (t1 == HitboxType::Circle) ? h2 : h1;
 
-            /*Punto del rettangolo più vicino al centro del cerchio*/
-            const float nearestX = std::clamp(c.x, rect.left, rect.right);
-            const float nearestY = std::clamp(c.y, rect.bottom, rect.top);
+        const point_t  c = circleHb->getCenter();
+        const float    r = circleHb->getRadius();
+        const rectangle_t rect = rectHb->getBoundingBox();
 
-            const float dx = c.x - nearestX;
-            const float dy = c.y - nearestY;
-            return (dx*dx + dy*dy) <= (r*r);
-        }
+        /*Punto del rettangolo più vicino al centro del cerchio*/
+        const float nearestX = std::clamp(c.x, rect.left, rect.right);
+        const float nearestY = std::clamp(c.y, rect.bottom, rect.top);
 
-        return true;
+        const float dx = c.x - nearestX;
+        const float dy = c.y - nearestY;
+        return (dx*dx + dy*dy) <= (r*r);
     }
 
 
-    static int countCollisions(std::vector<Hitbox*>& list)
+    int CollisionHandler::countCollisions(std::vector<Hitbox*>& list)
     {
         int count = 0;
-
+    
         for (int i = 0; i < static_cast<int>(list.size()); i++)
         {
             Hitbox* active       = list[i];
@@ -179,36 +175,18 @@ namespace Klein
                 Entity* checkEntity = &check->getParentEntity();
 
                 if (activeEntity == checkEntity)               continue;
-                if (checkEntity->hasAlreadyCollided(activeEntity)) continue;
 
-                if (areOverlapping(active, check))
+                if (checkCollision(active, check))
                 {
-                    //printf("Overlap di %p e %p\n", activeEntity, checkEntity);
-                    activeEntity->addCollided(checkEntity);
-                    checkEntity->addCollided(activeEntity);
+                    m_collisions.push_back({active, check});
                     computeCollision(activeEntity, checkEntity);
                     count++;
                 }
             }
         }
         return count;
-}
-
-
-    static void countCollisionsThread(std::vector<Hitbox*>& list, int& res)
-    {
-        res = countCollisions(list);
     }
 
-
-    static void populateCells(Grid& grid, std::vector<Hitbox*>& list, int start, int stop)
-    {
-        for (int i = start; i < stop && i < static_cast<int>(list.size()); i++)
-        {
-            if (list[i] != nullptr)
-                grid.assignHitboxToCell(list[i]);
-        }
-    }
 
     /** 
      * @brief Raccoglie le hitbox delle 9 celle attorno a (col, row) e popola il vettore m_neighbourhood
@@ -228,105 +206,40 @@ namespace Klein
         }
     }
 
-    void CollisionHandler::countGridMultithread(Grid& grid, int startCol, int stopCol,
-                                                 int startRow, int stopRow, int& res)
-    {
-        int count = 0;
-        for (int col = startCol; col <= stopCol; col += 2)
-        for (int row = startRow; row <= stopRow; row += 2)
-        {
-            gatherNeighbourhood(grid, col, row);
-            count += countCollisions(m_neighbourhood);
-        }
-        res = count;
-    }
-
-
-    CollisionHandler::CollisionHandler()
-    {
-        KLEIN_DEBUG("CollisionHandler", "initialized");
-    }
-
-
-    void CollisionHandler::setEntitiesList(std::vector<Entity*>& entities)
-    {
-        m_entities = entities;
-    }
 
     int CollisionHandler::populateHitboxesList()
     {
         m_hitboxes.clear();
-        for (Entity* e : m_entities)
+        for (Entity* e : g_all_entities)
             for (Hitbox* h : e->getHitboxes())
                 m_hitboxes.push_back(h);
-        return static_cast<int>(m_hitboxes.size());
+        return m_hitboxes.size();
     }
-
-
-
-    void CollisionHandler::resetMotion()
-    {
-        for (Entity* e : m_entities)
-            e->setAcceleration({0.f, 0.f});
-    }
-
-    void CollisionHandler::updateMotion()
-    {
-        for (Entity* e : m_entities)
-            e->updateMotion();
-    }
-
-    void CollisionHandler::clearEntitiesCollisionList()
-    {
-        for (Entity* e : m_entities)
-            e->clearCollidedList();
-    }
-
 
 
     int CollisionHandler::runGridOptimization()
     {
         if (populateHitboxesList() == 0) return 0;
 
-        for (Hitbox* h : m_hitboxes)
-            m_grid.assignHitboxToCell(h);
-
-        // DEBUG — stampa posizione entità vs centro hitbox per le prime 3 entità
-        for (int i = 0; i < std::min(3, (int)m_entities.size()); i++)
-        {
-            Entity* e     = m_entities[i];
-            point_t epos  = e->getPosition();
-            point_t hpos  = e->getHitboxes()[0]->getCenter();
-            float   hrad  = e->getHitboxes()[0]->getRadius();
-            //printf("E[%d] pos=(%.1f,%.1f)  hb_center=(%.1f,%.1f)  radius=%.1f\n",
-            //    i, epos.x, epos.y, hpos.x, hpos.y, hrad);
-        }
+        for (Hitbox* h : m_hitboxes)    m_grid.assignHitboxToCell(h);
 
         int count = 0;
 
         /*
-        * Ottimizzazione: iterazione con passo 2
+        * Ottimizzazione: passo 2
         *
-        * Ogni iterazione raccoglie il "vicinato" della cella (col, row),
-        * ovvero la cella stessa più le 8 celle adiacenti, e controlla
-        * tutte le collisioni al suo interno.
+        * Ogni iterazione considera una cella e le 8 adiacenti,
+        * controllando tutte le collisioni locali.
         *
-        * Poiché due celle qualsiasi distanti al più 1 passo sono sempre
-        * entrambe incluse nel vicinato della prima, avanzare di 2 in
-        * entrambe le direzioni garantisce che ogni coppia di celle
-        * venga analizzata esattamente una volta, senza omissioni né
-        * duplicati.
+        * Il passo 2 evita duplicati: ogni coppia viene analizzata una sola volta.
         *
-        * È assolutemnte necessario che le hitbox non siano più grandi della 
-        * cella stessa. Se viene superato questo limite, un'entità può sforare
-        * oltre la cella adiacente e raggiungere una cella saltata,
-        * causando collisioni non rilevate.
+        * Richiede hitbox ≤ dimensione della cella, altrimenti si perdono collisioni.
         */
 
         for (int col = 1; col <= m_grid.getCols(); col += 2)
             for (int row = 1; row <= m_grid.getRows(); row += 2)
             {
-                m_neighbourhood.clear();  // non dealloca, mantiene la capacità
+                m_neighbourhood.clear();
     
                 for (int dc = -1; dc <= 1; dc++)
                 for (int dr = -1; dr <= 1; dr++)
@@ -344,9 +257,35 @@ namespace Klein
         m_grid.clearAllCells();
 
         PRINT_COLLISION_LIST;
-        clearEntitiesCollisionList();
-        updateMotion();
         return count;
+    }
+
+
+    bool CollisionHandler::areAlreadyColliding(Hitbox* h1, Hitbox* h2)
+    {
+        for(CollisionCouple couple : m_collisions)
+        {
+            if(h1 == couple.first && h2 == couple.second ||
+                h2 == couple.second && h1 == couple.first)
+                    return true;
+        }
+        return false;
+    }
+
+    
+    void CollisionHandler::removeInactiveCollisions()
+    {
+        auto it = m_collisions.begin();
+        while (it != m_collisions.end())
+        {
+            if (!areOverlapping(it->first, it->second))
+            {
+                std::swap(*it, m_collisions.back());
+                m_collisions.pop_back();
+            }
+            else
+                it++;
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -377,5 +316,6 @@ namespace Klein
         }
         m_collisions.clear();
     }
+
 
 } // namespace Klein

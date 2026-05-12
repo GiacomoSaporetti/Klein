@@ -8,6 +8,7 @@
 #include <semaphore.h>
 #include <thread>
 #include <list>
+#include <vector>
 #define _USE_MATH_DEFINES
 #include <math.h>
 
@@ -32,13 +33,15 @@ namespace Klein
     inline constexpr int MAX_PARTICLE_SIZE   = 100;
     inline constexpr int INT_ERROR_VALUE     = INT_MIN;
 
+    extern void RunFrame();
+
     /*Multithreading*/
     int         getMaxThreads();
     std::thread* getThreadPool();
 
     
     /**
-     * @brief Vettore con origine in (0,0)
+     * @brief Vettore 2D con origine in (0,0)
      */
     struct vector_t
     {
@@ -58,6 +61,7 @@ namespace Klein
         vector_t  operator+(const vector_t& o) const { return {x+o.x, y+o.y}; }
         vector_t  operator-(const vector_t& o) const { return {x-o.x, y-o.y}; }
         vector_t  operator*(float s)           const { return {x*s,   y*s};   }
+        float  operator*(vector_t v)           const { return x*v.x +   y*v.y;   }
         vector_t& operator+=(const vector_t& o)      { x+=o.x; y+=o.y; return *this; }
         vector_t& operator*=(float s)                { x*=s;   y*=s;   return *this; }
     };

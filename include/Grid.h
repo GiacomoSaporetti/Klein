@@ -21,8 +21,8 @@ namespace Klein
 
         void setCellID(int id);
 
-        int                          getCellID()      const;
-        const std::vector<Hitbox*>&  getHitboxes()    const;
+        const int                     getCellID()     const; 
+        const std::vector<Hitbox*>&   getHitboxes()   const;
 
     private:
         int                   m_id = 0;     //Id specifico della cella
@@ -52,15 +52,14 @@ namespace Klein
         /*Converte coordinate di riga/colonna in un ID cella lineare*/
         int convertToID(int row, int col) const;
 
-        const std::vector<Hitbox*>& getHitboxesAt(int row, int col) const;
-        const std::vector<Hitbox*>& getHitboxesAt(int id)           const;
-
+        const std::vector<Hitbox*>& getHitboxesAt(int row, int col)   const; 
+        const std::vector<Hitbox*>& getHitboxesAt(int id)             const;           
 
         /*Getters*/
 
-        int getRows()         const;
-        int getCols()         const;
-        int getCellCount()    const;
+        const int getRows()         const;
+        const int getCols()         const;
+        const int getCellCount()    const;
 
         
         static constexpr int CELL_SIZE = MAX_PARTICLE_SIZE; // Dimensione di ogni cella, pari a 'MAX_PARTICLE_SIZE'

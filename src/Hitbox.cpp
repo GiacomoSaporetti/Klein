@@ -12,7 +12,8 @@ namespace Klein
         , m_offset(shape.center)
         , m_radius(static_cast<float>(shape.radius))
     {
-        computeAABB();
+        parent.addHitbox(this);
+        updateAABB();
     }
 
     Hitbox::Hitbox(Entity& parent, const rectangle_t& shape)
@@ -22,15 +23,15 @@ namespace Klein
     , m_height(shape.height())
     {
         const point_t parentPos = parent.getPosition();
-        const point_t shapeCenter = shape.center();   // ← centro geometrico, non origin()
+        const point_t shapeCenter = shape.center();   //centro geometrico, non origin()
         m_offset = { shapeCenter.x, shapeCenter.y};
-        computeAABB();
+        parent.addHitbox(this);
+        updateAABB();
     }
 
 
-    void Hitbox::computeAABB()
+    void Hitbox::updateAABB()
     {
-        printf("Offset: %.f, %.f\n", m_offset.x, m_offset.y);
         if (m_type == HitboxType::Circle)
         {
             m_area.top    = (m_offset.y - m_radius);
@@ -48,10 +49,7 @@ namespace Klein
             m_area.left   = m_offset.x - m_width  / 2;
             m_radius      = std::sqrt(m_width*m_width + m_height*m_height) / 2.f;
         }
-        assert(abs(m_area.top - m_area.bottom) <= MAX_PARTICLE_SIZE);
-        assert(abs(m_area.right - m_area.left) <= MAX_PARTICLE_SIZE);
     }
-
 
     /*Getters*/
 
@@ -64,7 +62,7 @@ namespace Klein
     int         Hitbox::getCellID()       const { return m_cellID;           }
     Entity&     Hitbox::getParentEntity() const { return m_parent;           }
 
-    rectangle_t Hitbox::getArea() const
+    rectangle_t Hitbox::getBoundingBox() const
     {
         const point_t pos = m_parent.getPosition();
         rectangle_t area;
@@ -92,21 +90,21 @@ namespace Klein
     {
         KLEIN_ASSERT(m_type == HitboxType::Circle);
         m_radius = r;
-        computeAABB();
+        updateAABB();
     }
 
     void Hitbox::setWidth(int w)
     {
         KLEIN_ASSERT(m_type == HitboxType::Rectangle);
         m_width = w;
-        computeAABB();
+        updateAABB();
     }
 
     void Hitbox::setHeight(int h)
     {
         KLEIN_ASSERT(m_type == HitboxType::Rectangle);
         m_height = h;
-        computeAABB();
+        updateAABB();
     }
 
 } // namespace Klein

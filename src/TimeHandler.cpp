@@ -2,6 +2,8 @@
 
 namespace Klein
 {
+    TimeHandler     g_timer;
+    
     /*Costruttore*/
     TimeHandler::TimeHandler()
     {
@@ -11,6 +13,8 @@ namespace Klein
         m_game.time  = 0;
         m_game.delta = 0;
         m_game.speed = 1.f;
+
+        KLEIN_DEBUG("TimeHandler", "initialized");
     }
 
   
@@ -22,10 +26,10 @@ namespace Klein
     }
 
 
-    long TimeHandler::getRealDelta() const { return m_real.delta; }
-    long TimeHandler::getRealTime()  const { return m_real.time;  }
-    long TimeHandler::getGameDelta() const { return m_game.delta; }
-    long TimeHandler::getGameTime()  const { return m_game.time;  }
+    long  TimeHandler::getRealDelta() const { return m_real.delta; }
+    long  TimeHandler::getRealTime()  const { return m_real.time;  }
+    long  TimeHandler::getGameDelta() const { return m_game.delta; }
+    long  TimeHandler::getGameTime()  const { return m_game.time;  }
     float TimeHandler::getGameSpeed() const { return m_game.speed; }
 
 
@@ -46,12 +50,17 @@ namespace Klein
         m_game.time    += m_game.delta;
 
         //assert(m_real.delta < 1e9);
-        printf("m_real: %f (%f), m_game: %f (%f)\n", m_real.time/1E6, m_real.delta/1E6, m_game.time/1E6, m_game.delta/1E6);
+        //printf("m_real: %f (%f), m_game: %f (%f)\n", m_real.time/1E6, m_real.delta/1E6, m_game.time/1E6, m_game.delta/1E6);
     }
 
-    bool TimeHandler::hasElapsed(long millis) const
+    bool TimeHandler::hasElapsed(unsigned int millis) const
     {
         return (readRawTime() - m_real.time) > (millis * 1E6);
     }
 
+
+    void Tick() {g_timer.tick();}
+    long GetGameTime() {return g_timer.getGameTime();}
+    void SetGameSpeed(float s) {g_timer.setGameSpeed(s);}
+    void Wait(unsigned int millis) {while(!g_timer.hasElapsed(millis)){;}}
 } // namespace Klein

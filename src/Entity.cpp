@@ -3,27 +3,65 @@
 
 namespace Klein
 {
+    extern TimeHandler      g_timer;
+    std::vector<Entity*>    g_all_entities;
+    std::vector<Hitbox*>    g_walls; 
+
+    void AddEntity(Entity* e)    {g_all_entities.push_back(e);}
+
+    std::vector<Entity*>& GetAllEntities() {return g_all_entities;}
+    
+    Entity* CreateWall(rectangle_t wall)
+    {
+        Entity* e = new Entity();
+        int   n_vertical_hb   = std::floor(wall.height()/MAX_PARTICLE_SIZE) + 1;
+        int   n_horizontal_hb = std::floor(wall.width()/MAX_PARTICLE_SIZE) + 1;
+        float hb_height       = wall.height()/n_vertical_hb;
+        float hb_width        = wall.width()/n_horizontal_hb;
+
+        for(int h=0; h<n_horizontal_hb; h++)
+        {
+            for(int v=0; v<n_vertical_hb; v++)
+            {
+                rectangle_t hb_area;
+                hb_area.setOrigin({h*hb_width, v*hb_height});
+                hb_area.setHeight(hb_height);
+                hb_area.setWidth(hb_width);
+
+                Hitbox* hb = new Hitbox(*e, hb_area);
+            }
+        }
+        return e;
+    }
+
+
     /*Membri statici*/
 
     int          Entity::s_timeDirection = 1;
-    TimeHandler* Entity::s_timer         = nullptr; //Questo va assegnato dopo aver istanziato il timer globale!!!
     std::mutex   Entity::s_mutex;
     /*Costruttore*/
-    Entity::Entity()  : m_timeOfBirth(s_timer != nullptr ? s_timer->getGameTime() : -1.f) {}
+    Entity::Entity()  : m_timeOfBirth(g_timer.getGameTime()), m_is_klein(false){}
     
-    Entity::~Entity() = default;
+    Entity::~Entity()
+    {
+        for(auto h : this->m_hitboxes)
+            delete h;
+    }
 
     /*Getters*/
 
     int          Entity::getTimeDirection()         { return s_timeDirection; }
     point_t      Entity::getPosition()      const   { return m_position; }
-    vector_t     Entity::getSpeed()         const   { return m_speed; }
     float        Entity::getMass()          const   { return m_mass; }
     float        Entity::getDissipation()   const   { return m_dissipation; }
     int          Entity::getHp()            const   { return m_hp; }
     int          Entity::getFaction()       const   { return m_faction; }
-    int          Entity::getCellID()        const   { return m_cellID; }
     float        Entity::getTimeOfBirth()   const   { return m_timeOfBirth; }
+    vector_t     Entity::getSpeed()         const   
+    { 
+        /*if(!m_is_klein)  return m_speed*g_timer.getGameSpeed(); //La materia Klein si muove al contrario
+        else */           return m_speed;
+    }
 
     const std::vector<Hitbox*>& Entity::getHitboxes() const { return m_hitboxes; }
 
@@ -31,9 +69,8 @@ namespace Klein
 
     void Entity::setPosition(point_t pos)       { m_position      = pos;   }
     void Entity::setSpeed(vector_t vel)         { m_speed         = vel;   }
-    void Entity::setAcceleration(vector_t acc)  { m_acceleration  = acc;   }
     void Entity::setMass(float m)               { m_mass          = m;     }
-    void Entity::setCellID(int id)              { m_cellID        = id;    }
+    void Entity::setKleiness(bool is_klein)     { m_is_klein      = is_klein;}
 
     void Entity::setFaction(int faction)
     {
@@ -42,12 +79,6 @@ namespace Klein
             hb->setFaction(faction);
     }
 
-    void Entity::setTimer(TimeHandler* timer)
-    {
-        s_mutex.lock();
-        s_timer = timer;
-        s_mutex.unlock();
-    }
 
     void Entity::setTimeDirection(int dir)
     {
@@ -60,42 +91,26 @@ namespace Klein
     void Entity::addHitbox(Hitbox* hb) { KLEIN_ASSERT(hb != nullptr); m_hitboxes.push_back(hb); }
 
 
-    void Entity::clearCollidedList()
+    void Entity::addSpeedContribution(vector_t impulse)
     {
-        m_currentFrameCollisionList.clear();
-    }
-
-    void Entity::addCollided(Entity* other)
-    {
-        s_mutex.lock();
-        m_currentFrameCollisionList.push_back(other);
-        s_mutex.unlock();
-    }
-
-    bool Entity::hasAlreadyCollided(const Entity* other) const
-    {
-        s_mutex.lock();
-        for (const Entity* e : m_currentFrameCollisionList)
-        {
-            if (e == other)
-            {
-                s_mutex.unlock();
-                return true;
-            }
-        }
-        s_mutex.unlock();
-        return false;
+        //printf("addSpeedContribution: m_next_speed pre-incremento:{%f, %f}, ", m_next_speed.x, m_next_speed.y);
+        m_next_speed += impulse;
+        //printf("m_next_speed post-incremento:{%f, %f}\n", m_next_speed.x, m_next_speed.y);
     }
 
 
     void Entity::updateMotion()
     {
-        const long dt = s_timer->getGameDelta();
-        m_speed.x     += m_acceleration.x * dt * 1e-9;
-        m_speed.y     += m_acceleration.y * dt* 1e-9;
+        long dt = g_timer.getGameDelta();
+        //printf("updateMotion: dt:%ld, ", dt);
+        if(m_is_klein) dt = std::abs(dt);
+        //printf("dt post-if:%ld, ", dt);
+        //printf("m_speed pre-incremento:{%f, %f}, ", m_speed.x, m_speed.y);
+        m_speed       += m_next_speed;
+        //printf("m_speed post-incremento:{%f, %f}\n", m_speed.x, m_speed.y);
         m_position.x  += m_speed.x * dt * 1e-9;
         m_position.y  += m_speed.y * dt * 1e-9;
-        m_acceleration = {0.f, 0.f};
+        m_next_speed = {0.f, 0.f};
     }
 
 
@@ -112,7 +127,7 @@ namespace Klein
 
     void Entity::goInDeathState()
     {
-        const float now = s_timer->getGameTime();
+        const float now = g_timer.getGameTime();
 
         if (m_timeOfDeath < 0.f)
             m_timeOfDeath = now;

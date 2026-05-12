@@ -15,8 +15,8 @@ namespace Klein
 
     /*Getters*/
     
-    int                         Cell::getCellID()   const { return m_id;       }
-    const std::vector<Hitbox*>& Cell::getHitboxes() const { return m_hitboxes; }
+    const int                     Cell::getCellID()   const { return m_id;       }
+    const std::vector<Hitbox*>&   Cell::getHitboxes() const { return m_hitboxes; }
     
     
 
@@ -38,16 +38,16 @@ namespace Klein
 
     /*Getters*/
 
-    int Grid::getRows()      const { return m_rows;           }
-    int Grid::getCols()      const { return m_cols;           }
-    int Grid::getCellCount() const { return m_rows * m_cols;  }
+    const int Grid::getRows()      const { return m_rows;           }
+    const int Grid::getCols()      const { return m_cols;           }
+    const int Grid::getCellCount() const { return m_rows * m_cols;  }
     
-    const std::vector<Hitbox*>& Grid::getHitboxesAt(int row, int col) const
+    const std::vector<Hitbox*>& Grid::getHitboxesAt(int row, int col)   const
     {
         return m_cells[convertToID(row, col)].getHitboxes();
     }
 
-    const std::vector<Hitbox*>& Grid::getHitboxesAt(int id) const
+    const std::vector<Hitbox*>& Grid::getHitboxesAt(int id)             const
     {
         KLEIN_ASSERT(id >= 0 && id < static_cast<int>(m_cells.size()));
         return m_cells[id].getHitboxes();

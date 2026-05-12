@@ -2,6 +2,7 @@
 
 #include "Klein.h"
 #include "Entity.h"
+#include "TimeHandler.h"
 #include "Grid.h"
 #include <vector>
 #include <chrono>
@@ -13,8 +14,11 @@
 namespace Klein
 {
 
+    extern std::vector<Entity*>     g_all_entities;  //Lista globale delle entità
+    extern TimeHandler              g_timer;         //Timer globale
+
     /**
-     * @brief Coppia di hitbox che hanno colliduto.
+     * @brief Coppia di hitbox che hanno colliso.
      */
     struct CollisionCouple
     {
@@ -35,9 +39,6 @@ namespace Klein
         CollisionHandler();
         ~CollisionHandler() = default;
 
-        /// @brief Imposta la lista di entità su cui operare.
-        void setEntitiesList(std::vector<Entity*>& entities);
-
         /// @brief Confronto naive O(n²) tra tutte le coppie di hitbox.
         int runNaiveImplementation();
 
@@ -54,15 +55,22 @@ namespace Klein
         int populateHitboxesList();
 
         /// @brief Azzera la velocità accumulata di tutte le entità.
-        void resetMotion();
+        void stopMotion();
 
-        /// @brief Aggiorna il movimento di tutte le entità.
-        void updateMotion();
+        void removeInactiveCollisions();
+
+        bool areAlreadyColliding(Hitbox* h1, Hitbox* h2);
+
+        bool areOverlapping(Hitbox* h1, Hitbox* h2);
+        bool areCirclesOverlapping(Hitbox* h1, Hitbox* h2);
+        bool checkCollision(Hitbox* h1, Hitbox* h2);
+        int  countCollisions(std::vector<Hitbox*>& list);
+        void computeCollision(Entity* e1, Entity* e2);
+        void checkCollisionAgainstWalls();
 
     private:
-        std::vector<Entity*>         m_entities;
         std::vector<Hitbox*>         m_hitboxes;
-        std::vector<Hitbox*>         m_neighbourhood;
+        std::vector<Hitbox*>         m_neighbourhood;   //Evito di allocare un vettore ogni volta
         std::vector<CollisionCouple> m_collisions;
         Grid                         m_grid;
 
