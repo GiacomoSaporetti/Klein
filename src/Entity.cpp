@@ -35,10 +35,6 @@ namespace Klein
     }
 
 
-    /*Membri statici*/
-
-    int          Entity::s_timeDirection = 1;
-    std::mutex   Entity::s_mutex;
     /*Costruttore*/
     Entity::Entity()  : m_timeOfBirth(g_timer.getGameTime()), m_is_klein(false){}
     
@@ -50,19 +46,14 @@ namespace Klein
 
     /*Getters*/
 
-    int          Entity::getTimeDirection()         { return s_timeDirection; }
     point_t      Entity::getPosition()      const   { return m_position; }
     float        Entity::getMass()          const   { return m_mass; }
     float        Entity::getDissipation()   const   { return m_dissipation; }
     int          Entity::getHp()            const   { return m_hp; }
     int          Entity::getFaction()       const   { return m_faction; }
     float        Entity::getTimeOfBirth()   const   { return m_timeOfBirth; }
-    vector_t     Entity::getSpeed()         const   
-    { 
-        /*if(!m_is_klein)  return m_speed*g_timer.getGameSpeed(); //La materia Klein si muove al contrario
-        else */           return m_speed;
-    }
-
+    vector_t     Entity::getSpeed()         const   { return m_speed; }
+    bool         Entity::isUnmovable()      const   { return m_is_unmovable; }
     const std::vector<Hitbox*>& Entity::getHitboxes() const { return m_hitboxes; }
 
     /*Setters*/
@@ -71,6 +62,7 @@ namespace Klein
     void Entity::setSpeed(vector_t vel)         { m_speed         = vel;   }
     void Entity::setMass(float m)               { m_mass          = m;     }
     void Entity::setKleiness(bool is_klein)     { m_is_klein      = is_klein;}
+    void Entity::setUnmovable(bool is_unmovable){ m_is_unmovable  = is_unmovable;}
 
     void Entity::setFaction(int faction)
     {
@@ -80,46 +72,53 @@ namespace Klein
     }
 
 
-    void Entity::setTimeDirection(int dir)
-    {
-        s_mutex.lock();
-        s_timeDirection = dir;
-        s_mutex.unlock();
-    }
-
-
     void Entity::addHitbox(Hitbox* hb) { KLEIN_ASSERT(hb != nullptr); m_hitboxes.push_back(hb); }
 
 
     void Entity::addSpeedContribution(vector_t impulse)
     {
-        //printf("addSpeedContribution: m_next_speed pre-incremento:{%f, %f}, ", m_next_speed.x, m_next_speed.y);
         m_next_speed += impulse;
-        //printf("m_next_speed post-incremento:{%f, %f}\n", m_next_speed.x, m_next_speed.y);
+        m_has_collided = true;
     }
 
 
+    /**
+     * Questo viene chiamato automaticamente per tutte le entità
+     * dal g_timer quando viene eseguito TimeHandler::setGameSpeed
+    */
+    void Entity::handleTimeSpeedChange(float old_spd, float new_spd)
+    {
+        if(!m_is_klein) return;
+        m_speed = m_speed*(new_spd/old_spd);
+    }
+
     void Entity::updateMotion()
     {
-        long dt = g_timer.getGameDelta();
-        //printf("updateMotion: dt:%ld, ", dt);
-        if(m_is_klein) dt = std::abs(dt);
-        //printf("dt post-if:%ld, ", dt);
-        //printf("m_speed pre-incremento:{%f, %f}, ", m_speed.x, m_speed.y);
-        m_speed       += m_next_speed;
-        //printf("m_speed post-incremento:{%f, %f}\n", m_speed.x, m_speed.y);
+        /*Se è inamovibile non la sposto*/
+        if(m_is_unmovable) return;
+
+        long dt = std::abs(g_timer.getGameDelta());
+
+        /*Se non ho fatto collisioni skippo, altrimenti annullerei la velocità*/
+        if(m_has_collided)  m_speed = m_next_speed;
+        
         m_position.x  += m_speed.x * dt * 1e-9;
         m_position.y  += m_speed.y * dt * 1e-9;
         m_next_speed = {0.f, 0.f};
+        m_has_collided = false;
     }
 
 
     void Entity::tick()
     {
-        if (m_hp <= 0)
+        if(m_hp <= 0)
         {
             goInDeathState();
             return;
+        }
+        if(g_timer.getGameTime() < m_timeOfBirth)
+        {
+            vanish();
         }
         updateMotion();
     }
@@ -127,12 +126,17 @@ namespace Klein
 
     void Entity::goInDeathState()
     {
-        const float now = g_timer.getGameTime();
+        long now = g_timer.getGameTime();
 
-        if (m_timeOfDeath < 0.f)
+        /*Prima volta che entro nel loop di morte*/
+        if(!m_is_dead)  
+        {
+            m_is_dead = true;
             m_timeOfDeath = now;
+        }
 
         // Resurrezione tramite inversione temporale
+        /*Che succede */
         if (now < m_timeOfDeath)
         {
             m_timeOfDeath = -1.f;
@@ -143,6 +147,15 @@ namespace Klein
         // Dopo 5 secondi l'istanza viene distrutta
         if (now > m_timeOfDeath + 5.f)
             delete this;
+    }
+
+    /**
+     * @brief Un' entità svanisce quando il tempo di gioco precede il
+     * momento della sua nascita
+     */
+    void Entity::vanish()
+    {
+
     }
 
 } //namespace Klein

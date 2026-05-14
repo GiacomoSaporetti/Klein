@@ -58,10 +58,8 @@ namespace Klein
         int       getFaction()       const;
         int       getCellID()        const;
         float     getTimeOfBirth()   const;
-
+        bool      isUnmovable()      const; 
         const std::vector<Hitbox*>& getHitboxes() const;
-
-        static int getTimeDirection();
 
         /*Setters*/
 
@@ -70,34 +68,30 @@ namespace Klein
         void setMass(float m);
         void setFaction(int faction);
         void setKleiness(bool is_klein);
-        static void setTimeDirection(int dir);
+        void setUnmovable(bool is_unmovable);
  
         void addHitbox(Hitbox* htbx);
         void addSpeedContribution(vector_t impulse);
-        /*Aggiorna il movimento dell'entità*/
+        void handleTimeSpeedChange(float old_spd, float new_spd);
         void updateMotion();
+        void vanish();
 
     private:
         int     m_hp             = 50;      
         int     m_faction        = 0;       // Serve ad annullare il fuoco amico
-        float   m_timeOfBirth    = -1.f;
-        float   m_timeOfDeath    = -1.f;
+        long   m_timeOfBirth     = 0;
+        long   m_timeOfDeath     = 0;
         float   m_mass           = 1.f;
-        float   m_dissipation    = 0.5f;
+        float   m_dissipation    = 0.70710678118654752440084436210485f;
         bool    m_is_klein       = false;
+        bool    m_has_collided   = false;
+        bool    m_is_dead        = false;
+        bool    m_is_unmovable   = false;
         point_t  m_position      = {0.f, 0.f};
         vector_t m_speed         = {0.f, 0.f};
         vector_t m_next_speed    = {0.f, 0.f};
 
         std::vector<Hitbox*>   m_hitboxes;
-
-
-        /*Comuni a tutte le istanze*/
-        static std::mutex       s_mutex;                        // Per gestire la concorrenza a membri statici
-        static int              s_timeDirection; 
-        bool m_ignore_time_direction = false;
-        std::vector<Entity*>    m_currentFrameCollisionList;    // Collisioni del frame attuale (da resettare ogni frame)
-        std::vector<Entity*>    m_activeCollisions;             // Collisioni recenti, non resettata
 
 
         /**

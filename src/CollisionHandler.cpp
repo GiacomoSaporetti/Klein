@@ -30,56 +30,144 @@ namespace Klein
      * @brief Calcola e applica le velocità post-collisione a due entità.
      *
      * Conserva la quantità di moto scalata per il fattore di dissipazione.
+     * Deve ragionare in termini assoluti, e vedere le particelle che si muovono nel tempo reale
      */
-    void CollisionHandler::computeCollision(Entity* e1, Entity* e2)
+    void CollisionHandler::computeCollision(Hitbox* h1, Hitbox* h2)
     {
+        KLEIN_ASSERT(h1 != nullptr && h2 != nullptr);
+        Entity* e1 = &h1->getParentEntity();
+        Entity* e2 = &h2->getParentEntity();
         KLEIN_ASSERT(e1 != nullptr && e2 != nullptr);
- 
-        
-        Hitbox* ha = e1->getHitboxes()[0];
-        Hitbox* hb = e2->getHitboxes()[0];
+
         std::cout   << "COLLISIONE!\n"
-                    << "  A=("  << e1->getPosition().x << "," << e1->getPosition().y << ")"
-                    << "  ["  << ha->getBoundingBox().left << "," << ha->getBoundingBox().right << "]"
-                    << "  vA=(" << e1->getSpeed().x    << "," << e1->getSpeed().y    << ")"
-                    << "  B=("  << e2->getPosition().x << "," << e2->getPosition().y << ")"
-                    << "  ["  << hb->getBoundingBox().left << "," << hb->getBoundingBox().right << "]"
-                    << "  vB=(" << e2->getSpeed().x    << "," << e2->getSpeed().y    << ")"
+                    << "  E1=("  << e1->getPosition().x << "," << e1->getPosition().y << ")"
+                    << "  ["  << h1->getBoundingBox().top << "," << h1->getBoundingBox().bottom <<  "," << h1->getBoundingBox().left << "," << h1->getBoundingBox().right << "]"
+                    << "  ve1=(" << e1->getSpeed().x    << "," << e1->getSpeed().y    << ")"
+                    << "  E2=("  << e2->getPosition().x << "," << e2->getPosition().y << ")"
+                    << "  ["  << h2->getBoundingBox().top << "," << h2->getBoundingBox().bottom <<  "," << h2->getBoundingBox().left << "," << h2->getBoundingBox().right << "]"
+                    << "  ve2=(" << e2->getSpeed().x    << "," << e2->getSpeed().y    << ")"
                     << '\n';
         
-        // Coefficiente di restituzione: 0 = anelastica totale, 1 = elastica
-        const float e  = e1->getDissipation() * e2->getDissipation();
+        float dissipation  = e1->getDissipation() * e2->getDissipation();
+
+        /*Normale d'impatto (da e1 verso e2), normalizzata*/
+        vector_t v1 = e1->getSpeed();
+        vector_t v2 = e2->getSpeed();
+
+        /*
+            Bisogna ora capire come calcolare la normale dell'impatto.
+            Se sono entrambi cerchi allora si puo usare il loro centro,
+            ma se uno dei due è rettangolo allora bisogna trovare il punto del suo
+            perimetro più vicino al centro dell'altra hitbox. 
+        */
+        vector_t n = {0.f, 0.f};
+
+        /*Caso in cui sono entrambi cerchi*/
+        if(h1->getType() == HitboxType::Circle && h2->getType() == HitboxType::Circle)
+        {
+            point_t  p1 = h1->getCenter(); 
+            point_t  p2 = h2->getCenter();
+            n  = { p2.x - p1.x, p2.y - p1.y };
+            n = n.normalized();
+        }
+        /*Almeno uno dei due è rettangolo*/
+        else
+        {
+            Hitbox* rectHb  = (h2->getType() == HitboxType::Rectangle) ? h2 : h1;
+            Hitbox* otherHb = (rectHb == h2) ? h1 : h2;
+
+            const point_t     c    = otherHb->getCenter();
+            const rectangle_t rect = rectHb->getBoundingBox();
+
+            const float nearestX = std::clamp(c.x, rect.left, rect.right);
+            const float nearestY = std::clamp(c.y, rect.top, rect.bottom);
+
+            const float dx = c.x - nearestX;
+            const float dy = c.y - nearestY;
+
+            // n punta da rectHb verso otherHb
+            n = vector_t{ dx, dy }.normalized();
+
+            // Se il rettangolo è h1, n punta da h1 a h2: corretto (convenzione uguale al caso cerchio-cerchio)
+            // Se il rettangolo è h2, n punta da h2 a h1: va invertita
+            if(rectHb == h2) n = n * -1.f;
+        }
+
+        /*Componenti delle velocità normali all'impatto*/
+        vector_t v1n = n * (v1 * n);
+        vector_t v2n = n * (v2 * n);
+
+        /*Componenti tangenziali delle velocità*/
+        vector_t v1t = v1 - v1n;
+        vector_t v2t = v2 - v2n;
+
+        /*Scalari delle componenti normali*/
+        float v1n_scalar = v1 * n;
+        float v2n_scalar = v2 * n;
+
+        vector_t new_v1, new_v2;
+
+        
+        // --- DEBUG ---
+        std::cout << "  n = {" << n.x << ", " << n.y << "}\n";
+        std::cout << "  v1n_scalar=" << v1n_scalar << "  v2n_scalar=" << v2n_scalar << "\n";
+        std::cout << "  v1n={" << v1n.x << "," << v1n.y << "}  v2n={" << v2n.x << "," << v2n.y << "}\n";
+        std::cout << "  v1t={" << v1t.x << "," << v1t.y << "}  v2t={" << v2t.x << "," << v2t.y << "}\n";
+        // --- END DEBUG ---
 
 
-        // Normale d'impatto (da e1 verso e2), normalizzata
-        const point_t  p1 = e1->getPosition(), p2 = e2->getPosition();
-        vector_t n = { p2.x - p1.x, p2.y - p1.y };
-        n = n.normalized();
 
-        // Componenti di velocità lungo la normale
-        const vector_t v1 = e1->getSpeed();
-        const vector_t v2 = e2->getSpeed();
-        const float u1 = v1 * n;
-        const float u2 = v2 * n;
+        if (e1->isUnmovable() && e2->isUnmovable())
+        {
+            /*Due entità inamovibili: nessuna fisica da calcolare*/
+            return;
+        }
+        else if (e1->isUnmovable())
+        {
+            /*e1 resta ferma, e2 rimbalza — limite m1 → ∞*/
+            float e          = dissipation;
+            float new_v2n_scalar =  - e * v2n_scalar;
+            new_v1 = v1;
+            new_v2 = n * new_v2n_scalar + v2t;
+        }
+        else if (e2->isUnmovable())
+        {
+            /*e2 resta ferma, e1 rimbalza — limite m2 → ∞*/
+            float e          = dissipation;
+            float new_v1n_scalar = - e * v1n_scalar;
+            new_v1 = n * new_v1n_scalar + v1t;
+            new_v2 = v2;
+        }
+        else
+        {
+            /*Masse*/
+            float m1 = e1->getMass();
+            float m2 = e2->getMass();
+            float M  = m1 + m2;
+            float uM = m1*m2/M; //Massa ridotta
 
+            /*L'energia cinetica totale diminuisce in base al fattore di dissipazione*/
+            float current_KE = 0.5f*(m1*(v1*v1) + m2*(v2*v2));
+            float eta        = 1.0f - dissipation;
 
-        const float m1 = e1->getMass();
-        const float m2 = e2->getMass();
-        const float M  = m1 + m2;
+            /*Coefficiente di restituzione ricavato da eta e dall'energia*/
+            float vRel      = v1n_scalar - v2n_scalar;
+            float e_squared = 1.0f - (2.0f * eta * current_KE) / (uM * vRel * vRel);
+            e_squared       = std::max(0.0f, e_squared); // clamp per sicurezza numerica
+            float e         = std::sqrt(e_squared);
 
-        // Velocità post-collisione lungo la normale
-        const float u1p = (m1*u1 + m2*u2 - m2 * e * (u1 - u2)) / M;
-        const float u2p = (m1*u1 + m2*u2 + m1 * e * (u1 - u2)) / M;
+            /*Nuove componenti normali delle velocità*/
+            float new_v1n_scalar = ((m1 - e * m2) * v1n_scalar + m2 * (1.0f + e) * v2n_scalar) / M;
+            float new_v2n_scalar = ((m2 - e * m1) * v2n_scalar + m1 * (1.0f + e) * v1n_scalar) / M;
+            new_v1 = n * new_v1n_scalar + v1t;
+            new_v2 = n * new_v2n_scalar + v2t;
+        }
 
+        std::cout   << "new_v1: {" << new_v1.x << ", " << new_v1.y << "}  "
+                    << "new_v2: {" << new_v2.x << ", " << new_v2.y << "}\n";
 
-        const vector_t dv1 = n * (u1p - u1);
-        const vector_t dv2 = n * (u2p - u2);
-
-        std::cout   << "dv1: {" << dv1.x << ", " << dv1.y << "}  "
-                    << "dv2: {" << dv2.x << ", " << dv2.y << "}\n";
-
-        e1->addSpeedContribution(dv1);
-        e2->addSpeedContribution(dv2);
+        if (!e1->isUnmovable()) e1->addSpeedContribution(new_v1);
+        if (!e2->isUnmovable()) e2->addSpeedContribution(new_v2);
     }
 
 
@@ -101,7 +189,7 @@ namespace Klein
     bool CollisionHandler::checkCollision(Hitbox* h1, Hitbox* h2)
     {
         //printf("Checking collision between %p, %p\n", h1, h2);
-        if(areAlreadyColliding(h1, h2)) return false;
+        if(areAlreadyColliding(&h1->getParentEntity(), &h2->getParentEntity())) return false;
 
         Entity* e1 = &h1->getParentEntity();
         Entity* e2 = &h2->getParentEntity();
@@ -152,7 +240,7 @@ namespace Klein
 
         /*Punto del rettangolo più vicino al centro del cerchio*/
         const float nearestX = std::clamp(c.x, rect.left, rect.right);
-        const float nearestY = std::clamp(c.y, rect.bottom, rect.top);
+        const float nearestY = std::clamp(c.y, rect.top, rect.bottom);
 
         const float dx = c.x - nearestX;
         const float dy = c.y - nearestY;
@@ -178,8 +266,8 @@ namespace Klein
 
                 if (checkCollision(active, check))
                 {
-                    m_collisions.push_back({active, check});
-                    computeCollision(activeEntity, checkEntity);
+                    m_collisions.push_back(CollisionCouple{activeEntity, active, checkEntity, check});
+                    computeCollision(active, check);
                     count++;
                 }
             }
@@ -261,12 +349,12 @@ namespace Klein
     }
 
 
-    bool CollisionHandler::areAlreadyColliding(Hitbox* h1, Hitbox* h2)
+    bool CollisionHandler::areAlreadyColliding(Entity* e1, Entity* e2)
     {
         for(CollisionCouple couple : m_collisions)
         {
-            if(h1 == couple.first && h2 == couple.second ||
-                h2 == couple.second && h1 == couple.first)
+            if(e1 == couple.first && e2 == couple.second ||
+                e2 == couple.second && e1 == couple.first)
                     return true;
         }
         return false;
@@ -278,7 +366,7 @@ namespace Klein
         auto it = m_collisions.begin();
         while (it != m_collisions.end())
         {
-            if (!areOverlapping(it->first, it->second))
+            if (!areOverlapping(it->first_hb, it->second_hb))
             {
                 std::swap(*it, m_collisions.back());
                 m_collisions.pop_back();
@@ -288,16 +376,13 @@ namespace Klein
         }
     }
 
-    // -------------------------------------------------------------------------
-    // Debug
-    // -------------------------------------------------------------------------
 
     void CollisionHandler::printCollisionList()
     {
         for (const CollisionCouple& couple : m_collisions)
         {
-            const Hitbox* h1 = couple.first;
-            const Hitbox* h2 = couple.second;
+            const Hitbox* h1 = couple.first_hb;
+            const Hitbox* h2 = couple.second_hb;
 
             std::cout << h1 << " | "
                       << "c= " << h1->getCenter().x << ", " << h1->getCenter().y << " | "

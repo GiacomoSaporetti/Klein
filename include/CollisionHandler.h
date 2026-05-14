@@ -22,8 +22,10 @@ namespace Klein
      */
     struct CollisionCouple
     {
-        Hitbox* first  = nullptr;
-        Hitbox* second = nullptr;
+        Entity* first     = nullptr;
+        Hitbox* first_hb  = nullptr;
+        Entity* second    = nullptr;
+        Hitbox* second_hb = nullptr;
     };
 
 
@@ -59,13 +61,13 @@ namespace Klein
 
         void removeInactiveCollisions();
 
-        bool areAlreadyColliding(Hitbox* h1, Hitbox* h2);
+        bool areAlreadyColliding(Entity* h1, Entity* h2);
 
         bool areOverlapping(Hitbox* h1, Hitbox* h2);
         bool areCirclesOverlapping(Hitbox* h1, Hitbox* h2);
         bool checkCollision(Hitbox* h1, Hitbox* h2);
         int  countCollisions(std::vector<Hitbox*>& list);
-        void computeCollision(Entity* e1, Entity* e2);
+        void computeCollision(Hitbox* e1, Hitbox* e2);
         void checkCollisionAgainstWalls();
 
     private:

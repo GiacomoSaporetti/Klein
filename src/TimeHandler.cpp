@@ -3,7 +3,7 @@
 namespace Klein
 {
     TimeHandler     g_timer;
-    
+    extern std::vector<Entity*> g_all_entities;
     /*Costruttore*/
     TimeHandler::TimeHandler()
     {
@@ -33,7 +33,13 @@ namespace Klein
     float TimeHandler::getGameSpeed() const { return m_game.speed; }
 
 
-    void TimeHandler::setGameSpeed(float speed) { m_game.speed = speed; }
+    void TimeHandler::setGameSpeed(float speed) 
+    { 
+        float prev = m_game.speed;
+        m_game.speed = speed; 
+        for(Entity* e : g_all_entities)
+            e->handleTimeSpeedChange(prev, speed);
+    }
 
 
     void TimeHandler::tick()

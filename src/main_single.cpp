@@ -75,7 +75,7 @@ int main()
     const float cy    = SCREEN_HEIGHT / 2.f;
     const int   R     = 30;        // raggio hitbox e visivo
     const float SPEED = 120.f;     // pixel/secondo
-
+    /*
     // Particella A — parte da sinistra, va a destra
     Entity* a = new Entity();
     a->setPosition({ cx - 200.f, cy });
@@ -86,12 +86,12 @@ int main()
         shape.radius = R;
         a->addHitbox(new Hitbox(*a, shape));
     }
-    a->setKleiness(false);
-
+    a->setKleiness(true);
+    */
     // Particella B — parte da destra, va a sinistra
     Entity* b = new Entity();
     b->setPosition({ cx + 200.f, cy });
-    b->setSpeed   ({ -SPEED, 0.f });
+    b->setSpeed   ({ -SPEED, 1.f });
     {
         circle_t shape;
         shape.center = { 0, 0 };
@@ -101,18 +101,26 @@ int main()
     b->setKleiness(true);
 
 
-    Klein::AddEntity(a);
+    //Klein::AddEntity(a);
     Klein::AddEntity(b);
 
-    // -- Statistiche --------------------------------------------------------
-    int       totalCollisions = 0;
+    rectangle_t wall = {0, 0, SCREEN_HEIGHT, 50};
+    Entity* w = Klein::CreateWall(wall);
+    w->setPosition({10, 10});
+    w->setUnmovable(true);
+    Klein::AddEntity(w);
+    for(Hitbox* h : w->getHitboxes())
+    {
+        rectangle_t r = h->getBoundingBox(); 
+        printf("Rect: (%.f, %.f) h:%.f w:%.f\n", r.left, r.top, r.height(), r.width());
+    }
 
+    int       totalCollisions = 0;
 
     simStart = std::chrono::steady_clock::now();
 
-    // -- Game loop ----------------------------------------------------------
     bool running         = true;
-    Hitbox* ha = a->getHitboxes()[0];
+    //Hitbox* ha = a->getHitboxes()[0];
     Hitbox* hb = b->getHitboxes()[0];
     while (running)
     {
@@ -130,9 +138,9 @@ int main()
         Klein::RunFrame();
 
         std::cout     << "@" << Klein::GetGameTime()/1e9
-                      << "  A=("  << a->getPosition().x << "," << a->getPosition().y << ")"
+                      /*<< "  A=("  << a->getPosition().x << "," << a->getPosition().y << ")"
                       << "  ["  << ha->getBoundingBox().left << "," << ha->getBoundingBox().right << "]"
-                      << "  vA=(" << a->getSpeed().x    << "," << a->getSpeed().y    << ")"
+                      << "  vA=(" << a->getSpeed().x    << "," << a->getSpeed().y    << ")"*/
                       << "  B=("  << b->getPosition().x << "," << b->getPosition().y << ")"
                       << "  ["  << hb->getBoundingBox().left << "," << hb->getBoundingBox().right << "]"
                       << "  vB=(" << b->getSpeed().x    << "," << b->getSpeed().y    << ")"
@@ -145,14 +153,26 @@ int main()
 
         #ifdef USE_GRAPHICS
         // -- Rendering -------------------------------------------------------
+        for(Hitbox* h : w->getHitboxes())
+        {
+            SDL_FRect rect;
+            rectangle_t r = h->getBoundingBox(); 
+            rect.h = r.height();
+            rect.w = r.width();
+            rect.x = r.left;
+            rect.y = r.top;
+            SDL_SetRenderDrawColor(renderer, 255, 255, 60, 200);
+            SDL_RenderFillRect(renderer, &rect);
+        }
+
         SDL_SetRenderDrawColor(renderer, 10, 10, 20, 255);
         SDL_RenderClear(renderer);
 
         // Particella A — blu
-        SDL_SetRenderDrawColor(renderer, 80, 140, 255, 255);
+       /*SDL_SetRenderDrawColor(renderer, 80, 140, 255, 255);
         drawFilledCircle(renderer,
                          static_cast<int>(a->getPosition().x),
-                         static_cast<int>(a->getPosition().y), R);
+                         static_cast<int>(a->getPosition().y), R);*/
 
         // Particella B — arancione
         SDL_SetRenderDrawColor(renderer, 255, 140, 40, 255);
@@ -169,17 +189,16 @@ int main()
             Klein::Wait(static_cast<Uint32>((1.f/60.f - frameDuration) * 1000));
         //printf("frameDuration: %f\n", frameDuration);
 
-        if(Klein::GetGameTime() > 3 * 1E9) //Dopo 15s inverto il tempo
+        if(Klein::GetGameTime() > 10 * 1E9) //Dopo 15s inverto il tempo
         {  
             printf("INVERSIONE!\n");
             Klein::SetGameSpeed(-1.0f);  
-            Klein::Entity::setTimeDirection(-1);
         }
     }
 
     std::cout << "Collisioni totali: " << totalCollisions << '\n';
 
-    delete a;
+    //delete a;
     delete b;
     #ifdef USE_GRAPHICS
     SDL_DestroyRenderer(renderer);

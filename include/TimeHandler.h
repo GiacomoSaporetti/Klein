@@ -1,12 +1,14 @@
 #pragma once
 
 #include "Klein.h"
+#include "Entity.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <time.h>
 
 namespace Klein
 {
+    class Entity;
     /**
      * @brief Struttura per la gestione del tempo
      */

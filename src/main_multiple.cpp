@@ -1,4 +1,4 @@
-//#define USE_GRAPHICS
+#define USE_GRAPHICS
 #define SDL_ENABLE_OLD_NAMES
 
 #include "main.h"
@@ -51,24 +51,14 @@ static void drawFilledCircle(SDL_Renderer* renderer, int cx, int cy, int r)
 
 
 
-static Entity* makeEntity(float maxX, float maxY, unsigned int seed)
+static Entity* makeEntity(float maxX, float maxY, unsigned int seed, point_t pos, vector_t vel)
 {
     srand(seed);
 
     Entity* e = new Entity();
 
-    const point_t pos =
-    {
-        static_cast<float>(rand() % static_cast<int>(maxX)),
-        static_cast<float>(rand() % static_cast<int>(maxY))
-    };
     e->setPosition(pos);
 
-    const vector_t vel =
-    {
-        (rand() % 200 - 100) * 1.f,
-        (rand() % 200 - 100) * 1.f
-    };
     e->setSpeed(vel);
 
     circle_t shape;
@@ -76,7 +66,6 @@ static Entity* makeEntity(float maxX, float maxY, unsigned int seed)
     shape.center = {0,0};
 
     Hitbox* hb = new Hitbox(*e, shape);
-    e->addHitbox(hb);
 
     return e;
 }
@@ -100,7 +89,20 @@ int main()
         return 1;
     }
 
-    SDL_Window*   window   = SDL_CreateWindow("Klein – Particle Simulation", SCREEN_WIDTH, SCREEN_HEIGHT, 0);
+    // Ottieni il display desiderato (indice 2 = terzo schermo)
+    int count;
+    SDL_DisplayID* list = SDL_GetDisplays(&count);
+
+    SDL_Window* window = SDL_CreateWindow(
+        "Titolo",
+        SCREEN_WIDTH, SCREEN_HEIGHT,
+        SDL_WINDOW_RESIZABLE
+    );
+    SDL_SetWindowPosition(window,
+        SDL_WINDOWPOS_CENTERED_DISPLAY(list[2]),
+        SDL_WINDOWPOS_CENTERED_DISPLAY(list[2])
+    );
+    SDL_free(list);
     SDL_SetHint(SDL_HINT_RENDER_DRIVER, "software");
     SDL_Renderer* renderer = SDL_CreateRenderer(window, nullptr);
 
@@ -115,8 +117,11 @@ int main()
 
     for (int i = 0; i < NUMBER_OF_ENTITIES; i++)
     {
-        Entity* e = makeEntity(SCREEN_WIDTH, SCREEN_HEIGHT, baseSeed + i);
-        if(i%2) e->setKleiness(true);
+        Entity* e = makeEntity(SCREEN_WIDTH, SCREEN_HEIGHT, baseSeed + i, 
+            {static_cast<float>(rand() % SCREEN_WIDTH), static_cast<float>(rand() % SCREEN_HEIGHT)},
+               {(rand() % 200 - 100) * 1.f, (rand() % 200 - 100) * 1.f} );
+        if(i%2 == 0) e->setKleiness(true);
+        else e->setKleiness(false);
         Klein::AddEntity(e);
     }
     // Colore base per ogni entità (assegnato una volta sola)
@@ -132,7 +137,53 @@ int main()
         }
     }
 
+    rectangle_t wall = {0, 0, SCREEN_HEIGHT, 50};
+    Entity* w = Klein::CreateWall(wall);
+    w->setPosition({0, 0});
+    w->setUnmovable(true);
+    Klein::AddEntity(w);
+    for(Hitbox* h : w->getHitboxes())
+    {
+        rectangle_t r = h->getBoundingBox(); 
+        printf("Rect: (%.f, %.f) h:%.f w:%.f\n", r.left, r.top, r.right, r.bottom);
+    }
+
+    wall = {SCREEN_WIDTH - 50, 0, SCREEN_HEIGHT, 50};
+    w = Klein::CreateWall(wall);
+    w->setPosition({0, 0});
+    w->setUnmovable(true);
+    Klein::AddEntity(w);
+    for(Hitbox* h : w->getHitboxes())
+    {
+        rectangle_t r = h->getBoundingBox(); 
+        printf("Rect: (%.f, %.f) h:%.f w:%.f\n", r.left, r.top, r.right, r.bottom);
+    }
+
+    wall = {0, 0, 50, SCREEN_WIDTH};
+    w = Klein::CreateWall(wall);
+    w->setPosition({0, 0});
+    w->setUnmovable(true);
+    Klein::AddEntity(w);
+    for(Hitbox* h : w->getHitboxes())
+    {
+        rectangle_t r = h->getBoundingBox(); 
+        printf("Rect: (%.f, %.f) h:%.f w:%.f\n", r.left, r.top, r.right, r.bottom);
+    }
+
+
+    wall = {0, SCREEN_HEIGHT-50, 50, SCREEN_WIDTH};
+    w = Klein::CreateWall(wall);
+    w->setPosition({0, 0});
+    w->setUnmovable(true);
+    Klein::AddEntity(w);
+    for(Hitbox* h : w->getHitboxes())
+    {
+        rectangle_t r = h->getBoundingBox(); 
+        printf("Rect: (%.f, %.f) h:%.f w:%.f\n", r.left, r.top, r.right, r.bottom);
+    }
+
     simStart = std::chrono::steady_clock::now();
+
 
     bool running = true;
     while (running)
@@ -146,8 +197,23 @@ int main()
             if (event.type == SDL_EVENT_QUIT) running = false;
             if (event.type == SDL_EVENT_KEY_DOWN &&
                 event.key.scancode == SDL_SCANCODE_ESCAPE) running = false;
+            if (event.type == SDL_EVENT_KEY_DOWN &&
+                event.key.scancode == SDL_SCANCODE_SPACE)
+            {
+                Klein::SetGameSpeed(-1.0f*g_timer.getGameSpeed());  //Dopo 15s inverto il tempo
+            }
         }
-
+        Uint32 mouseState = SDL_GetMouseState(nullptr, nullptr);
+        if (mouseState & SDL_BUTTON_RMASK)
+        {
+            float x, y;
+            SDL_GetMouseState(&x, &y);
+            printf("Mouse at %.2f, %.2f\n", x, y);
+            Entity* e = makeEntity(SCREEN_WIDTH, SCREEN_HEIGHT, baseSeed, 
+            {x, y}, {(rand() % 200 - 100) * 1.f, (rand() % 200 - 100) * 1.f} );
+            e->setKleiness(true);
+            Klein::AddEntity(e);
+        }
         Klein::RunFrame();
 
 
@@ -155,7 +221,7 @@ int main()
         #ifdef USE_GRAPHICS
         SDL_SetRenderDrawColor(renderer, 10, 10, 20, 255);   // sfondo scuro
         SDL_RenderClear(renderer);
-
+         int i = 0;
         for (Entity* e : Klein::GetAllEntities())
         {
             const point_t pos = e->getPosition();
@@ -164,24 +230,31 @@ int main()
             const int     r   = e->getHitboxes()[0]->getRadius();
 
             const Color& c = baseColors[0];
-            SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, 200);
+            if(i%2 == 0) SDL_SetRenderDrawColor(renderer, 255, 60, 60, 200);
+            else SDL_SetRenderDrawColor(renderer, 60, 255, 60, 200);
 
 
             drawFilledCircle(renderer, cx, cy, r);
+            i++;
+        }
+
+        for(Hitbox* h : w->getHitboxes())
+        {
+            SDL_FRect rect;
+            rectangle_t r = h->getBoundingBox(); 
+            rect.h = r.height();
+            rect.w = r.width();
+            rect.x = r.left;
+            rect.y = r.top;
+            SDL_SetRenderDrawColor(renderer, 255, 255, 60, 200);
+            SDL_RenderFillRect(renderer, &rect);
         }
 
         SDL_RenderPresent(renderer);
         #endif
-
+        
         const auto frameEnd = std::chrono::steady_clock::now();
         const auto frameDuration = std::chrono::duration<double>(frameEnd - frameStart).count();
-        /*if (frameDuration < 0.016)
-            SDL_Delay(static_cast<Uint32>((0.016 - frameDuration) * 1000));
-        printf("frameDuration: %f\n", frameDuration);*/
-
-        if(Klein::GetGameTime() > 5 * 1E9)  Klein::SetGameSpeed(-1.0f);  //Dopo 15s inverto il tempo
-
-        //if(frames > 1000) running = false;
     }
 
     print_stats();

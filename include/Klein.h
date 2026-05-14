@@ -2,6 +2,7 @@
 
 #include <sys/time.h>
 #include <climits>
+#include <limits>
 #include <iostream>
 #include <cmath>
 #include <cassert>
@@ -30,7 +31,7 @@ namespace Klein
     /*Costanti globali*/
     inline constexpr int SCREEN_WIDTH        = 1920;
     inline constexpr int SCREEN_HEIGHT       = 1080;
-    inline constexpr int MAX_PARTICLE_SIZE   = 100;
+    inline constexpr int MAX_PARTICLE_SIZE   = 25;
     inline constexpr int INT_ERROR_VALUE     = INT_MIN;
 
     extern void RunFrame();
@@ -53,7 +54,7 @@ namespace Klein
         vector_t normalized() 
         {
             float m = magnitude();
-            KLEIN_ASSERT(m > 0.f);
+            KLEIN_ASSERT(m >= 0.f);
             return {x/m, y/m};
         }
 
@@ -91,9 +92,9 @@ namespace Klein
     struct rectangle_t
     {
         float top    = 0;  // Bordo superiore (Y minore)
-        float right  = 0;  // Bordo destro    (X maggiore)
-        float bottom = 0;  // Bordo inferiore (Y maggiore)
         float left   = 0;  // Bordo sinistro  (X minore)
+        float bottom = 0;  // Bordo inferiore (Y maggiore)
+        float right  = 0;  // Bordo destro    (X maggiore)
 
         float width()     const { return std::abs(right - left); }
 
@@ -110,14 +111,13 @@ namespace Klein
         /*Restituisce true se il punto p è contenuto nel rettangolo (bordi inclusi)*/
         bool contains(point_t p) const
         {
-            return p.x >= left && p.x <= right
-                && p.y >= top  && p.y <= bottom;
+            return p.x >= left && p.x <= right && p.y >= top  && p.y <= bottom;
         }
 
         /*Espandono il rettangolo tenendo fisso il punto d'origine (left, top)*/
         
-        void setHeight(float h)   {bottom = top + h;}
-        void setWidth(float w)   {right = left + w;}
+        void setHeight(float h)     {bottom = top + h;}
+        void setWidth(float w)      {right = left + w;}
 
         void setCenter(point_t center)
         {
