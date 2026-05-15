@@ -2,6 +2,7 @@
 
 #include "Klein.h"
 #include "Entity.h"
+#include "InputHandler.h"
 
 namespace Klein
 {
@@ -11,6 +12,13 @@ namespace Klein
             MainCharacter() {;}
             ~MainCharacter() = default;
 
-            void Move(int up, int down, int left, int right);
+            void Jump(const key_info_t& jump_key);
+            void Move(const keys_state_t&  keys);
+            void tick();
+        
+            /**
+             * @brief Interagisce con l'ambiente ed oggetti circostanti
+             */
+            void interact();
     };
 }

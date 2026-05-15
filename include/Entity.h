@@ -64,6 +64,7 @@ namespace Klein
         /*Setters*/
 
         void setPosition(point_t pos);
+        void setPosition(float x, float y);
         void setSpeed(vector_t vel);
         void setMass(float m);
         void setFaction(int faction);
@@ -76,20 +77,20 @@ namespace Klein
         void updateMotion();
         void vanish();
 
-    private:
-        int     m_hp             = 50;      
-        int     m_faction        = 0;       // Serve ad annullare il fuoco amico
-        long   m_timeOfBirth     = 0;
-        long   m_timeOfDeath     = 0;
-        float   m_mass           = 1.f;
-        float   m_dissipation    = 0.70710678118654752440084436210485f;
-        bool    m_is_klein       = false;
-        bool    m_has_collided   = false;
-        bool    m_is_dead        = false;
-        bool    m_is_unmovable   = false;
-        point_t  m_position      = {0.f, 0.f};
-        vector_t m_speed         = {0.f, 0.f};
-        vector_t m_next_speed    = {0.f, 0.f};
+    protected:
+        int         m_hp            = 50;      
+        int         m_faction       = 0;       // Serve ad annullare il fuoco amico
+        long        m_timeOfBirth   = 0;
+        long        m_timeOfDeath   = 0;
+        float       m_mass          = 1.f;
+        float       m_dissipation   = 0.70710678118654752440084436210485f;
+        bool        m_is_klein      = false;
+        bool        m_has_collided  = false;
+        bool        m_is_dead       = false;
+        bool        m_is_unmovable  = false;
+        point_t     m_position      = {0.f, 0.f};
+        vector_t    m_speed         = {0.f, 0.f};
+        vector_t    m_next_speed    = {0.f, 0.f};
 
         std::vector<Hitbox*>   m_hitboxes;
 

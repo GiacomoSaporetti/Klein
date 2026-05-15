@@ -92,21 +92,21 @@ namespace Klein
     struct rectangle_t
     {
         float top    = 0;  // Bordo superiore (Y minore)
-        float left   = 0;  // Bordo sinistro  (X minore)
         float bottom = 0;  // Bordo inferiore (Y maggiore)
+        float left   = 0;  // Bordo sinistro  (X minore)
         float right  = 0;  // Bordo destro    (X maggiore)
 
-        float width()     const { return std::abs(right - left); }
+        float width()       const { return std::abs(right - left); }
 
-        float height()    const { return std::abs(bottom - top); }
+        float height()      const { return std::abs(bottom - top); }
 
-        float area()      const { return width() * height(); }
+        float area()        const { return width() * height(); }
 
-        float perimeter() const { return 2 * (width() + height()); }
+        float perimeter()   const { return 2 * (width() + height()); }
 
-        point_t origin() const {return {left, top};}
+        point_t origin()    const { return {left, top};}
 
-        point_t center() const {return { left + width()/ 2.f, top  + height()/ 2.f };}
+        point_t center()    const { return { left + width()/ 2.f, top  + height()/ 2.f };}
 
         /*Restituisce true se il punto p è contenuto nel rettangolo (bordi inclusi)*/
         bool contains(point_t p) const
@@ -114,10 +114,10 @@ namespace Klein
             return p.x >= left && p.x <= right && p.y >= top  && p.y <= bottom;
         }
 
-        /*Espandono il rettangolo tenendo fisso il punto d'origine (left, top)*/
-        
-        void setHeight(float h)     {bottom = top + h;}
-        void setWidth(float w)      {right = left + w;}
+        /*Espande il rettangolo tenendo fisso il punto d'origine (left, top)*/
+        void setHeight(float h)   { bottom = top + h;}
+        /*Espande il rettangolo tenendo fisso il punto d'origine (left, top)*/
+        void setWidth(float w)    { right = left + w;}
 
         void setCenter(point_t center)
         {
@@ -130,6 +130,9 @@ namespace Klein
             right   = center.x + w/2;
         }
 
+        void setCenter(float x, float y) {setCenter(point_t{x, y});}
+        void setCenter(int x, int y)     {setCenter(point_t{(float)x, (float)y});}
+
         void setOrigin(point_t origin)
         {
             float w = width();
@@ -141,6 +144,8 @@ namespace Klein
             right   = left + w;
         }
 
+        void setOrigin(float x, float y) {setOrigin(point_t{x, y});}
+        void setOrigin(int x, int y)     {setOrigin(point_t{(float)x, (float)y});}
     };
 
 

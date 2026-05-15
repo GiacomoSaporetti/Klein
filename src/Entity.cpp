@@ -13,7 +13,9 @@ namespace Klein
     
     Entity* CreateWall(rectangle_t wall)
     {
+        //printf("Creating wall at [t:%.f, b:%.f, l:%.f, r:%.f]\n", wall.top, wall.bottom, wall.left, wall.right);
         Entity* e = new Entity();
+        e->setPosition({wall.origin()});
         int   n_vertical_hb   = std::floor(wall.height()/MAX_PARTICLE_SIZE) + 1;
         int   n_horizontal_hb = std::floor(wall.width()/MAX_PARTICLE_SIZE) + 1;
         float hb_height       = wall.height()/n_vertical_hb;
@@ -59,6 +61,7 @@ namespace Klein
     /*Setters*/
 
     void Entity::setPosition(point_t pos)       { m_position      = pos;   }
+    void Entity::setPosition(float x, float y)  { m_position      = {x, y};   }
     void Entity::setSpeed(vector_t vel)         { m_speed         = vel;   }
     void Entity::setMass(float m)               { m_mass          = m;     }
     void Entity::setKleiness(bool is_klein)     { m_is_klein      = is_klein;}

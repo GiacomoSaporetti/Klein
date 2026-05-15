@@ -1,4 +1,4 @@
-#define USE_GRAPHICS
+//#define USE_GRAPHICS
 #define SDL_ENABLE_OLD_NAMES
 
 #include "main.h"
@@ -137,7 +137,8 @@ int main()
         }
     }
 
-    rectangle_t wall = {0, 0, SCREEN_HEIGHT, 50};
+    /*Muro a sinistra*/
+    rectangle_t wall = {0, SCREEN_HEIGHT, 0, 50};
     Entity* w = Klein::CreateWall(wall);
     w->setPosition({0, 0});
     w->setUnmovable(true);
@@ -145,10 +146,23 @@ int main()
     for(Hitbox* h : w->getHitboxes())
     {
         rectangle_t r = h->getBoundingBox(); 
-        printf("Rect: (%.f, %.f) h:%.f w:%.f\n", r.left, r.top, r.right, r.bottom);
+        printf("Rect: [t:%.f, b:%.f, l:%.f, r:%.f]\n", r.top, r.bottom, r.left, r.right);
     }
 
-    wall = {SCREEN_WIDTH - 50, 0, SCREEN_HEIGHT, 50};
+    /*Muro in alto*/
+    wall = {0, 50, 0, SCREEN_WIDTH};
+    w = Klein::CreateWall(wall);
+    w->setPosition(0, 0);
+    w->setUnmovable(true);
+    Klein::AddEntity(w);
+    for(Hitbox* h : w->getHitboxes())
+    {
+        rectangle_t r = h->getBoundingBox(); 
+        printf("Rect: [t:%.f, b:%.f, l:%.f, r:%.f]\n", r.top, r.bottom, r.left, r.right);
+    }
+
+    /*Muro a destra*/
+    wall = {0, SCREEN_HEIGHT, SCREEN_WIDTH-50, SCREEN_WIDTH};
     w = Klein::CreateWall(wall);
     w->setPosition({0, 0});
     w->setUnmovable(true);
@@ -156,10 +170,11 @@ int main()
     for(Hitbox* h : w->getHitboxes())
     {
         rectangle_t r = h->getBoundingBox(); 
-        printf("Rect: (%.f, %.f) h:%.f w:%.f\n", r.left, r.top, r.right, r.bottom);
+        printf("Rect: [t:%.f, b:%.f, l:%.f, r:%.f]\n", r.top, r.bottom, r.left, r.right);
     }
 
-    wall = {0, 0, 50, SCREEN_WIDTH};
+    /*Muro in basso*/
+    wall = {SCREEN_HEIGHT-50, SCREEN_HEIGHT, 0, SCREEN_WIDTH};
     w = Klein::CreateWall(wall);
     w->setPosition({0, 0});
     w->setUnmovable(true);
@@ -167,25 +182,12 @@ int main()
     for(Hitbox* h : w->getHitboxes())
     {
         rectangle_t r = h->getBoundingBox(); 
-        printf("Rect: (%.f, %.f) h:%.f w:%.f\n", r.left, r.top, r.right, r.bottom);
-    }
-
-
-    wall = {0, SCREEN_HEIGHT-50, 50, SCREEN_WIDTH};
-    w = Klein::CreateWall(wall);
-    w->setPosition({0, 0});
-    w->setUnmovable(true);
-    Klein::AddEntity(w);
-    for(Hitbox* h : w->getHitboxes())
-    {
-        rectangle_t r = h->getBoundingBox(); 
-        printf("Rect: (%.f, %.f) h:%.f w:%.f\n", r.left, r.top, r.right, r.bottom);
+        printf("Rect: [t:%.f, b:%.f, l:%.f, r:%.f]\n", r.top, r.bottom, r.left, r.right);
     }
 
     simStart = std::chrono::steady_clock::now();
 
-
-    bool running = true;
+    bool running = false;
     while (running)
     {
         frames++;
