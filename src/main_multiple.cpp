@@ -1,4 +1,4 @@
-//#define USE_GRAPHICS
+#define USE_GRAPHICS
 #define SDL_ENABLE_OLD_NAMES
 
 #include "main.h"
@@ -139,55 +139,29 @@ int main()
 
     /*Muro a sinistra*/
     rectangle_t wall = {0, SCREEN_HEIGHT, 0, 50};
-    Entity* w = Klein::CreateWall(wall);
-    w->setPosition({0, 0});
-    w->setUnmovable(true);
-    Klein::AddEntity(w);
-    for(Hitbox* h : w->getHitboxes())
-    {
-        rectangle_t r = h->getBoundingBox(); 
-        printf("Rect: [t:%.f, b:%.f, l:%.f, r:%.f]\n", r.top, r.bottom, r.left, r.right);
-    }
+    Entity* w1 = Klein::CreateWall(wall);
+    Klein::AddEntity(w1);
+
 
     /*Muro in alto*/
     wall = {0, 50, 0, SCREEN_WIDTH};
-    w = Klein::CreateWall(wall);
-    w->setPosition(0, 0);
-    w->setUnmovable(true);
-    Klein::AddEntity(w);
-    for(Hitbox* h : w->getHitboxes())
-    {
-        rectangle_t r = h->getBoundingBox(); 
-        printf("Rect: [t:%.f, b:%.f, l:%.f, r:%.f]\n", r.top, r.bottom, r.left, r.right);
-    }
+    Entity* w2 = Klein::CreateWall(wall);
+    Klein::AddEntity(w2);
 
     /*Muro a destra*/
     wall = {0, SCREEN_HEIGHT, SCREEN_WIDTH-50, SCREEN_WIDTH};
-    w = Klein::CreateWall(wall);
-    w->setPosition({0, 0});
-    w->setUnmovable(true);
-    Klein::AddEntity(w);
-    for(Hitbox* h : w->getHitboxes())
-    {
-        rectangle_t r = h->getBoundingBox(); 
-        printf("Rect: [t:%.f, b:%.f, l:%.f, r:%.f]\n", r.top, r.bottom, r.left, r.right);
-    }
+    Entity* w3 = Klein::CreateWall(wall);
+    Klein::AddEntity(w3);
 
     /*Muro in basso*/
     wall = {SCREEN_HEIGHT-50, SCREEN_HEIGHT, 0, SCREEN_WIDTH};
-    w = Klein::CreateWall(wall);
-    w->setPosition({0, 0});
-    w->setUnmovable(true);
-    Klein::AddEntity(w);
-    for(Hitbox* h : w->getHitboxes())
-    {
-        rectangle_t r = h->getBoundingBox(); 
-        printf("Rect: [t:%.f, b:%.f, l:%.f, r:%.f]\n", r.top, r.bottom, r.left, r.right);
-    }
+    Entity* w4 = Klein::CreateWall(wall);
+    Klein::AddEntity(w4);
+
 
     simStart = std::chrono::steady_clock::now();
 
-    bool running = false;
+    bool running = true;
     while (running)
     {
         frames++;
@@ -205,15 +179,22 @@ int main()
                 Klein::SetGameSpeed(-1.0f*g_timer.getGameSpeed());  //Dopo 15s inverto il tempo
             }
         }
-        Uint32 mouseState = SDL_GetMouseState(nullptr, nullptr);
+        float x, y;
+        Uint32 mouseState = SDL_GetMouseState(&x, &y);
         if (mouseState & SDL_BUTTON_RMASK)
         {
-            float x, y;
-            SDL_GetMouseState(&x, &y);
-            printf("Mouse at %.2f, %.2f\n", x, y);
-            Entity* e = makeEntity(SCREEN_WIDTH, SCREEN_HEIGHT, baseSeed, 
+            //printf("Mouse at %.2f, %.2f\n", x, y);
+            Entity* e = makeEntity(SCREEN_WIDTH, SCREEN_HEIGHT, std::rand(), 
             {x, y}, {(rand() % 200 - 100) * 1.f, (rand() % 200 - 100) * 1.f} );
             e->setKleiness(true);
+            Klein::AddEntity(e);
+        }
+        if (mouseState & SDL_BUTTON_LMASK)
+        {
+            //printf("Mouse at %.2f, %.2f\n", x, y);
+            Entity* e = makeEntity(SCREEN_WIDTH, SCREEN_HEIGHT, std::rand(), 
+            {x, y}, {(rand() % 200 - 100) * 1.f, (rand() % 200 - 100) * 1.f} );
+            e->setKleiness(false);
             Klein::AddEntity(e);
         }
         Klein::RunFrame();
@@ -240,7 +221,40 @@ int main()
             i++;
         }
 
-        for(Hitbox* h : w->getHitboxes())
+        for(Hitbox* h : w1->getHitboxes())
+        {
+            SDL_FRect rect;
+            rectangle_t r = h->getBoundingBox(); 
+            rect.h = r.height();
+            rect.w = r.width();
+            rect.x = r.left;
+            rect.y = r.top;
+            SDL_SetRenderDrawColor(renderer, 255, 255, 60, 200);
+            SDL_RenderFillRect(renderer, &rect);
+        }
+        for(Hitbox* h : w2->getHitboxes())
+        {
+            SDL_FRect rect;
+            rectangle_t r = h->getBoundingBox(); 
+            rect.h = r.height();
+            rect.w = r.width();
+            rect.x = r.left;
+            rect.y = r.top;
+            SDL_SetRenderDrawColor(renderer, 255, 255, 60, 200);
+            SDL_RenderFillRect(renderer, &rect);
+        }
+        for(Hitbox* h : w3->getHitboxes())
+        {
+            SDL_FRect rect;
+            rectangle_t r = h->getBoundingBox(); 
+            rect.h = r.height();
+            rect.w = r.width();
+            rect.x = r.left;
+            rect.y = r.top;
+            SDL_SetRenderDrawColor(renderer, 255, 255, 60, 200);
+            SDL_RenderFillRect(renderer, &rect);
+        }
+        for(Hitbox* h : w4->getHitboxes())
         {
             SDL_FRect rect;
             rectangle_t r = h->getBoundingBox(); 

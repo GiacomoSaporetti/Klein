@@ -13,9 +13,10 @@ namespace Klein
     
     Entity* CreateWall(rectangle_t wall)
     {
-        //printf("Creating wall at [t:%.f, b:%.f, l:%.f, r:%.f]\n", wall.top, wall.bottom, wall.left, wall.right);
+        printf("Creating wall at [t:%.f, b:%.f, l:%.f, r:%.f]\n", wall.top, wall.bottom, wall.left, wall.right);
         Entity* e = new Entity();
         e->setPosition({wall.origin()});
+        e->setUnmovable(true);
         int   n_vertical_hb   = std::floor(wall.height()/MAX_PARTICLE_SIZE) + 1;
         int   n_horizontal_hb = std::floor(wall.width()/MAX_PARTICLE_SIZE) + 1;
         float hb_height       = wall.height()/n_vertical_hb;

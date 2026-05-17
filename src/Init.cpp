@@ -17,6 +17,9 @@ namespace Klein
         _Init() 
         { 
             g_all_entities.reserve(100);
+            AddEntity(g_main_char);
+            Hitbox(g_main_char, {0, 100 , 0 , 100});
+            g_main_char.setPosition()
         }
     } _init;
 
